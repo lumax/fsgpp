@@ -1,0 +1,15 @@
+fsg ist ein GUI, basierend auf SDL (Simple Directmedia Layer).
+
+Vorraussetzungen:
+  SDL 1.2
+  SDL_ttf
+  SDL_image
+
+Features:
+
+Button
+Label  
+
+--
+Screen
+MainGUI
