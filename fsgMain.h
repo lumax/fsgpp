@@ -38,7 +38,7 @@ extern void fsgMainSetActiveScreen(_pTfsgScreen  s);
 /*! \brief Returns the ActiveEvtTargets of the GUI the EvtTargetContainer to process
  *
  */
-extern _pTfsgEvtTargetContainer fsgMainGetActiveEvtTargets(void);
+extern _pTfsgLL fsgMainGetActiveEvtTargets(void);
 
 extern void fsgMainActivateScreen(_pTfsgScreen s);
 

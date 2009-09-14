@@ -4,20 +4,19 @@ Bastian Ruppert
 #ifndef __FSGSCREEN_H__
 #define __FSGSCREEN_H__
 
+#include <fsgLL.h>
 #include "fsgEvent.h"
 #include "fsgButton.h"
 #include "fsgLabel.h"
 
 typedef struct
 {
-  int MaxEvtTargets;
-  _pTfsgEvtTargetContainer pTargets;
+  _TfsgLL EvtTargets;
 }_TfsgScreen, *_pTfsgScreen;
-
 
 /*! \brief creates new screen instance
  */
-extern _pTfsgScreen fsgScreenConstructor(int MaxEventTargets);
+extern _pTfsgScreen fsgScreenConstructor();
 
 /*! \brief add component to screeninstance
  */

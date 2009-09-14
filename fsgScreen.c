@@ -9,68 +9,54 @@ Bastian Ruppert
 #include "fsgTools.h"
 #include "fsgGlobals.h"
 
-_pTfsgScreen fsgScreenConstructor(/*_TfsgGUI * GUI,*/int MaxEventTargets){
-
-  if(MaxEventTargets < 0)
-    return NULL;
+_pTfsgScreen fsgScreenConstructor(){
 
   _pTfsgScreen s = (_pTfsgScreen)malloc(sizeof(_TfsgScreen)); 
   if(s == 0)
     return NULL; 
-  
-  s->pTargets = fsgEventEvtTargetContainerConstructor(MaxEventTargets);
-  if(s->pTargets == NULL){
-    goto SCREEN_READY;
-  }
-  
-  s->MaxEvtTargets = MaxEventTargets;
-  //  s->pGUI = GUI;
-  
+  s->EvtTargets.Next = 0;
   return s;
-  
- SCREEN_READY:
-  free(s);
-  
-  return NULL;
 }
-
-//void fsgScreenFree(_pTfsgScreen s){
-//  free(s)
-//}
 
 int fsgScreenAddEvtTarget(_pTfsgScreen theScreen,_pTfsgEvtTarget theTarget){
   if(theScreen == NULL)
     return -1;
-  return fsgEventAddEvtTarget(theScreen->pTargets,theTarget);
+  fsgEventAddEvtTarget(&theScreen->EvtTargets,theTarget);
+  return 0;
 }
 
 
 void fsgScreenShow(_pTfsgScreen s, SDL_Surface * pSurface)
 {
-  int i,tmp;
+  int i;
+  _pTfsgEvtTarget pTmpEvtTarget;
   if(s==NULL)
     return;
 
-  tmp = s->pTargets->CounterTargets;
-  
   i = fsgToolBlankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
+  pTmpEvtTarget = (_pTfsgEvtTarget)s->EvtTargets.Next;
   
-  for(i=0;i<tmp;i++){     //alle EventTargets durchlaufen und Anzeigen
-    switch(s->pTargets->apEvtTargets[i]->type)
-      {
-      case FSG_BUTTON:{
-	fsgButtonShow((_pTfsgButton)s->pTargets->apEvtTargets[i]->pTSource,pSurface);//TODO Rückgabe
-	break;
-      }
-      case FSG_LABEL:{
-	fsgLabelShow((_pTfsgLabel)s->pTargets->apEvtTargets[i]->pTSource,pSurface);//TODO Rückgabe
-	break;
-      }
-      default:{
-	break;
-      }
+  while(pTmpEvtTarget)
+    {     //alle EventTargets durchlaufen und Anzeigen
+      switch(pTmpEvtTarget->type)
+	{
+	case FSG_BUTTON:
+	  {
+	    fsgButtonShow((_pTfsgButton)pTmpEvtTarget->pTSource,pSurface);//TODO Rückgabe
+	    break;
+	  }
+	case FSG_LABEL:
+	  {
+	    fsgLabelShow((_pTfsgLabel)pTmpEvtTarget->pTSource,pSurface);//TODO Rückgabe
+	    break;
+	  }
+	default:
+	  {
+	    break;
+	  }
+	}
+      pTmpEvtTarget = (_pTfsgEvtTarget)pTmpEvtTarget->TfsgLL.Next;
     }
-  }
 }
 
 int fsgScreenAddButton(_pTfsgScreen s, _TfsgButton * btn)

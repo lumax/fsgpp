@@ -107,7 +107,7 @@ _TfsgButton Btn23={.PosDimRect={.x=10,.y=90,.w=150,.h=30},	\
 };
 
 int createScreen1(void){
-  pScreen1 = fsgScreenConstructor(3);
+  pScreen1 = fsgScreenConstructor();
   if(!pScreen1){
     printf("pScreen1 Constructor failed!\n");
     return -1;
@@ -131,7 +131,7 @@ int createScreen1(void){
 }
 
 int createScreen2(void){
-  pScreen2 = fsgScreenConstructor(4);
+  pScreen2 = fsgScreenConstructor();
   if(!pScreen2){
     printf("pScreen1 Constructor failed!\n");
     return -1;

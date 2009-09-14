@@ -8,99 +8,40 @@ Bastian Ruppert
 #include "fsgButton.h"
 
 
-
-
-
-
-_pTfsgEvtTargetContainer fsgEventEvtTargetContainerConstructor(int MaxEvtTargets)
+void fsgEventAddEvtTarget(_pTfsgLL z,_pTfsgEvtTarget t)
 {
-  int i;
-  _pTfsgEvtTargetContainer con=(_pTfsgEvtTargetContainer)malloc(sizeof(_TfsgEvtTargetContainer)); 
-  if(con == NULL)
-    return NULL;
-  
-  if(MaxEvtTargets < 0)
-    return NULL;
-
-  con->apEvtTargets = (_pTfsgEvtTarget*)malloc(sizeof(_TfsgEvtTarget)*MaxEvtTargets);
-  if(con->apEvtTargets==NULL) 
-   goto ContainerReady; 
-  
-  for(i=0;i<MaxEvtTargets;i++)
-    {
-      con->apEvtTargets[i]=0;
-    }
- 
-  con->CounterTargets=0;
-  con->MaxTargets = MaxEvtTargets;
-  return con;           //alles gut
-
- ContainerReady:
-  free(con);
-
-  return NULL;  
-}
-
-
-int fsgEventAddEvtTarget(_pTfsgEvtTargetContainer z,_pTfsgEvtTarget t)
-{
-  int i;
-  if(z->CounterTargets<z->MaxTargets)
-    {
-      for(i=0;i<z->MaxTargets;i++)
-	{  
-	  if(z->apEvtTargets[i]==0)
-	    {
-	      z->apEvtTargets[i]=t;
-	      //btn->pvEventContainer = (void *)tar; //dem Button den EventContainer bekanntgeben
-	      z->CounterTargets++;
-	      return 0;
-	    }
-	}
-      return -2;
-    }
- return -1; 
+  fsgLLAdd(z,(_pTfsgLL)t);
 }
 
 /*! \brief process the  fsgEvtTarget  Event Handler 
  */
 static void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar);
 
-void fsgEventProcessTargets(SDL_Event * pSDL_Event, _pTfsgEvtTargetContainer t)
+void fsgEventProcessTargets(SDL_Event * pSDL_Event, _pTfsgLL t)
 {
-  int i;
-  for(i=0;i<t->CounterTargets;i++){     //alle EventTargets durchlaufen
-    fsgEventProcessEvtTarget(pSDL_Event,t->apEvtTargets[i]);
-  }
+  _pTfsgEvtTarget pTmp = (_pTfsgEvtTarget)t->Next;
+  while(pTmp)
+    {
+      fsgEventProcessEvtTarget(pSDL_Event,pTmp);
+      pTmp = (_pTfsgEvtTarget)pTmp->TfsgLL.Next;
+    }
 }
 
-int fsgEventPaintRequested(_pTfsgEvtTargetContainer t)
+int fsgEventPaintRequested(_pTfsgLL t)
 {
   int ret = 0;
-  int i;
-  for(i=0;i<t->CounterTargets;i++){     //alle EventTargets durchlaufen
-    if(t->apEvtTargets[i]->bPaintRequest==1){
-      ret = 1;
-      t->apEvtTargets[i]->bPaintRequest=0;
+  _pTfsgEvtTarget pTmp = (_pTfsgEvtTarget)t->Next;
+  while(pTmp)
+    {
+      if(pTmp->bPaintRequest==1){
+	ret = 1;
+	pTmp->bPaintRequest=0;
+      }
+      pTmp = (_pTfsgEvtTarget)pTmp->TfsgLL.Next;
     }
-  }
   return ret;
 }
 
-/* switch(t->apEvtTargets[i]->type)
-      {
-      case FSG_BUTTON:{
-	fsgButtonProcess(pSDL_Event,t->apEvtTargets[i]);
-	break;
-      }
-      case FSG_LABEL:{
-	break;
-      }
-      default:{
-	break;
-      }
-    }
-*/
 void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
 {
   int tmpx,tmpy;

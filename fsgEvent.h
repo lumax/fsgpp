@@ -8,10 +8,12 @@ Bastian Ruppert
 #ifndef __FSGEVENT_H__
 #define __FSGEVENT_H__
 #include <SDL/SDL.h>
+#include <fsgLL.h>
 #include "fsgTypes.h"
 
 typedef struct
 {
+  _TfsgLL TfsgLL;
   Uint8 type;
   Uint8 bSelected;
   Uint8 bPaintRequest;
@@ -27,22 +29,22 @@ typedef struct
   void (*fnkUnSelect)(void * source);
 }_TfsgEvtTarget,*_pTfsgEvtTarget;
 
-typedef struct
+/*typedef struct
 {
   _pTfsgEvtTarget * apEvtTargets;
   int MaxTargets;
   int CounterTargets;
-}_TfsgEvtTargetContainer,*_pTfsgEvtTargetContainer;
+  }_TfsgEvtTargetContainer,*_pTfsgEvtTargetContainer;*/
 
-extern int fsgEventAddEvtTarget(_pTfsgEvtTargetContainer z,_pTfsgEvtTarget t);
+extern void fsgEventAddEvtTarget(_pTfsgLL z,_pTfsgEvtTarget t);
 
-extern _pTfsgEvtTargetContainer fsgEventEvtTargetContainerConstructor(int MaxEvtTargets);
+//extern _pTfsgEvtTargetContainer fsgEventEvtTargetContainerConstructor(int MaxEvtTargets);
 
-extern void fsgEventProcessTargets(SDL_Event * pSDL_Event, _pTfsgEvtTargetContainer t);
+extern void fsgEventProcessTargets(SDL_Event * pSDL_Event, _pTfsgLL t);
 
 /*! /brief searching for an Item with a PaintRequest, resets PaintRequest,
   /return return 0 = no request, return 1 = PaintRequest
 */
-extern int fsgEventPaintRequested(_pTfsgEvtTargetContainer t);
+extern int fsgEventPaintRequested(_pTfsgLL t);
 
 #endif /* __FSGEVENT_H__*/

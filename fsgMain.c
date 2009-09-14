@@ -6,6 +6,7 @@ Bastian Ruppert
 #include "fsgGlobals.h"
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
+#include <fsgLL.h>
 
 
 static _TfsgGUI theGUI = {.pActiveScreen = NULL,			\
@@ -58,10 +59,10 @@ void fsgMainSetActiveScreen(_pTfsgScreen s)//TODO static function
     theGUI.pActiveScreen = s;
 }
 
-_pTfsgEvtTargetContainer fsgMainGetActiveEvtTargets(void)
+_pTfsgLL fsgMainGetActiveEvtTargets(void)
 {
   if(theGUI.pActiveScreen){
-    return theGUI.pActiveScreen->pTargets;
+    return &theGUI.pActiveScreen->EvtTargets;
   }else{
     return 0;
   }
@@ -84,10 +85,10 @@ int fsgMainEventLoop(void)
       return -1; 
     }
     if(theGUI.pActiveScreen){
-      if(theGUI.pActiveScreen->pTargets){                            //EvtTargets Ausführen
-	fsgEventProcessTargets(&theEvent,theGUI.pActiveScreen->pTargets);
+      if(theGUI.pActiveScreen->EvtTargets.Next){                            //EvtTargets Ausführen
+	fsgEventProcessTargets(&theEvent,&theGUI.pActiveScreen->EvtTargets);
      }
-      if(fsgEventPaintRequested(theGUI.pActiveScreen->pTargets)){     //alle EventTargets auf bPaintRequest untersuchen
+      if(fsgEventPaintRequested(&theGUI.pActiveScreen->EvtTargets)){     //alle EventTargets auf bPaintRequest untersuchen
 	fsgScreenShow(theGUI.pActiveScreen,theGUI.pMainSurface);
 	SDL_Flip(theGUI.pMainSurface);                                   //show buffer
 	/*if(theGUI.pSurface==theGUI.pDoubleBuf0)                      //point to next DoubleBuf
