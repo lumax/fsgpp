@@ -162,8 +162,8 @@ int createScreen2(void){
 
 int main(int argl, char* args[])
 {
-  _TfsgGUI_Properties props={.width=640, \
-			     .height=420,	\
+  _TfsgGUI_Properties props={.width=320, \
+			     .height=240,	\
 			     .bpp=0,		\
 			     .flags=SDL_SWSURFACE};
   
