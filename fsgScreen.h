@@ -29,7 +29,7 @@ extern int fsgScreenAddEvtTarget(_TfsgScreen * theScreen,_pTfsgEvtTarget theTarg
 
 /*! \brief activate the screeninstance
  */
-extern void fsgScreenShow(_TfsgScreen * s,SDL_Surface * pSurface);
+extern int fsgScreenShow(_TfsgScreen * s,SDL_Surface * pSurface);
 
 /*! \brief add Button to  the screeninstance
  */

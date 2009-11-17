@@ -6,8 +6,15 @@ Bastian Ruppert
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
 #include <stdlib.h>
+#include <defs.h>
 #include "fsgGlobals.h"
 #include "fsgTools.h"
+
+
+/*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
+ *         
+ */
+static int fsgLabelShow(void * pL,SDL_Surface * pSurface);
 
 int fsgLabelConstructor(_TfsgLabel * b)
 {
@@ -19,7 +26,7 @@ int fsgLabelConstructor(_TfsgLabel * b)
     b->pFontColor = &GlobalSDL_ColorSewGrau;
   }
 
-  b->EvtTarget.type = FSG_LABEL;              //EvtTarget als LABEL Markieren   
+  b->EvtTarget.PrivateShow = fsgLabelShow;     //EvtTarget als LABEL Markieren   
   b->EvtTarget.pTSource = b;                   //Quelle setzen
   b->EvtTarget.pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
   //b->EvtTarget.Private_fnkSelectable=fsgButtonSelect;//Der Button macht Aktion mit dem Selected Bit!
@@ -35,36 +42,36 @@ void fsgLabelSetText(_pTfsgLabel b,const char* text)
   b->EvtTarget.bPaintRequest = 1;
 }
 
-int fsgLabelShow(_pTfsgLabel b,SDL_Surface* target)
+static int fsgLabelShow(void * v,SDL_Surface* target)
 { 
   int ret;
-  
   SDL_Rect tmpRect;
+  _pTfsgLabel b = (_pTfsgLabel)v;
   tmpRect.x = b->PosDimRect.x;
   tmpRect.y = b->PosDimRect.y;
   tmpRect.w = b->PosDimRect.w;
   tmpRect.h = b->PosDimRect.h;
 
   if(b->pFont == 0)
-    return -1;      //Fehler
+    EC_FAIL;      //Fehler
   if(b->pFontColor==0)
-    return -1;      //Fehler
+    EC_FAIL;      //Fehler
 
   //if label has Background SDL_Surface, then render Background SDL_Surface, else :
-  if(SDL_FillRect(target,&tmpRect,FSG_LABEL_BACKGROUND)){   //Background
-    return -1;
-  }
-
+  ec_neg1(SDL_FillRect(target,&tmpRect,FSG_LABEL_BACKGROUND))//Background
   if(b->pLabelText){                                        //Text
     ret=fsgToolsBlitText(target,&tmpRect,b->pFont,b->pFontColor,b->pLabelText);
   }
 
   if( fsgToolRenderBorderFrame(target,&tmpRect,FSG_COLOR_NORMAL)){//Border
-    return -1;
+    EC_FAIL;
   }
 
   // SDL_UpdateRect(target,b->PosDimRect.x,b->PosDimRect.y,b->PosDimRect.w,b->PosDimRect.h);
   return 0;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
 
 

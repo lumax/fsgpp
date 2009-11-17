@@ -2,10 +2,9 @@
 fsgEvtProcessor.c
 Bastian Ruppert
 */
-
+#include <defs.h>
 #include "fsgScreen.h"
 #include "fsgMain.h"
-#include "fsgTypes.h"
 #include "fsgTools.h"
 #include "fsgGlobals.h"
 
@@ -26,37 +25,32 @@ int fsgScreenAddEvtTarget(_TfsgScreen * theScreen,_pTfsgEvtTarget theTarget){
 }
 
 
-void fsgScreenShow(_TfsgScreen * s, SDL_Surface * pSurface)
+int fsgScreenShow(_TfsgScreen * s, SDL_Surface * pSurface)
 {
   int i;
   _pTfsgEvtTarget pTmpEvtTarget;
   if(s==NULL)
-    return;
+    {
+      errno = EINVAL;
+      EC_FAIL;
+    }
 
   i = fsgToolBlankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
   pTmpEvtTarget = (_pTfsgEvtTarget)s->EvtTargets.Next;
   
   while(pTmpEvtTarget)
     {     //alle EventTargets durchlaufen und Anzeigen
-      switch(pTmpEvtTarget->type)
+      if(pTmpEvtTarget->PrivateShow)
 	{
-	case FSG_BUTTON:
-	  {
-	    fsgButtonShow((_pTfsgButton)pTmpEvtTarget->pTSource,pSurface);//TODO Rückgabe
-	    break;
-	  }
-	case FSG_LABEL:
-	  {
-	    fsgLabelShow((_pTfsgLabel)pTmpEvtTarget->pTSource,pSurface);//TODO Rückgabe
-	    break;
-	  }
-	default:
-	  {
-	    break;
-	  }
+	  ec_neg1(pTmpEvtTarget->PrivateShow(pTmpEvtTarget->pTSource,\
+					     pSurface) )
 	}
       pTmpEvtTarget = (_pTfsgEvtTarget)pTmpEvtTarget->TfsgLL.Next;
     }
+      return 0;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
 
 int fsgScreenAddButton(_TfsgScreen * s, _TfsgButton * btn)

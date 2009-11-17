@@ -27,10 +27,7 @@ extern int fsgLabelConstructor(_TfsgLabel * b);
  */
 //extern void fsgLabelProcess(SDL_Event * evt,_pTfsgEvtTarget tar);
 
-/*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
- *         
- */
-extern int fsgLabelShow(_pTfsgLabel pL,SDL_Surface * pSurface);
+
 
 /*! \brief Setzt den Text eines Buttons.
  *

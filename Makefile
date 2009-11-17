@@ -4,15 +4,15 @@ MINOR=0
 VERSION=$(MAJOR).$(MINOR)
 
 DEFS+=-D_GNU_SOURCE=1 -D_REENTRANT
-INCLUDES+=-I/usr/include/SDL
-LIBS+=-L/usr/lib
+INCLUDES+=-I/usr/include/SDL -I../../include/libruputils
+LIBS+=-L/usr/lib -L../../lib
 #    gcc -Wall -fPIC -c *.c
 #    gcc -shared -Wl,-soname,libctest.so.1 -o libctest.so.1.0   *.o
 #    mv libctest.so.1.0 /opt/lib
 #    ln -sf /opt/lib/libctest.so.1.0 /opt/lib/libctest.so
 #    ln -sf /opt/lib/libctest.so.1.0 /opt/lib/libctest.so.1
 CFLAGS+=-g -c -Wall -fPIC
-LDFLAGS+= -lSDL -lSDL_ttf -lSDL_image -shared -Wl #,-soname,$(PROJECT_NAME).so.$(MAJOR)
+LDFLAGS+= -lSDL -lSDL_ttf -lSDL_image -lruputils -shared -Wl #,-soname,$(PROJECT_NAME).so.$(MAJOR)
 
 OBJS = fsgButton.o fsgEvent.o fsgTools.o fsgGlobals.o fsgMain.o fsgScreen.o fsgLabel.o
 

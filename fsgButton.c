@@ -14,6 +14,11 @@ Bastian Ruppert
 
 
 
+/*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
+ *         
+ */
+static int fsgButtonShow(void * pB,SDL_Surface * pSurface);
+
 /*! \brief private Funktion zum setzen des Selected-Bits
  *
  */
@@ -29,7 +34,7 @@ int fsgButtonConstructor(_TfsgButton * b)
   }
   
   fsgButtonSetText(b,b->pButtonText);          //text setzen 
-  b->EvtTarget.type = FSG_BUTTON;              //EvtTarget als Button Markieren   
+  b->EvtTarget.PrivateShow = fsgButtonShow;              //EvtTarget als Button Markieren   
   b->EvtTarget.pTSource = b;                   //Quelle setzen
   b->EvtTarget.pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
   b->EvtTarget.Private_fnkSelectable = fsgButtonSelect; //Der Button macht Aktion mit dem Selected Bit!
@@ -59,9 +64,10 @@ void fsgButtonSetText(_pTfsgButton b,const char* text)
   b->pButtonText = text;
 }
 
-int fsgButtonShow(_pTfsgButton b,SDL_Surface* target)
+static int fsgButtonShow(void * v,SDL_Surface* target)
 {
   SDL_Rect tmpRect;
+  _pTfsgButton b =(_pTfsgButton)v;
   tmpRect.x = b->PosDimRect.x;
   tmpRect.y = b->PosDimRect.y;
   tmpRect.w = b->PosDimRect.w;

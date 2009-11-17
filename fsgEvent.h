@@ -9,18 +9,18 @@ Bastian Ruppert
 #define __FSGEVENT_H__
 #include <SDL/SDL.h>
 #include <fsgLL.h>
-#include "fsgTypes.h"
 
 typedef struct
 {
   _TfsgLL TfsgLL;
-  Uint8 type;
+  Uint8 unused1;
   Uint8 bSelected;
   Uint8 bPaintRequest;
   Uint8 unused0;
   void * pTSource;
   SDL_Rect * pPosDimRect;
-  void (*Private_fnkSelectable)(void * b,int bool);
+  int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
+  void (*Private_fnkSelectable)(void * b,int boolean);
   void (*fnkKeyboardUp)(SDL_Event * theEvent,void * source);
   void (*fnkMouseOver)(SDL_Event * theEvent,void * source);
   void (*fnkLeftMouseButtonDown)(SDL_Event * theEvent,void * source);

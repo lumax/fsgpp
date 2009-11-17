@@ -41,11 +41,6 @@ extern int fsgButtonConstructor(_TfsgButton * b);
 
 
 
-/*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
- *         
- */
-extern int fsgButtonShow(_pTfsgButton pB,SDL_Surface * pSurface);
-
 /*! \brief Setzt den Text eines Buttons.
  *
  */
