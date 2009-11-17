@@ -16,12 +16,10 @@ static void ScreenActivate(void){printf("OnActivate\n");}
 static void ScreenDeactivate(void){printf("OnDeactivate\n");}
 
 _TfsgScreen Screen1 = {
-  // .title = "Screen1",
   .OnActivate = ScreenActivate,
   .OnDeactivate = ScreenDeactivate,
 };
 _TfsgScreen Screen2 = {
-  // .title = "Screen2",
 };
 
 static void evtBtn1(SDL_Event * evt,void * src){

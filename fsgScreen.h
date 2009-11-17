@@ -12,7 +12,6 @@ Bastian Ruppert
 typedef struct
 {
   _TfsgLL EvtTargets;
-  //  char * title;
   void (*OnActivate)(void);
   void (*OnDeactivate)(void);
 }_TfsgScreen;

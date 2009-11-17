@@ -63,6 +63,14 @@ void fsgMainSetActiveScreen(_TfsgScreen * s)//TODO static function
 	  theGUI.pActiveScreen->OnDeactivate();
 	}
     }
+
+  _pTfsgEvtTarget pTmpEvtTarget = (_pTfsgEvtTarget)s->EvtTargets.Next;
+  while(pTmpEvtTarget)
+    {     //alle EventTargets durchlaufen und Selected = false setzen
+      pTmpEvtTarget->bSelected = 0;
+      pTmpEvtTarget = (_pTfsgEvtTarget)pTmpEvtTarget->TfsgLL.Next;
+    }
+
   theGUI.pActiveScreen = s;
   if(theGUI.pActiveScreen->OnActivate)
     {

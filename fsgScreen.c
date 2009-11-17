@@ -65,7 +65,7 @@ int fsgScreenAddButton(_TfsgScreen * s, _TfsgButton * btn)
     return -1;
   }
   if(fsgScreenAddEvtTarget(s,&btn->EvtTarget)){
-    return -2;
+    return -1;
   }
   return 0;
 }  
@@ -76,7 +76,7 @@ int fsgScreenAddLabel(_TfsgScreen * s, _TfsgLabel * btn)
     return -1;
   }
   if(fsgScreenAddEvtTarget(s,&btn->EvtTarget)){
-    return -2;
+    return -1;
   }
   return 0;
 }  
