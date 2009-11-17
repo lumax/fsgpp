@@ -2,9 +2,9 @@
 Bastian Ruppert
 */
 
-#include "fsgTools.h"
-#include <stdlib.h>
+#include <defs.h>
 #include "fsgGlobals.h"
+#include "fsgTools.h"
 
 static Uint32 fsgToolsGetPixel(SDL_Surface *surf, int x, int y)
 {
@@ -97,25 +97,25 @@ static int fsgToolGetRGB(Uint32 Color,Uint8 * pr,Uint8 * pg,Uint8 * pb)
   SDL_Surface * tmpSurface;
 
   SDL_PixelFormat * format = SDL_GetVideoSurface()->format;
-  tmpSurface=SDL_CreateRGBSurface(SDL_SWSURFACE,			\
-				  2,					\
-				  2,					\
-				  FSGDEFAULTCOLORDEPTH,			\
-				  format->Rmask,			\
-				  format->Gmask,			\
-				  format->Bmask,			\
-				  format->Amask); 
-  if(tmpSurface == NULL){ 
-    return -1;
-  }
-  if(SDL_FillRect(tmpSurface,0,Color)){
-    SDL_FreeSurface(tmpSurface);
-    return -1; 
-  }
+  ec_null(tmpSurface=SDL_CreateRGBSurface(SDL_SWSURFACE,\
+				  2,			\
+				  2,			\
+				  FSGDEFAULTCOLORDEPTH,	\
+				  format->Rmask,	\
+				  format->Gmask,	\
+				  format->Bmask,	\
+					  format->Amask) ) 
+
+    ec_neg1( SDL_FillRect(tmpSurface,0,Color) )
+
   Uint32 thePixel = fsgToolsGetPixel(tmpSurface,0,0);
   SDL_FreeSurface(tmpSurface);
   SDL_GetRGB(thePixel,format,pr,pg,pb);//Die rgb-Werte des Rahmens sind nun endlich bekannt
   return 0;
+  EC_CLEANUP_BGN
+    SDL_FreeSurface(tmpSurface);
+    return -1;
+  EC_CLEANUP_END
 }
 
 static int fsgToolRenderBorder3D(SDL_Surface * target,SDL_Rect * PosDim,Uint32 Color,int boolUp)
@@ -125,9 +125,7 @@ static int fsgToolRenderBorder3D(SDL_Surface * target,SDL_Rect * PosDim,Uint32 C
   Uint8 gruen;
   Uint8 blau;
  
-  if(fsgToolGetRGB(Color,&rot,&gruen,&blau)){
-    return -1;
-  }
+  ec_neg1( fsgToolGetRGB(Color,&rot,&gruen,&blau) )
   
   Uint32 bright = fsgToolsBecloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,30);//hell
   Uint32 brighter = fsgToolsBecloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,60);//heller
@@ -138,61 +136,66 @@ static int fsgToolRenderBorder3D(SDL_Surface * target,SDL_Rect * PosDim,Uint32 C
   r.y = PosDim->y;
   r.w = 2;
   r.h = PosDim->h;
-  if(boolUp){
-    if(SDL_FillRect(target,&r,bright))//Border Innen Links
-      return -1;
-  }else{
-     if(SDL_FillRect(target,&r,dark))//Border Innen Links
-      return -1;   
-  }
+  if(boolUp)
+    {
+    ec_neg1(SDL_FillRect(target,&r,bright) )//Border Innen Links
+    }
+  else
+    { 
+     ec_neg1(SDL_FillRect(target,&r,dark) )//Border Innen Links
+    }
   
   r.x = PosDim->x;
   r.y = PosDim->y;
   r.w = PosDim->w;
   r.h = 2;
-  if(boolUp){
-    if(SDL_FillRect(target,&r,bright))//Border Innen Oben
-      return -1;
-  }else{
-    if(SDL_FillRect(target,&r,dark))
-      return -1;   
-  }
+  if(boolUp)
+    {
+      ec_neg1(SDL_FillRect(target,&r,bright) )//Border Innen Oben
+    }
+  else
+    {
+    ec_neg1(SDL_FillRect(target,&r,dark) )
+    }
   
   r.x = PosDim->w-2+PosDim->x;
   r.y = PosDim->y;
   r.w = 2;
   r.h = PosDim->h;
-  if(boolUp){        
-    if(SDL_FillRect(target,&r,dark))//Border Innen Rechts
-      return -1;
-  }else{
-    if(SDL_FillRect(target,&r,bright))
-      return -1;   
-  }
+  if(boolUp)
+    {        
+     ec_neg1(SDL_FillRect(target,&r,dark))//Border Innen Rechts
+    }
+  else
+    {
+     ec_neg1(SDL_FillRect(target,&r,bright))
+    }
 
   r.x = PosDim->x;
   r.y = PosDim->h-2+PosDim->y;
   r.w = PosDim->w;
   r.h = 2; 
-  if(boolUp){
-    if(SDL_FillRect(target,&r,dark))//Border Innen Unten
-      return -1;
-  }else{
-    if(SDL_FillRect(target,&r,bright))
-      return -1;   
-  }
+  if(boolUp)
+    {
+     ec_neg1(SDL_FillRect(target,&r,dark))//Border Innen Unten
+    }
+  else
+    {
+     ec_neg1(SDL_FillRect(target,&r,bright))
+    }
 
   r.x = PosDim->x;
   r.y = PosDim->y;
   r.w = 1;
   r.h = PosDim->h;
-  if(boolUp){
-    if(SDL_FillRect(target,&r,brighter))//Border Außen Links
-      return -1; 
-  }else{
-    if(SDL_FillRect(target,&r,darker))
-      return -1;   
-  }
+  if(boolUp)
+    {
+     ec_neg1(SDL_FillRect(target,&r,brighter))//Border Außen Links
+    }
+  else
+    {
+     ec_neg1(SDL_FillRect(target,&r,darker))
+    }
 
   r.x = PosDim->x;
   r.y = PosDim->y;
@@ -210,27 +213,32 @@ static int fsgToolRenderBorder3D(SDL_Surface * target,SDL_Rect * PosDim,Uint32 C
   r.y = PosDim->y;
   r.w = 1;
   r.h = PosDim->h;
-  if(boolUp){        
-    if(SDL_FillRect(target,&r,darker))//Border Außen Rechts
-      return -1;
-  }else{
-    if(SDL_FillRect(target,&r,brighter))
-      return -1;   
-  }
+  if(boolUp)
+    {        
+      ec_neg1(SDL_FillRect(target,&r,darker))//Border Außen Rechts
+    }
+  else
+    {
+     ec_neg1(SDL_FillRect(target,&r,brighter))
+    }
   
   r.x = PosDim->x;
   r.y = PosDim->h-1+PosDim->y;
   r.w = PosDim->w;
   r.h = 1; 
-  if(boolUp){
-    if(SDL_FillRect(target,&r,darker))//Border Außen Unten
-      return -1;
-  }else{
-    if(SDL_FillRect(target,&r,brighter))
-      return -1;   
-  }
+  if(boolUp)
+    {
+     ec_neg1(SDL_FillRect(target,&r,darker))//Border Außen Unten
+    }
+  else
+    {
+     ec_neg1(SDL_FillRect(target,&r,brighter))
+    }
   
   return 0;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
 
 extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint32 Color)
@@ -241,9 +249,7 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   Uint8 blau;
   int boolUp = 0;
  
-  if(fsgToolGetRGB(Color,&rot,&gruen,&blau)){
-    return -1;
-  }
+  ec_neg1(fsgToolGetRGB(Color,&rot,&gruen,&blau) )
   
   Uint32 bright = fsgToolsBecloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,30);//hell
   //Uint32 brighter = fsgToolsBecloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,60);//heller
@@ -254,12 +260,11 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.y = PosDim->y;
   r.w = 2;
   r.h = PosDim->h;
-  if(boolUp){
-    if(SDL_FillRect(target,&r,dark))//Border Innen Links
-      return -1;
+  if(boolUp)
+  {
+    ec_neg1(SDL_FillRect(target,&r,dark))//Border Innen Links
   }else{
-     if(SDL_FillRect(target,&r,bright))//Border Innen Links
-      return -1;   
+     ec_neg1(SDL_FillRect(target,&r,bright))//Border Innen Links
   }
   
   r.x = PosDim->x;
@@ -267,11 +272,9 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = PosDim->w;
   r.h = 2;
   if(boolUp){
-    if(SDL_FillRect(target,&r,dark))//Border Innen Oben
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,dark))//Border Innen Oben
   }else{
-    if(SDL_FillRect(target,&r,bright))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,bright))
   }
   
   r.x = PosDim->w-2+PosDim->x;
@@ -279,11 +282,9 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = 2;
   r.h = PosDim->h;
   if(boolUp){        
-    if(SDL_FillRect(target,&r,bright))//Border Innen Rechts
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,bright))//Border Innen Rechts
   }else{
-    if(SDL_FillRect(target,&r,dark))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,dark))
   }
 
   r.x = PosDim->x;
@@ -291,11 +292,9 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = PosDim->w;
   r.h = 2; 
   if(boolUp){
-    if(SDL_FillRect(target,&r,bright))//Border Innen Unten
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,bright))//Border Innen Unten
   }else{
-    if(SDL_FillRect(target,&r,dark))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,dark))
   }
 
   r.x = PosDim->x;
@@ -315,11 +314,9 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = PosDim->w;
   r.h = 1;
   if(boolUp){
-    if(SDL_FillRect(target,&r,bright))//Border Außen Oben
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,bright))//Border Außen Oben
   }else{
-    if(SDL_FillRect(target,&r,dark))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,dark))
   }
   
   r.x = PosDim->w-1+PosDim->x;
@@ -327,11 +324,9 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = 1;
   r.h = PosDim->h;
   if(boolUp){        
-    if(SDL_FillRect(target,&r,dark))//Border Außen Rechts
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,dark))//Border Außen Rechts
   }else{
-    if(SDL_FillRect(target,&r,bright))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,bright))
   }
   
   r.x = PosDim->x;
@@ -339,14 +334,14 @@ extern int fsgToolRenderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint3
   r.w = PosDim->w;
   r.h = 1; 
   if(boolUp){
-    if(SDL_FillRect(target,&r,dark))//Border Außen Unten
-      return -1;
+    ec_neg1(SDL_FillRect(target,&r,dark))//Border Außen Unten
   }else{
-    if(SDL_FillRect(target,&r,bright))
-      return -1;   
+    ec_neg1(SDL_FillRect(target,&r,bright))
   }
-  
-  return 0;
+  return 0;   
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
 
 extern int fsgToolRenderBorderUp(SDL_Surface * target,SDL_Rect * PosDim,Uint32 Color)
@@ -371,33 +366,27 @@ int fsgToolRenderBorder(SDL_Surface * target,\
   r.h = PosDim->h;
   
   r.w = Breite;
-  if(SDL_FillRect(target,&r,Color))//Border Left
-    return -1; 
+  ec_neg1(SDL_FillRect(target,&r,Color))//Border Left
 
   r.x = PosDim->w-Breite+PosDim->x;
-  if(SDL_FillRect(target,&r,Color))//Border right
-    return -1; 
+  ec_neg1(SDL_FillRect(target,&r,Color))//Border right
 
   r.x = PosDim->x;
   r.w = PosDim->w;
   r.h = Breite;
-  if(SDL_FillRect(target,&r,Color))//Border top
-    return -1; 
+  ec_neg1(SDL_FillRect(target,&r,Color))//Border top
 
   r.y = PosDim->h-Breite+PosDim->y;
-  if(SDL_FillRect(target,&r,Color))//Border bottom
-    return -1;
+  ec_neg1(SDL_FillRect(target,&r,Color))//Border bottom
 
   return 0;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
 
 int fsgToolBlankSurface(SDL_Surface * s, Uint32 color){
-  int ret = SDL_FillRect(s,0,color);
-  if(ret){
-    return ret;
-  }
-  // SDL_UpdateRect(s,0,0,0,0);
-  return 0;
+  return SDL_FillRect(s,0,color);
 }
 
 int fsgToolsBlitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,SDL_Color * pFontColor,const char * text)
@@ -419,10 +408,7 @@ int fsgToolsBlitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont
   if(text==0){
     return 0;
   }
-  tmp = TTF_RenderText_Blended(pFont,text,*pFontColor);
-  if(tmp==NULL){
-    return -1;
-  }
+  ec_null(tmp = TTF_RenderText_Blended(pFont,text,*pFontColor) )
 
   h_mitte = (int)posdim->h/2;
   mitte = (int)posdim->w/2;
@@ -455,4 +441,7 @@ int fsgToolsBlitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont
   ret = SDL_BlitSurface(tmp,&src,tarSurface,&des);
   SDL_FreeSurface(tmp);
   return ret;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
 }
