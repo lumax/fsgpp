@@ -12,13 +12,21 @@ Bastian Ruppert
 
 
 //static _TfsgGUI * pGUI;
+static void ScreenActivate(void){printf("OnActivate\n");}
+static void ScreenDeactivate(void){printf("OnDeactivate\n");}
 
-_pTfsgScreen pScreen1;
-_pTfsgScreen pScreen2;
+_TfsgScreen Screen1 = {
+  // .title = "Screen1",
+  .OnActivate = ScreenActivate,
+  .OnDeactivate = ScreenDeactivate,
+};
+_TfsgScreen Screen2 = {
+  // .title = "Screen2",
+};
 
 static void evtBtn1(SDL_Event * evt,void * src){
   printf("evtBtn1MouseUp\n");
-  fsgMainActivateScreen(pScreen2);
+  fsgMainActivateScreen(&Screen2);
 }
 static void evtBtn2(SDL_Event * evt,void * src){
   printf("evtBtn2MouseUp\n");
@@ -56,7 +64,7 @@ _TfsgLabel L1;
 
 static void evtBtn21(SDL_Event * evt,void * src){
   printf("evtBtn21MouseUp\n");
-  fsgMainActivateScreen(pScreen1); 
+  fsgMainActivateScreen(&Screen1); 
 }
 static void evtBtn22(SDL_Event * evt,void * src){
   fsgLabelSetText(&L1,"Button2");
@@ -106,22 +114,23 @@ _TfsgButton Btn23={.PosDimRect={.x=10,.y=90,.w=150,.h=30},	\
 			      .fnkUnSelect = evtBtn23LUnSel}	\
 };
 
+
 int createScreen1(void){
-  pScreen1 = fsgScreenConstructor();
+  /*pScreen1 = fsgScreenConstructor();
   if(!pScreen1){
     printf("pScreen1 Constructor failed!\n");
     return -1;
-  }
+    }*/
     
-  if(fsgScreenAddButton(pScreen1,&Btn1)){
+  if(fsgScreenAddButton(&Screen1,&Btn1)){
     printf("add Button to pScreen1 failed!\n");
     return -1;
   }
-  if(fsgScreenAddButton(pScreen1,&Btn2)){
+  if(fsgScreenAddButton(&Screen1,&Btn2)){
     printf("add Button2 to pScreen1 failed!\n");
     return -1;
   }
-  if(fsgScreenAddButton(pScreen1,&Btn3)){
+  if(fsgScreenAddButton(&Screen1,&Btn3)){
     printf("add Button3 to pScreen1 failed!\n");
     return -1;
   }
@@ -131,26 +140,26 @@ int createScreen1(void){
 }
 
 int createScreen2(void){
-  pScreen2 = fsgScreenConstructor();
+  /*pScreen2 = fsgScreenConstructor();
   if(!pScreen2){
     printf("pScreen1 Constructor failed!\n");
     return -1;
-  }
+    }*/
     
-  if(fsgScreenAddButton(pScreen2,&Btn21)){
+  if(fsgScreenAddButton(&Screen2,&Btn21)){
     printf("add Button to pScreen2 failed!\n");
     return -1;
   }
-  if(fsgScreenAddButton(pScreen2,&Btn22)){
+  if(fsgScreenAddButton(&Screen2,&Btn22)){
     printf("add Button2 to pScreen2 failed!\n");
     return -1;
   }
-  if(fsgScreenAddButton(pScreen2,&Btn23)){
+  if(fsgScreenAddButton(&Screen2,&Btn23)){
     printf("add Button3 to pScreen2 failed!\n");
     return -1;
   }
   
-   if(fsgScreenAddLabel(pScreen2,&L1)){
+   if(fsgScreenAddLabel(&Screen2,&L1)){
     printf("add Label1 to pScreen2 failed!\n");
     return -1;
   }
@@ -180,7 +189,7 @@ int main(int argl, char* args[])
     return -1;
   }
   
-  fsgMainActivateScreen(pScreen2);
+  fsgMainActivateScreen(&Screen2);
 
   fsgMainEventLoop();
 

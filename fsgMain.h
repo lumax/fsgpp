@@ -9,7 +9,7 @@ Bastian Ruppert
 
 typedef struct
 {
-  _pTfsgScreen pActiveScreen;
+  _TfsgScreen * pActiveScreen;
   void (*fnkSecondaryEvtHandler)(SDL_Event * theEvent);
   SDL_Surface * pMainSurface;
   //  SDL_Surface * pDoubleBuf0;
@@ -33,14 +33,14 @@ extern int fsgMainInit(_TfsgGUI_Properties * p_properties,void (*fnkSecondaryEvt
 /*! \brief Set the EvtTargetContainer to process
  *
  */
-extern void fsgMainSetActiveScreen(_pTfsgScreen  s);
+extern void fsgMainSetActiveScreen(_TfsgScreen * s);
 
 /*! \brief Returns the ActiveEvtTargets of the GUI the EvtTargetContainer to process
  *
  */
 extern _pTfsgLL fsgMainGetActiveEvtTargets(void);
 
-extern void fsgMainActivateScreen(_pTfsgScreen s);
+extern void fsgMainActivateScreen(_TfsgScreen * s);
 
 /*! \brief Processing the SDL_Events in endlessloop
  *

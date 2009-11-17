@@ -54,9 +54,20 @@ int fsgMainInit(_TfsgGUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL
   return -1;
 }
 
-void fsgMainSetActiveScreen(_pTfsgScreen s)//TODO static function
+void fsgMainSetActiveScreen(_TfsgScreen * s)//TODO static function
 {
-    theGUI.pActiveScreen = s;
+  if(theGUI.pActiveScreen)
+    {
+      if(theGUI.pActiveScreen->OnDeactivate)
+	{
+	  theGUI.pActiveScreen->OnDeactivate();
+	}
+    }
+  theGUI.pActiveScreen = s;
+  if(theGUI.pActiveScreen->OnActivate)
+    {
+      theGUI.pActiveScreen->OnActivate();
+    }   
 }
 
 _pTfsgLL fsgMainGetActiveEvtTargets(void)
@@ -68,7 +79,7 @@ _pTfsgLL fsgMainGetActiveEvtTargets(void)
   }
 }
 
-void fsgMainActivateScreen(_pTfsgScreen s)
+void fsgMainActivateScreen(_TfsgScreen * s)
 {
   fsgMainSetActiveScreen(s); //die EventListener umschalten
   fsgScreenShow(s,theGUI.pMainSurface);

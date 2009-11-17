@@ -9,16 +9,16 @@ Bastian Ruppert
 #include "fsgTools.h"
 #include "fsgGlobals.h"
 
-_pTfsgScreen fsgScreenConstructor(){
+/*_pTfsgScreen fsgScreenConstructor(){
 
   _pTfsgScreen s = (_pTfsgScreen)malloc(sizeof(_TfsgScreen)); 
   if(s == 0)
     return NULL; 
   s->EvtTargets.Next = 0;
   return s;
-}
+  }*/
 
-int fsgScreenAddEvtTarget(_pTfsgScreen theScreen,_pTfsgEvtTarget theTarget){
+int fsgScreenAddEvtTarget(_TfsgScreen * theScreen,_pTfsgEvtTarget theTarget){
   if(theScreen == NULL)
     return -1;
   fsgEventAddEvtTarget(&theScreen->EvtTargets,theTarget);
@@ -26,7 +26,7 @@ int fsgScreenAddEvtTarget(_pTfsgScreen theScreen,_pTfsgEvtTarget theTarget){
 }
 
 
-void fsgScreenShow(_pTfsgScreen s, SDL_Surface * pSurface)
+void fsgScreenShow(_TfsgScreen * s, SDL_Surface * pSurface)
 {
   int i;
   _pTfsgEvtTarget pTmpEvtTarget;
@@ -59,7 +59,7 @@ void fsgScreenShow(_pTfsgScreen s, SDL_Surface * pSurface)
     }
 }
 
-int fsgScreenAddButton(_pTfsgScreen s, _TfsgButton * btn)
+int fsgScreenAddButton(_TfsgScreen * s, _TfsgButton * btn)
 {
   if(fsgButtonConstructor(btn)){
     return -1;
@@ -70,7 +70,7 @@ int fsgScreenAddButton(_pTfsgScreen s, _TfsgButton * btn)
   return 0;
 }  
 
-int fsgScreenAddLabel(_pTfsgScreen s, _TfsgLabel * btn)
+int fsgScreenAddLabel(_TfsgScreen * s, _TfsgLabel * btn)
 {
   if(fsgLabelConstructor(btn)){
     return -1;
