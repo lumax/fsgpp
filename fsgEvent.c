@@ -61,8 +61,8 @@ void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
 	{
 	  if(!tar->bSelected){//Selected in not set
 	    tar->bSelected = 1;                    //set bSelected bit
-	    if(tar->Private_fnkSelectable){//there is a funktion to call
-	      (*tar->Private_fnkSelectable)((void*)tar,1);
+	    if(tar->PrivateSelectable){//there is a funktion to call
+	      (*tar->PrivateSelectable)((void*)tar,1);
 	    }
 	    if(tar->fnkMouseOver!=0){//there is a funktion to call
 	      (*tar->fnkMouseOver)(evt,tar->pTSource);//execFnk 
@@ -75,8 +75,8 @@ void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
 	  if(tar->bSelected)// Selected is set
 	    {
 	      tar->bSelected = 0;          //unset Selected
-	      if(tar->Private_fnkSelectable){//there is a funktion to call
-		(*tar->Private_fnkSelectable)((void*)tar,0);
+	      if(tar->PrivateSelectable){//there is a funktion to call
+		(*tar->PrivateSelectable)((void*)tar,0);
 	      }
 	    }
 	}    

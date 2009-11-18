@@ -26,13 +26,9 @@ int fsgLabelConstructor(_TfsgLabel * b)
     b->pFontColor = &GlobalSDL_ColorSewGrau;
   }
 
-  b->EvtTarget.PrivateShow = fsgLabelShow;     //EvtTarget als LABEL Markieren   
+  b->EvtTarget.PrivateShow = fsgLabelShow;//LabelShowfunktion setzen  
   b->EvtTarget.pTSource = b;                   //Quelle setzen
   b->EvtTarget.pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
-  //b->EvtTarget.Private_fnkSelectable=fsgButtonSelect;//Der Button macht Aktion mit dem Selected Bit!
-  //b->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten  
-  //fsgLabelSetText(b,b->pLabelText);          //text setzen 
-  
   return 0;        //alles OK
 }
 

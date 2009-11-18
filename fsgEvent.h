@@ -20,7 +20,7 @@ typedef struct
   void * pTSource;
   SDL_Rect * pPosDimRect;
   int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
-  void (*Private_fnkSelectable)(void * b,int boolean);
+  void (*PrivateSelectable)(void * b,int boolean);
   void (*fnkKeyboardUp)(SDL_Event * theEvent,void * source);
   void (*fnkMouseOver)(SDL_Event * theEvent,void * source);
   void (*fnkLeftMouseButtonDown)(SDL_Event * theEvent,void * source);

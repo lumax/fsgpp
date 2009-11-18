@@ -37,7 +37,7 @@ int fsgButtonConstructor(_TfsgButton * b)
   b->EvtTarget.PrivateShow = fsgButtonShow;              //EvtTarget als Button Markieren   
   b->EvtTarget.pTSource = b;                   //Quelle setzen
   b->EvtTarget.pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
-  b->EvtTarget.Private_fnkSelectable = fsgButtonSelect; //Der Button macht Aktion mit dem Selected Bit!
+  b->EvtTarget.PrivateSelectable = fsgButtonSelect; //Der Button macht Aktion mit dem Selected Bit!
   //b->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten
   
   return 0;        //alles OK
