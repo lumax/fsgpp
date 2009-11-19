@@ -14,7 +14,7 @@ LIBS+=-L/usr/lib -L../../lib
 CFLAGS+=-g -c -Wall -fPIC
 LDFLAGS+= -lSDL -lSDL_ttf -lSDL_image -lruputils -shared -Wl #,-soname,$(PROJECT_NAME).so.$(MAJOR)
 
-OBJS = fsgButton.o fsgEvent.o fsgTools.o fsgGlobals.o fsgMain.o fsgScreen.o fsgLabel.o fsgLL.o
+OBJS = fsgButton.o fsgEvent.o fsgTools.o fsgGlobals.o fsgMain.o fsgScreen.o fsgLabel.o fsgLL.o fsgCheckBox.o
 
 #include $(MAKE_DIR)/global.mak
 rm=/bin/rm -f

@@ -6,7 +6,7 @@ LIBS+=-L$(LIB_DIR)/
 
 
 CFLAGS+=-g -Wall 
-LDFLAGS+=-lfsg -lLL
+LDFLAGS+=-lfsg 
 
 OBJS =
 

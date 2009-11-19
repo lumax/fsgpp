@@ -4,14 +4,14 @@ Bastian Ruppert
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <fsgMain.h>
-#include <fsgButton.h>
-#include <fsgScreen.h>
-#include <fsgLabel.h>
 #include <SDL/SDL.h>
+#include <fsgEvent.h>
+#include <fsgButton.h>
+#include <fsgCheckBox.h>
+#include <fsgLabel.h>
+#include <fsgScreen.h>
+#include <fsgMain.h>
 
-
-//static _TfsgGUI * pGUI;
 static void ScreenActivate(void){printf("OnActivate\n");}
 static void ScreenDeactivate(void){printf("OnDeactivate\n");}
 
@@ -35,10 +35,8 @@ static void evtBtn3(SDL_Event * evt,void * src){
   exit(0);  
 }
 
-
-
 _TfsgButton Btn1={.PosDimRect={.x=10,.y=10,.w=150,.h=30},	\
-		  .pButtonText = "Sccreen2",                     \
+		  .pButtonText = "Sccreen2",                    \
 		  .EvtTarget={.fnkMouseOver = 0,                \
 			      .fnkLeftMouseButtonDown = 0,      \
 			      .fnkLeftMouseButtonUp = evtBtn1}	\
@@ -59,17 +57,20 @@ _TfsgButton Btn3={.PosDimRect={.x=10,.y=90,.w=150,.h=30},	\
 };
 
 _TfsgLabel L1;
+_TfsgCheckBox CB1;
 
 static void evtBtn21(SDL_Event * evt,void * src){
   printf("evtBtn21MouseUp\n");
   fsgMainActivateScreen(&Screen1); 
 }
 static void evtBtn22(SDL_Event * evt,void * src){
-  fsgLabelSetText(&L1,"Button2");
+  fsgLabelSetText(&L1,"ToggleCB");
+  fsgCheckBoxToggle(&CB1);
   //sdlMenuActivate(pTargetSurface);
 }
 static void evtBtn23(SDL_Event * evt,void * src){
-  printf("evtBtn23MouseUp\n");
+  printf("evtBtn23MouseUp, CheckBoxStatus:%i\n",\
+	 fsgCheckBoxGetStatus(&CB1) );
 }
 static void evtBtn23LSel(void * src){
   printf("evtBtn23LSel\n");
@@ -97,14 +98,14 @@ _TfsgButton Btn21={.PosDimRect={.x=10,.y=10,.w=150,.h=30},	\
 };
 
 _TfsgButton Btn22={.PosDimRect={.x=10,.y=50,.w=150,.h=30},	\
-		  .pButtonText = "Button22",                     \
+		  .pButtonText = "Button22",                    \
 		  .EvtTarget={.fnkMouseOver = 0,                \
 			      .fnkLeftMouseButtonDown = 0,      \
 			      .fnkLeftMouseButtonUp = evtBtn22}	\
 };
 
 _TfsgButton Btn23={.PosDimRect={.x=10,.y=90,.w=150,.h=30},	\
-		  .pButtonText = "Button23",                     \
+		  .pButtonText = "Button23",                    \
 		  .EvtTarget={.fnkMouseOver = 0,                \
 			      .fnkLeftMouseButtonDown = 0,      \
 			      .fnkLeftMouseButtonUp = evtBtn23,	\
@@ -112,6 +113,14 @@ _TfsgButton Btn23={.PosDimRect={.x=10,.y=90,.w=150,.h=30},	\
 			      .fnkUnSelect = evtBtn23LUnSel}	\
 };
 
+static void StatusChanged(void * src,int stat)
+{
+  printf("CheckBox Status Changed to %i\n",stat); 
+}
+
+_TfsgCheckBox CB1={.PosDimRect={.x=170,.y=90,.w=30,.h=30},\
+		   .fnkStatusChanged=StatusChanged
+};
 
 int createScreen1(void){
   /*pScreen1 = fsgScreenConstructor();
@@ -132,6 +141,7 @@ int createScreen1(void){
     printf("add Button3 to pScreen1 failed!\n");
     return -1;
   }
+  
 
   //fsgScreenShow(pScreen1);
   return 0;
@@ -161,6 +171,10 @@ int createScreen2(void){
     printf("add Label1 to pScreen2 failed!\n");
     return -1;
   }
+   if(fsgScreenAddCheckBox(&Screen2,&CB1,0)){
+    printf("add Label1 to pScreen2 failed!\n");
+    return -1;     
+   }
 
   //fsgScreenShow(pScreen1);
   return 0;
