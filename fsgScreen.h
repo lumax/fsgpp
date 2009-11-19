@@ -4,11 +4,6 @@ Bastian Ruppert
 #ifndef __FSGSCREEN_H__
 #define __FSGSCREEN_H__
 
-#include <fsgLL.h>
-#include "fsgEvent.h"
-#include "fsgButton.h"
-#include "fsgLabel.h"
-
 typedef struct
 {
   _TfsgLL EvtTargets;
@@ -38,4 +33,7 @@ extern int fsgScreenAddButton(_TfsgScreen * s, _TfsgButton * btn);
 /*! \brief add Label to  the screeninstance
  */
 extern int fsgScreenAddLabel(_TfsgScreen * s, _TfsgLabel * pL);
+extern int fsgScreenAddCheckBox(_TfsgScreen * s,\
+				_TfsgCheckBox * pEvtTar,
+				int checked);
 #endif /* __FSGSCREEN_H__*/

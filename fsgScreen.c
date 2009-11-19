@@ -3,10 +3,15 @@ fsgEvtProcessor.c
 Bastian Ruppert
 */
 #include <defs.h>
-#include "fsgScreen.h"
-#include "fsgMain.h"
+#include "fsgLL.h"
+#include "fsgEvent.h"
 #include "fsgTools.h"
 #include "fsgGlobals.h"
+#include "fsgButton.h"
+#include "fsgLabel.h"
+#include "fsgCheckBox.h"
+
+#include "fsgScreen.h"
 
 /*_pTfsgScreen fsgScreenConstructor(){
 
@@ -73,4 +78,24 @@ int fsgScreenAddLabel(_TfsgScreen * s, _TfsgLabel * btn)
     return -1;
   }
   return 0;
-}  
+} 
+
+/* \brief Adds a CheckBox to the Screen and calls the CB Constructor
+ * \param s The target Screen
+ * \param pEvtTarget The object to put to screen
+ * \return 0 on success, -1 on error
+ */
+int fsgScreenAddCheckBox(_TfsgScreen * s,\
+			 _TfsgCheckBox * pEvtTar,\
+			 int checked)
+{
+  ec_neg1( fsgCheckBoxConstructor(pEvtTar,checked) )
+
+  ec_neg1( fsgScreenAddEvtTarget(s,&pEvtTar->EvtTarget) )
+
+  return 0;
+  EC_CLEANUP_BGN
+    return -1;
+  EC_CLEANUP_END
+}
+

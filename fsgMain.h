@@ -5,7 +5,6 @@ Bastian Ruppert
 
 #ifndef __FSGMAIN_H__
 #define __FSGMAIN_H__
-#include "fsgScreen.h"
 
 typedef struct
 {

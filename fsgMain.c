@@ -1,13 +1,18 @@
 /*
 Bastian Ruppert
 */
-
-#include "fsgMain.h"
-#include "fsgGlobals.h"
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
-#include <fsgLL.h>
+#include "fsgLL.h"
+#include "fsgGlobals.h"
+#include "fsgEvent.h"
 
+#include "fsgButton.h"
+#include "fsgLabel.h"
+#include "fsgCheckBox.h"
+#include "fsgScreen.h"
+#include "fsgScreen.h"
+#include "fsgMain.h"
 
 static _TfsgGUI theGUI = {.pActiveScreen = NULL,			\
 		   .fnkSecondaryEvtHandler = NULL,		\
