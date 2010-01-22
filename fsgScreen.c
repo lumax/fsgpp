@@ -45,7 +45,7 @@ int fsgScreenShow(_TfsgScreen * s, SDL_Surface * pSurface)
   
   while(pTmpEvtTarget)
     {     //alle EventTargets durchlaufen und Anzeigen
-      if(pTmpEvtTarget->PrivateShow)
+      if(pTmpEvtTarget->PrivateShow&&!pTmpEvtTarget->bHide)
 	{
 	  ec_neg1(pTmpEvtTarget->PrivateShow(pTmpEvtTarget->pTSource,\
 					     pSurface) )

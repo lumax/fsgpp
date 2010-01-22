@@ -2,13 +2,14 @@
 PROJECT_NAME=fsgProg
 DEFS+=-D_GNU_SOURCE=1 -D_REENTRANT
 INCLUDES+=-I$(INCLUDE_DIR)/libfsg -I/usr/include/SDL
-LIBS+=-L$(LIB_DIR)/
+LIBS+=
+#-L$(LIB_DIR)/
 
 
 CFLAGS+=-g -Wall 
 LDFLAGS+=-lfsg 
 
-OBJS =
+OBJS = fsgProg.o
 
 include $(MAKE_DIR)/global.mak
 

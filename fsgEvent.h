@@ -13,7 +13,7 @@ Bastian Ruppert
 typedef struct
 {
   _TfsgLL TfsgLL;
-  Uint8 unused1;
+  Uint8 bHide;
   Uint8 bSelected;
   Uint8 bPaintRequest;
   Uint8 unused0;
