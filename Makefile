@@ -1,18 +1,15 @@
-PROJECT_NAME=libfsg
-MAJOR=1
-MINOR=0
-VERSION=$(MAJOR).$(MINOR)
-
+#usage : make all -f ProgMakefile
+PROJECT_NAME=fsgpp
 DEFS+=-D_GNU_SOURCE=1 -D_REENTRANT
-INCLUDES+=-I/usr/include/SDL -I$(INCLUDE_DIR)/libruputils
+INCLUDES+=-I$(INCLUDE_DIR)/libfsg -I/usr/include/SDL
 LIBS+=
+#-L$(LIB_DIR)/
 
 
-CFLAGS+=-g -c -Wall -fPIC
-LDFLAGS+= -lSDL -lSDL_ttf -lSDL_image -lruputils -shared -Wl
+CPPFLAGS+=-g -Wall 
+LDFLAGS+=-lfsg 
 
-OBJS = fsgButton.o fsgEvent.o fsgTools.o fsgGlobals.o fsgMain.o fsgScreen.o fsgLabel.o fsgLL.o fsgCheckBox.o
+OBJS = 
 
-EXE_ANHANG = .so.$(VERSION)
+include $(MAKE_DIR)/globalpp.mak
 
-include $(MAKE_DIR)/global.mak

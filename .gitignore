@@ -8,4 +8,5 @@
 ## Ignore objects and archives.
 *.[oa]
 fsgProg
+fsgpp
 #pmake#
