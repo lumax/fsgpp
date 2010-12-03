@@ -1,11 +1,14 @@
 
-#include "fsgLL.h"
+#include "LL.h"
 
-void fsgLLAdd(_pTfsgLL pTarget,_pTfsgLL pItem)
+namespace EuMax01
 {
-  if(!pTarget)return;
-  if(!pItem)return;
-  pItem->Next = pTarget->Next;
-  pTarget->Next = pItem;
-}
 
+  void LL::addLL(LL * pItem)
+  {
+    if(!pItem)return;
+    pItem->Next = this->Next;
+    this->Next = pItem;
+  }
+
+}

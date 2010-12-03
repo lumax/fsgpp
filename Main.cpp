@@ -20,12 +20,13 @@ namespace EuMax01
 
   static GUI * pGUI;
 
-  GUI::GUI(GUI_Properties * p_properties		\
+  int GUI::initGUI(GUI_Properties * p_properties	\
 	   ,void (*fnkSecondaryEvtHandling)		\
 	   (SDL_Event * theEvent))
   {
     //if(!fsgGlobalGetDefaultFont()){
-      
+    pGUI = new GUI();
+
       pGUI->fnkSecondaryEvtHandler = fnkSecondaryEvtHandling;
       
       if(SDL_Init(SDL_INIT_VIDEO)==-1){

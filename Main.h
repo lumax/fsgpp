@@ -13,7 +13,7 @@ namespace EuMax01
   {
 
   public:
-    GUI (GUI_Properties * p_properties			\
+    int initGUI(GUI_Properties * p_properties	\
 	 ,void (*fnkSecondaryEvtHandling)		\
 	 (SDL_Event * theEvent));
     LL * getActiveEvtTargets(void);
