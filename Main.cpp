@@ -2,35 +2,34 @@
 Bastian Ruppert
 */
 
-namespace EuMax01
-{
+
 
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
 #include "LL.h"
-  //#include "fsgGlobals.h"
-  //#include "fsgEvent.h"
+  #include "Globals.h"
+  #include "Event.h"
 
-//#include "fsgButton.h"
+#include "Button.h"
 //#include "fsgLabel.h"
 //#include "fsgCheckBox.h"
-//#include "fsgScreen.h"
-//#include "fsgScreen.h"
-//#include "fsgMain.h"
+#include "Screen.h"
+  #include "Main.h"
 
-  static GUI * pGUI;
+namespace EuMax01
+{
+  GUI* GUI::pGUI = NULL;
 
-  int GUI::initGUI(GUI_Properties * p_properties	\
-	   ,void (*fnkSecondaryEvtHandling)		\
-	   (SDL_Event * theEvent))
+  GUI* GUI::getInstance(GUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent))
   {
-    //if(!fsgGlobalGetDefaultFont()){
-    pGUI = new GUI();
+    if(pGUI)
+      return pGUI;
 
-      pGUI->fnkSecondaryEvtHandler = fnkSecondaryEvtHandling;
+    pGUI = new GUI();
+    pGUI->fnkSecondaryEvtHandler = fnkSecondaryEvtHandling;
       
       if(SDL_Init(SDL_INIT_VIDEO)==-1){
-	return -1;
+	return NULL;
       }
       else{
 	atexit(SDL_Quit);
@@ -40,25 +39,26 @@ namespace EuMax01
 	atexit(TTF_Quit);
       }
       else{
-	return -1;
+	return NULL;
       }
       
       pGUI->pMainSurface = SDL_SetVideoMode(pProps->width,	\
 					    pProps->height,	\
 					    pProps->bpp,	\
 					    pProps->flags);
-      if(!theGUI.pMainSurface)
-	return -1;
-      //if(fsgGlobalsInit()){
-      //goto MainSurfaceReady;
-      //}
-      return 0;
-      
-      //MainSurfaceReady:
-      //SDL_FreeSurface(theGUI.pMainSurface);
-      //}
-      //return -1;
+      if(!pGUI->pMainSurface)
+	return NULL;
+
+      Globals* pGlobals = Globals::getInstance();
+      if(!pGlobals)
+	{
+	  SDL_FreeSurface(pGUI->pMainSurface);
+	  return NULL;
+	}
+
+      return pGUI;
   }  
+
 
   void GUI::setActiveScreen(Screen * s)//TODO static function
   {
@@ -67,14 +67,14 @@ namespace EuMax01
 	if(pGUI->pActiveScreen->OnDeactivate)
 	  {
 	    pGUI->pActiveScreen->OnDeactivate();
-	}
+	  }
       }
     
-    EvtTarget pTmpEvtTarget = (EvtTarget*)s->EvtTargets.Next;
+    EvtTarget *pTmpEvtTarget = (EvtTarget*)s->EvtTargets.Next;
     while(pTmpEvtTarget)
       {     //alle EventTargets durchlaufen und Selected = false setzen
 	pTmpEvtTarget->bSelected = 0;
-	pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->LL.Next;
+	pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->Next;
       }
     
     pGUI->pActiveScreen = s;
@@ -87,7 +87,7 @@ namespace EuMax01
   LL* GUI::getActiveEvtTargets(void)
   {
     if(pGUI->pActiveScreen){
-      return pGUI->pActiveScreen->EvtTargets;
+      return &pGUI->pActiveScreen->EvtTargets;
     }else{
       return 0;
     }
@@ -96,9 +96,11 @@ namespace EuMax01
   void GUI::activateScreen(Screen * s)
   {
     this->setActiveScreen(s); //die EventListener umschalten
-    s->screenShow(pGUI->pMainSurface);
+    s->show(pGUI->pMainSurface);
     SDL_Flip(pGUI->pMainSurface);
   }
+
+
 
 
   int GUI::eventLoop(void)
@@ -111,20 +113,20 @@ namespace EuMax01
       }
       if(pGUI->pActiveScreen){
 	if(pGUI->pActiveScreen->EvtTargets.Next){                            //EvtTargets Ausführen
-	  fsgEventProcessTargets(&theEvent,&pGUI->pActiveScreen->EvtTargets);
+	  EvtTarget::processTargets(&theEvent,&pGUI->pActiveScreen->EvtTargets);
 	}
-	if(fsgEventPaintRequested(&pGUI->pActiveScreen->EvtTargets)){     //alle EventTargets auf bPaintRequest untersuchen
-	  pGUI->pActiveScreen(pGUI->pMainSurface);
+	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets)){     //alle EventTargets auf bPaintRequest untersuchen
+	  pGUI->pActiveScreen->show(pGUI->pMainSurface);
 	  SDL_Flip(pGUI->pMainSurface);                                   //show buffer
-	  /*if(theGUI.pSurface==theGUI.pDoubleBuf0)                      //point to next DoubleBuf
-	    theGUI.pSurface = theGUI.pDoubleBuf1;
-	  else
-	  theGUI.pSurface = theGUI.pDoubleBuf0;*/
+	  //if(theGUI.pSurface==theGUI.pDoubleBuf0)                      //point to next DoubleBuf
+	  // theGUI.pSurface = theGUI.pDoubleBuf1;
+	  //else
+	  //theGUI.pSurface = theGUI.pDoubleBuf0;
 	}
       }
-      /*if(pGUI->fnkSecondaryEvtHandler){ 
-	(*theGUI.fnkSecondaryEvtHandler)(&theEvent);                 //zweite EventhandlerFunktion ausfuehren
-	}*/
+      //if(pGUI->fnkSecondaryEvtHandler){ 
+      //(*theGUI.fnkSecondaryEvtHandler)(&theEvent);                 //zweite EventhandlerFunktion ausfuehren
+      //	}
       if(theEvent.type==SDL_QUIT){
 	return 0;
       }

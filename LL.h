@@ -11,6 +11,7 @@ namespace EuMax01
   class LL
   {
   public:
+    LL();
     LL * Next;
     int data;
     void addLL(LL * pItem);

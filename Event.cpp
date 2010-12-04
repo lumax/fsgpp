@@ -4,48 +4,65 @@ Bastian Ruppert
 03.12.2010
 */
 
-namespace EuMax01
+
+#include "Event.h"
+  //#include "fsgButton.h"
+ namespace EuMax01
 {
-
-#include "fsgEvent.h"
-#include "fsgButton.h"
-  
-
-  static void EvtTarget::fsgEventAddEvtTarget(_pTfsgLL z,_pTfsgEvtTarget t)
+ 
+  EvtTarget::EvtTarget():LL()
   {
-    fsgLLAdd(z,(_pTfsgLL)t);
+    PrivateShow = NULL;
+    bHide = false;
+    bSelected = false;
+    bPaintRequest = false;
+
+    pTSource = NULL;
+    pPosDimRect = NULL;
+    fnkSelect=NULL;
+    fnkUnSelect=NULL;
+    PrivateSelectable=NULL;
+    
+    fnkKeyboardUp=NULL;
+    fnkMouseOver=NULL;
+    fnkLeftMouseButtonDown=NULL;
+    fnkLeftMouseButtonUp=NULL;
+    
   }
 
-/*! \brief process the  fsgEvtTarget  Event Handler 
- */
-static void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar);
+  void EvtTarget::addEvtTarget(EvtTarget * t)
+  {
+    this->addLL(t);
+  }
 
-void fsgEventProcessTargets(SDL_Event * pSDL_Event, _pTfsgLL t)
+
+
+  void EvtTarget::processTargets(SDL_Event * pSDL_Event,EvtTarget * t)
 {
-  _pTfsgEvtTarget pTmp = (_pTfsgEvtTarget)t->Next;
+  EvtTarget* pTmp = (EvtTarget*)t->Next;
   while(pTmp)
     {
-      fsgEventProcessEvtTarget(pSDL_Event,pTmp);
-      pTmp = (_pTfsgEvtTarget)pTmp->TfsgLL.Next;
+      pTmp->processEvtTarget(pSDL_Event);
+      pTmp = (EvtTarget*)pTmp->Next;
     }
 }
 
-int fsgEventPaintRequested(_pTfsgLL t)
+int EvtTarget::paintRequested(EvtTarget * t)
 {
   int ret = 0;
-  _pTfsgEvtTarget pTmp = (_pTfsgEvtTarget)t->Next;
+  EvtTarget * pTmp = (EvtTarget*)t->Next;
   while(pTmp)
     {
       if(pTmp->bPaintRequest==1){
 	ret = 1;
 	pTmp->bPaintRequest=0;
       }
-      pTmp = (_pTfsgEvtTarget)pTmp->TfsgLL.Next;
+      pTmp = (EvtTarget*)pTmp->Next;
     }
   return ret;
 }
 
-void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
+  void EvtTarget::processEvtTarget(SDL_Event * evt)
 {
   int tmpx,tmpy;
   SDL_Rect pRect;
@@ -53,33 +70,33 @@ void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
   if(evt->type==SDL_MOUSEMOTION)
     {
       SDL_GetMouseState(&tmpx,&tmpy);
-      pRect.x = tar->pPosDimRect->x;
-      pRect.y = tar->pPosDimRect->y;
-      pRect.w = tar->pPosDimRect->w;
-      pRect.h = tar->pPosDimRect->h;
+      pRect.x = this->pPosDimRect->x;
+      pRect.y = this->pPosDimRect->y;
+      pRect.w = this->pPosDimRect->w;
+      pRect.h = this->pPosDimRect->h;
       
       if( (tmpx>=pRect.x)&&					\
 	  (tmpx<pRect.x+pRect.w) &&					\
 	  (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	{
-	  if(!tar->bSelected){//Selected in not set
-	    tar->bSelected = 1;                    //set bSelected bit
-	    if(tar->PrivateSelectable){//there is a funktion to call
-	      (*tar->PrivateSelectable)((void*)tar,1);
+	  if(!this->bSelected){//Selected in not set
+	    this->bSelected = 1;                    //set bSelected bit
+	    if(this->PrivateSelectable){//there is a funktion to call
+	      (*this->PrivateSelectable)((void*)this,1);
 	    }
-	    if(tar->fnkMouseOver!=0){//there is a funktion to call
-	      (*tar->fnkMouseOver)(evt,tar->pTSource);//execFnk 
+	    if(this->fnkMouseOver!=0){//there is a funktion to call
+	      (*this->fnkMouseOver)(evt,this->pTSource);//execFnk 
 	      return;
 	    }
 	  }
 	}
       else//Mouse is not over
 	{
-	  if(tar->bSelected)// Selected is set
+	  if(this->bSelected)// Selected is set
 	    {
-	      tar->bSelected = 0;          //unset Selected
-	      if(tar->PrivateSelectable){//there is a funktion to call
-		(*tar->PrivateSelectable)((void*)tar,0);
+	      this->bSelected = 0;          //unset Selected
+	      if(this->PrivateSelectable){//there is a funktion to call
+		(*this->PrivateSelectable)((void*)this,0);
 	      }
 	    }
 	}    
@@ -90,17 +107,17 @@ void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
 	  SDL_GetMouseState(&tmpx,&tmpy);
-	  pRect.x = tar->pPosDimRect->x;
-	  pRect.y = tar->pPosDimRect->y;
-	  pRect.w = tar->pPosDimRect->w;
-	  pRect.h = tar->pPosDimRect->h;
+	  pRect.x = this->pPosDimRect->x;
+	  pRect.y = this->pPosDimRect->y;
+	  pRect.w = this->pPosDimRect->w;
+	  pRect.h = this->pPosDimRect->h;
 	  if( (tmpx>=pRect.x)&&					\
 	      (tmpx<pRect.x+pRect.w) &&					\
 	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	    {
-	      if(tar->fnkLeftMouseButtonDown&&tar->bSelected)
+	      if(this->fnkLeftMouseButtonDown&&this->bSelected)
 		{
-		  (*tar->fnkLeftMouseButtonDown)(evt,tar->pTSource);
+		  (*this->fnkLeftMouseButtonDown)(evt,this->pTSource);
 		}
 	      return;
 	    }
@@ -111,11 +128,11 @@ void fsgEventProcessEvtTarget(SDL_Event * evt,_pTfsgEvtTarget tar)
     {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-	  if(tar->bSelected)
+	  if(this->bSelected)
 	    {
-	      if(tar->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
+	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
 		{
-		  (*tar->fnkLeftMouseButtonUp)(evt,tar->pTSource);
+		  (*this->fnkLeftMouseButtonUp)(evt,this->pTSource);
 		}
 	      return;
 	    }

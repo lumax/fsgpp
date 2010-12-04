@@ -2,18 +2,21 @@
 fsgEvtProcessor.c
 Bastian Ruppert
 */
-namespace EuMax01
-{
-
+#include <SDL/SDL_ttf.h>
 #include "LL.h"
 #include "Event.h"
-  //#include "fsgTools.h"
-  //#include "fsgGlobals.h"
-  //#include "fsgButton.h"
+  #include "Tools.h"
+  #include "Globals.h"
+  #include "Button.h"
   //#include "fsgLabel.h"
   //#include "fsgCheckBox.h"
 
 #include "Screen.h"
+
+namespace EuMax01
+{
+
+
 
 /*_pTfsgScreen fsgScreenConstructor(){
 
@@ -24,44 +27,42 @@ namespace EuMax01
   return s;
   }*/
 
-  int Screen::addEvtTarget(EvtTarget * theTarget)
+  void Screen::addEvtTarget(EvtTarget * theTarget)
   {
-    theScreen->EvtTargets->addEvtTarget(theTarget);
-    return 0;
+    this->EvtTargets.addLL(theTarget);
   }
   
   int Screen::show(SDL_Surface * pSurface)
   {
     int i;
     EvtTarget * pTmpEvtTarget;
-    
-    i = fsgToolBlankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
+    Globals * pGlobals = Globals::getInstance();
+    i = Tool::blankSurface(pSurface,pGlobals->GlobalUint32ColorSewBlau);//TODO Rückgabewert
     pTmpEvtTarget = (EvtTarget*)this->EvtTargets.Next;
     
     while(pTmpEvtTarget)
     {     //alle EventTargets durchlaufen und Anzeigen
       if(pTmpEvtTarget->PrivateShow&&!pTmpEvtTarget->bHide)
 	{
-	  if(pTmpEvtTarget->PrivateShow(pTmpEvtTarget->pTSource,	\
-					pSurface) ))
+	  if(pTmpEvtTarget->PrivateShow(pTmpEvtTarget->pTSource,pSurface) )
 	return -1;
     }
-    pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->LL.Next;
+    pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->Next;
   }
   return 0;
 }
 
-/*int fsgScreenAddButton(_TfsgScreen * s, _TfsgButton * btn)
-{
-  if(fsgButtonConstructor(btn)){
-    return -1;
-  }
-  if(fsgScreenAddEvtTarget(s,&btn->EvtTarget)){
-    return -1;
-  }
-  return 0;
-}  
-
+  /* void Screen::addButton(Button * btn)
+  {
+    if(fsgButtonConstructor(btn)){
+      return -1;
+    }
+    if(fsgScreenAddEvtTarget(s,&btn->EvtTarget)){
+      return -1;
+    }
+    return 0;
+    }  */
+  /*
 int fsgScreenAddLabel(_TfsgScreen * s, _TfsgLabel * btn)
 {
   if(fsgLabelConstructor(btn)){

@@ -4,39 +4,42 @@ Bastian Ruppert
 03.12.2010
 
 */
-namespace EuMax01
-{
 
 #ifndef __FSGEVENT_H__
 #define __FSGEVENT_H__
 #include <SDL/SDL.h>
 #include "LL.h"
+namespace EuMax01
+{
 
-class EvtTarget
+class EvtTarget:public LL
 {
 
  public:
-  static void addEvtTarget(LL * z,EvtTarget * t);
-  static void processTargets(SDL_Event * pSDL_Event,LL * t);
-  int paintRequested(LL * t);
+  EvtTarget();
+  void addEvtTarget(EvtTarget * t);
+  static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
+  static int paintRequested(EvtTarget * t);
+  int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
+  bool bHide;
+  bool bSelected;
+  bool bPaintRequest;
 
- private:
-  LL theLL;
-  Uint8 bHide;
-  Uint8 bSelected;
-  Uint8 bPaintRequest;
-  Uint8 unused0;
   void * pTSource;
   SDL_Rect * pPosDimRect;
-  int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
-  void (*PrivateSelectable)(void * b,int boolean);
+ protected:
+  void (*fnkSelect)(void * source);
+  void (*fnkUnSelect)(void * source);
+  void (*PrivateSelectable)(void * b,bool selected);
+ private:
+  void processEvtTarget(SDL_Event * evt);
   void (*fnkKeyboardUp)(SDL_Event * theEvent,void * source);
   void (*fnkMouseOver)(SDL_Event * theEvent,void * source);
   void (*fnkLeftMouseButtonDown)(SDL_Event * theEvent,void * source);
   void (*fnkLeftMouseButtonUp)(SDL_Event * theEvent,void * source);
-  void (*fnkSelect)(void * source);
-  void (*fnkUnSelect)(void * source);
-}
 
-#endif /* __FSGEVENT_H__*/
+};
+
+
 }
+#endif /* __FSGEVENT_H__*/
