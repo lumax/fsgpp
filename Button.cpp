@@ -18,24 +18,39 @@ namespace EuMax01
 
   Button::Button(const char * text,SDL_Rect PositionDimRect)
   {
+    Button::createButton(this,text,PositionDimRect);
+  }
+  
+  Button::Button(const char * text,short x,short y)
+  {
+    SDL_Rect tmp;
+    tmp.x = x;
+    tmp.y = y;
+    tmp.w = 10;
+    tmp.h = 10;
+    Button::createButton(this,text,tmp);
+  }
+  
+  void Button::createButton(Button* b,const char * text,SDL_Rect PositionDimRect)
+  {
     Globals* global = Globals::getInstance();
-    this->pFont = global->getDefaultFont();
+    b->pFont = global->getDefaultFont();
     
-    this->pFontColor = &global->GlobalSDL_ColorSewGrau;
+    b->pFontColor = &global->GlobalSDL_ColorSewGrau;
     
-    this->setText(text);          //text setzen 
-    this->PrivateShow = Button::show;//EvtTarget als Button Markieren   
-    this->pTSource = this;//Quelle setzen
-    this->PosDimRect.x = PositionDimRect.x;
-    this->PosDimRect.y = PositionDimRect.y;
-    this->PosDimRect.w = PositionDimRect.w;
-    this->PosDimRect.h = PositionDimRect.h;
-    this->pPosDimRect = &this->PosDimRect;   //Position und Dimension der Quelle setzen
-    this->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
-    this->pNormalSurface = 0;
-    this->pMarkedSurface = 0;
-    //this->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten
-}
+    b->setText(text);          //text setzen 
+    b->PrivateShow = Button::show;//EvtTarget als Button Markieren   
+    b->pTSource = b;//Quelle setzen
+    b->PosDimRect.x = PositionDimRect.x;
+    b->PosDimRect.y = PositionDimRect.y;
+    b->PosDimRect.w = PositionDimRect.w;
+    b->PosDimRect.h = PositionDimRect.h;
+    b->pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
+    b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
+    b->pNormalSurface = 0;
+    b->pMarkedSurface = 0;
+    //this->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten   
+  }
 
   /* \brief Button is decorated by images and
    * \brief Button get width and heigth by Normal Image 
@@ -118,11 +133,11 @@ void Button::setText(const char* text)
     //Background
     if(b->bSelected)
       {
-	tmpSurface = b->pNormalSurface;
+	tmpSurface = b->pMarkedSurface;
       }
     else
       {
-	tmpSurface = b->pMarkedSurface;
+	tmpSurface = b->pNormalSurface;
       }
 
     if(SDL_BlitSurface(tmpSurface,0,target,&tmpRect))

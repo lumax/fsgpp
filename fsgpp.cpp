@@ -4,6 +4,7 @@
 //#include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
 #include "Event.h"
 #include "Button.h"
 //#include <fsgCheckBox.h>
@@ -25,6 +26,22 @@ int main()
 {
   GUI_Properties props;
   GUI* theGUI;
+
+  SDL_version compile_version;
+  const SDL_version *link_version=IMG_Linked_Version();
+  SDL_IMAGE_VERSION(&compile_version);
+  printf("compiled with SDL_image version: %d.%d.%d\n", 
+	 compile_version.major,
+	 compile_version.minor,
+	 compile_version.patch);
+  printf("running with SDL_image version: %d.%d.%d\n", 
+	 link_version->major,
+	 link_version->minor,
+	 link_version->patch);
+  
+
+
+
   props.width=640;
   props.height=480;
   props.bpp=0;
@@ -55,10 +72,8 @@ int main()
   Btn1->setLMButtonUpEvtHandler(evtBtn2);
   Btn1->setMouseOverEvtHandler(evtBtn2);
 
-  PosDimRect.x = 10;
-  PosDimRect.y = 200;
-  Button* Btn2=new Button("Screen3",PosDimRect);
-  if(Btn1->setImages("Images/buttonUp.png","Images/buttonUp2.png"))
+  Button* Btn2=new Button("Screen3",30,200);
+  if(Btn2->setImages("Images/png24_2.png","Images/buttonUp2.png"))
     {
       cout << "error loading Images"<< endl;
     }

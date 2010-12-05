@@ -18,7 +18,9 @@ namespace EuMax01
   class Button : public EvtTarget
   {
   public:
+    Button(const char * text,short x,short y);
     Button(const char * text,SDL_Rect PositionDimRect);
+    static void createButton(Button* b,const char * t,SDL_Rect posDim);
     //~Button();
     void setText(const char* text);
     int setImages(const char* normal,const char* down);
