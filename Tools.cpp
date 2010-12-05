@@ -448,7 +448,8 @@ int Tool::blitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,S
   if(text==0){
     return 0;
   }
-  tmp = TTF_RenderText_Blended(pFont,text,*pFontColor);
+  //tmp = TTF_RenderText_Blended(pFont,text,*pFontColor);
+  tmp = TTF_RenderUTF8_Blended(pFont,text,*pFontColor);
   if(!tmp)
     return -1;
 

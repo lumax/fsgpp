@@ -38,7 +38,15 @@ int main()
 	 link_version->major,
 	 link_version->minor,
 	 link_version->patch);
-  
+
+  if(SDL_BYTEORDER==SDL_BIG_ENDIAN)
+    {
+      cout << "SDL_BYTEORDER==SDL_BIG_ENDIAN"<<endl;
+    }
+  if(SDL_BYTEORDER==SDL_LIL_ENDIAN)
+    {
+      cout << "SDL_BYTEORDER==SDL_LIL_ENDIAN"<<endl;
+    }
 
 
 
@@ -63,7 +71,7 @@ int main()
 
   SDL_Rect PosDimRect={10,10,150,30};
   
-  Button* Btn1=new Button("Screen2",PosDimRect);
+  Button* Btn1=new Button("Τη γλώσσα",PosDimRect);
   if(Btn1->setImages("Images/buttonUp2.png","Images/buttonUp.png"))
     {
       cout << "error loading Images"<< endl;
@@ -72,7 +80,7 @@ int main()
   Btn1->setLMButtonUpEvtHandler(evtBtn2);
   Btn1->setMouseOverEvtHandler(evtBtn2);
 
-  Button* Btn2=new Button("Screen3",30,200);
+  Button* Btn2=new Button("食食احساس   من",30,200);
   if(Btn2->setImages("Images/png24_2.png","Images/buttonUp2.png"))
     {
       cout << "error loading Images"<< endl;
