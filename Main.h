@@ -32,7 +32,7 @@ namespace EuMax01
  
   private:
     static GUI * pGUI;
-      GUI(){};
+      GUI();
       ~GUI()
 	{
 	  //delete(pActiveScreen);

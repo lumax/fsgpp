@@ -32,8 +32,56 @@ namespace EuMax01
     this->PosDimRect.h = PositionDimRect.h;
     this->pPosDimRect = &this->PosDimRect;   //Position und Dimension der Quelle setzen
     this->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
-  //b->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten
+    this->pNormalSurface = 0;
+    this->pMarkedSurface = 0;
+    //this->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten
 }
+
+  /* \brief Button is decorated by images and
+   * \brief Button get width and heigth by Normal Image 
+   * \param normal repräsentiert den Normal-Zustand
+   * \param down repräsentiert den Pressed-Zustand
+   * \return 0 on success, -1 on error loading images
+   */
+  int Button::setImages(const char* normal,const char* down)
+  {
+    SDL_Surface * tmp = 0;
+    //normal
+    tmp = IMG_Load(normal);
+    if(!tmp)
+      {
+	return -1;
+      }
+    this->pNormalSurface = SDL_DisplayFormatAlpha(tmp);
+    if(!this->pNormalSurface)
+      {
+	SDL_FreeSurface(tmp);
+	return -1;
+      }
+    SDL_FreeSurface(tmp);
+
+    //marked
+    tmp = 0;
+    tmp = IMG_Load(down);
+    if(!tmp)
+      {
+	goto NormalSurfaceOK;
+      }
+    this->pMarkedSurface = SDL_DisplayFormatAlpha(tmp);
+    if(!this->pMarkedSurface)
+      {
+	SDL_FreeSurface(tmp);
+	goto NormalSurfaceOK;
+      }
+    SDL_FreeSurface(tmp);
+    this->PosDimRect.w = this->pNormalSurface->w;
+    this->PosDimRect.h = this->pNormalSurface->h;
+    this->PrivateShow = Button::showImages;
+    return 0;
+  NormalSurfaceOK:
+    SDL_FreeSurface(this->pNormalSurface);
+    return -1;
+  }
 
 /*void sdlBtn_destructor(_pTsdlButton b)
 {
@@ -56,6 +104,41 @@ void Button::setText(const char* text)
   this->pButtonText = text;
 }
 
+  int Button::showImages(void * v,SDL_Surface* target)
+  {
+    SDL_Rect tmpRect;
+    Button* b =(Button*)v;
+    SDL_Surface* tmpSurface;
+    
+    tmpRect.x = b->PosDimRect.x;
+    tmpRect.y = b->PosDimRect.y;
+    tmpRect.w = b->PosDimRect.w;
+    tmpRect.h = b->PosDimRect.h;
+
+    //Background
+    if(b->bSelected)
+      {
+	tmpSurface = b->pNormalSurface;
+      }
+    else
+      {
+	tmpSurface = b->pMarkedSurface;
+      }
+
+    if(SDL_BlitSurface(tmpSurface,0,target,&tmpRect))
+      {
+	return -1;
+      }
+
+    //Text
+    if(b->pButtonText){                                        
+      if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+	return -1;
+      }
+    }
+    return 0;
+  }
+  
 /*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
  *         
  */

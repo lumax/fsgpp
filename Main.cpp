@@ -19,6 +19,13 @@ Bastian Ruppert
 namespace EuMax01
 {
   GUI* GUI::pGUI = NULL;
+  
+  GUI::GUI()
+  {
+    pActiveScreen = 0;
+    fnkSecondaryEvtHandler = 0;
+    pMainSurface = 0;
+  }
 
   GUI* GUI::getInstance(GUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent))
   {
@@ -73,7 +80,7 @@ namespace EuMax01
     EvtTarget *pTmpEvtTarget = (EvtTarget*)s->EvtTargets.Next;
     while(pTmpEvtTarget)
       {     //alle EventTargets durchlaufen und Selected = false setzen
-	pTmpEvtTarget->bSelected = 0;
+	pTmpEvtTarget->bSelected = false;
 	pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->Next;
       }
     

@@ -1,5 +1,4 @@
 /*
-fsgEvtProcessor.c
 Bastian Ruppert
 */
 #include <SDL/SDL_ttf.h>
@@ -27,6 +26,19 @@ namespace EuMax01
   return s;
   }*/
 
+  Screen::Screen()
+  {
+    OnActivate=0;
+    OnDeactivate=0;
+    //EvtTargets nullen!
+    char * pcTmp = (char *)&this->EvtTargets;
+    for(unsigned int i=0;i<sizeof(EvtTarget);i++)
+      {
+	*pcTmp=0;
+	pcTmp++;
+      }
+  }
+  
   void Screen::addEvtTarget(EvtTarget * theTarget)
   {
     this->EvtTargets.addLL(theTarget);
