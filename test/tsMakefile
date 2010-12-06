@@ -1,0 +1,4 @@
+arm-linux-gcc mousedriver.c -g -I/home/lumax/eldk/arm138/usr/local/include -L/home/lumax/eldk/arm138/usr/local/lib -lts -o moudr138
+
+
+cp moudr138 ~/eldk/arm138/usr/fsgpp/moudr138
