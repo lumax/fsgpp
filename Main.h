@@ -29,6 +29,7 @@ namespace EuMax01
     void setActiveScreen(Screen * s);
     void activateScreen(Screen * s);
     int eventLoop(void);
+    int initTsPolling();
  
   private:
     static GUI * pGUI;
@@ -37,10 +38,16 @@ namespace EuMax01
 	{
 	  //delete(pActiveScreen);
 	  SDL_FreeSurface(pMainSurface);
+	  //free ts, pm ,ps
 	};
       Screen * pActiveScreen;
       void (*fnkSecondaryEvtHandler)(SDL_Event * theEvent);
       SDL_Surface * pMainSurface;
+
+      struct tsdev *ts_dev;
+      PollManager pm_ts;
+      PollReader pr_ts;
+      void theTsPollReaderFnk(PollSource * ps);
   };
   
  

@@ -12,7 +12,7 @@ CPPFLAGS+=-g -Wall
 #`sdl-config --cflags`
 LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image 
 
-OBJS = LL.o Screen.o Main.o Tools.o Globals.o Event.o Button.o
+OBJS = LL.o Screen.o Main.o Tools.o Globals.o Event.o Button.o Poll.o
 
 include $(MAKE_DIR)/globalpp.mak
 

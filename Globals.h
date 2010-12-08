@@ -10,8 +10,8 @@ namespace EuMax01
 #define __FSGGLOBALS_H__
 
 
-  //#define DEFAULTFONT "aispec.ttf"
-#define DEFAULTFONT "sfd/FreeSerif.ttf"
+#define DEFAULTFONT "aispec.ttf"
+  //#define DEFAULTFONT "sfd/FreeSerif.ttf"
 #define FONTBUTTONDEFAULTSIZE 20
 #define FSGDEFAULTCOLORDEPTH 24
 
