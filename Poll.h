@@ -8,22 +8,29 @@ namespace EuMax01
 
 #ifndef __POLL_H__
 #define __POLL_H__
-  
+
+  class IPollListener;
+
   class PollSource:public LL
   {
   public:
-    PollSource();
+    PollSource(IPollListener * lis);
     struct pollfd thePollfd;
-    void (*readFnk)(PollSource * s);
+    IPollListener * lis;
   };
-  
+
+  class IPollListener
+  {
+  public:
+    virtual ~IPollListener() {}
+    virtual void (pollEvent)(PollSource * s) = 0;
+  };   
+
   class PollReader:public PollSource
   {
-    //    int setTimer(int ms, void (*timerExpired)());
   public:
-    PollReader();
-    //int setReadSource(const char* path,void (*rFnk)(PollSource * s));
-    int setReadSource(int fd,void (*rFnk)(PollSource * s));
+    PollReader(IPollListener * lis);
+    int setReadSource(int fd);
   };
 
   class PollManager
@@ -34,7 +41,7 @@ namespace EuMax01
     void stopPolling();
     int call_poll();
   private:
-    PollSource pollSources;
+    LL pollSources;
     int AmountSources;
     bool newPrecondition;
     bool polling;

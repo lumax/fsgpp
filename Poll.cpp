@@ -15,7 +15,7 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  PollSource::PollSource()
+  PollSource::PollSource(IPollListener * lis)
   {
     //clear memory
     char * pv = (char*)this;
@@ -24,9 +24,10 @@ namespace EuMax01
 	*pv = 0;
 	pv++;
       }
+    this->lis = lis;
   }
   
-  PollReader::PollReader():PollSource()
+  PollReader::PollReader(IPollListener * lis):PollSource(lis)
   {
     
   }
@@ -45,12 +46,11 @@ namespace EuMax01
   /*
    *Sets errno
    */
-  int PollReader::setReadSource(int fd,void (*readFnk)(PollSource * s))
+  int PollReader::setReadSource(int fd)
   {
-    if(this->Pollfd.fd)
+    if(this->thePollfd.fd)
       return -2;
     
-    this->readFnk = readFnk;
     this->thePollfd.fd = fd;
     this->thePollfd.events = POLLIN | POLLPRI;
     return 0;
@@ -103,7 +103,7 @@ namespace EuMax01
 	    newPrecondition = false;
 	  }
 	
-	ret = poll(fdinfo,AmountSources,1000);
+	ret = poll(fdinfo,AmountSources,-1);
 	  if(ret<0)
 	    {
 	      return ret;
@@ -113,10 +113,7 @@ namespace EuMax01
 	    //reading
 	    if(fdinfo[i].revents & (POLLIN | POLLPRI) )
 	      {
-		if(sources[i]->readFnk)//should be set!
-		  {
-		    (*sources[i]->readFnk)(sources[i]);//exec Function
-		  }
+		sources[i]->lis->pollEvent(sources[i]);
 	      }
 	  }
       }//end while (polling)
