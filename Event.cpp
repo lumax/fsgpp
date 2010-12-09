@@ -96,9 +96,9 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	  (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	{
 	  if(!this->bSelected){//Selected in not set
-	    this->bSelected = 1;                    //set bSelected bit
+	    this->bSelected = true;                    //set bSelected bit
 	    if(this->PrivateSelectable){//there is a funktion to call
-	      (*this->PrivateSelectable)((void*)this,1);
+	      (*this->PrivateSelectable)((void*)this,true);
 	    }
 	    if(this->fnkMouseOver!=0){//there is a funktion to call
 	      (*this->fnkMouseOver)(evt);//execFnk 
@@ -110,9 +110,9 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	{
 	  if(this->bSelected)// Selected is set
 	    {
-	      this->bSelected = 0;          //unset Selected
+	      this->bSelected = false;          //unset Selected
 	      if(this->PrivateSelectable){//there is a funktion to call
-		(*this->PrivateSelectable)((void*)this,0);
+		(*this->PrivateSelectable)((void*)this,false);
 	      }
 	    }
 	}    
@@ -151,6 +151,12 @@ int EvtTarget::paintRequested(EvtTarget * t)
 		{
 		  (*this->fnkLeftMouseButtonUp)(evt);
 		}
+#ifdef TARGET_ARM  
+	      this->bSelected=false;
+	      if(this->PrivateSelectable){//there is a funktion to call
+		(*this->PrivateSelectable)((void*)this,false);
+	      }
+#endif
 	      return;
 	    }
 	}
