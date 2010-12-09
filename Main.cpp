@@ -4,16 +4,16 @@ Bastian Ruppert
 
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
+#include <signal.h>
 #include <tslib.h>
 #include "LL.h"
-  #include "Globals.h"
-  #include "Event.h"
-
+#include "Globals.h"
+#include "Event.h"
 #include "Button.h"
-//#include "fsgLabel.h"
 #include "Poll.h"
 #include "Screen.h"
-  #include "Main.h"
+
+#include "Main.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -27,6 +27,14 @@ namespace EuMax01
     pActiveScreen = 0;
     fnkSecondaryEvtHandler = 0;
     pMainSurface = 0;
+    pr_ts = new PollReader(this);
+    pm_ts = new PollManager();
+  }
+
+  static void catch_sig(int i)
+  {
+    std::cout<< "signal!!!"<<std::endl;
+     exit(2);
   }
 
   GUI* GUI::getInstance(GUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent))
@@ -36,7 +44,10 @@ namespace EuMax01
 
     pGUI = new GUI();
     pGUI->fnkSecondaryEvtHandler = fnkSecondaryEvtHandling;
-      
+    
+    signal (SIGINT, catch_sig);
+    signal (SIGTERM, catch_sig);
+
       if(SDL_Init(SDL_INIT_VIDEO)==-1){
 	return NULL;
       }
@@ -109,82 +120,119 @@ namespace EuMax01
     SDL_Flip(pGUI->pMainSurface);
   }
 
-  static void theTsPollReaderFnk(PollSource * ps);
-
-  int GUI::initTsPolling()
+  void GUI::pollEvent(PollSource * ps)
   {
+    struct ts_sample sample;
+    static bool buttonup=false;
+    //SDL_Event * tmpEvent = &this->theSDL_Event;
+    while (ts_read(ts_dev, &sample, 1) > 0) 
+      {
+	//  button = (sample.pressure > 0) ? 1 : 0;
+	//  button <<= 2;	// must report it as button 3
+	if(0==sample.pressure)
+	  {
+	    buttonup = true;
+	    
+	    this->theSDL_Event.button.type = SDL_MOUSEBUTTONUP;
+	    this->theSDL_Event.button.state = SDL_RELEASED;
+	    this->theSDL_Event.button.x = sample.x;
+	    this->theSDL_Event.button.y = sample.y;
+	  }
+	else
+	  {  
+	    if(buttonup)
+	      {
+		this->theSDL_Event.button.type = SDL_MOUSEBUTTONDOWN;
+		this->theSDL_Event.button.state = SDL_PRESSED;
+		this->theSDL_Event.button.x = sample.x;
+		this->theSDL_Event.button.y = sample.y;
+	      }
+	    else
+	      {
+		this->theSDL_Event.motion.type = SDL_MOUSEMOTION;
+		this->theSDL_Event.motion.state = SDL_PRESSED;
+		this->theSDL_Event.motion.x = sample.x;
+		this->theSDL_Event.motion.y = sample.y;
+	      }	   
+	    buttonup = false;	  
+	  }
+	printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
+	processEvent(&this->theSDL_Event);
+	/*	printf("FB_vgamousecallback\n");
+	printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
+	counter++;
+	if(300<counter)
+	  {
+	    std::cout << "exit from pollEvent"<<std::endl;
+	    exit(2);
+	    }*/
+      }
+    return;
+  }
+
+  int GUI::processEvent(SDL_Event * theEvent)
+  {
+    if(pGUI->pActiveScreen)
+      {
+	if(pGUI->pActiveScreen->EvtTargets.Next)
+	  {                            //EvtTargets Ausführen
+	    EvtTarget::processTargets(theEvent,&pGUI->pActiveScreen->EvtTargets);
+	  }
+	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets))
+	  {     //alle EventTargets auf bPaintRequest untersuchen
+	    pGUI->pActiveScreen->show(pGUI->pMainSurface);
+	    SDL_Flip(pGUI->pMainSurface);                                   //show buffer
+	  }
+      }
+    return 0;
+  }
+  
+  int GUI::eventLoop(void)
+  {
+#ifdef TARGET_ARM   
     //struct tsdev *ts_open(const char *name, int nonblock)
-    this->ts_dev = ts_open(SDL_getenv("TSLIB_TSDEVICE"), 0);
+    this->ts_dev = ts_open(/*SDL_getenv("TSLIB_TSDEVICE")*/"/dev/input/event0", 0);
     if ((ts_dev != 0) && (ts_config(ts_dev) >= 0)) 
       {
-	if(!pr_ts.setReadSource(ts_fd(ts_dev),theTsPollReaderFnk))
+	if(pr_ts->setReadSource(ts_fd(ts_dev)))
 	  return -2;
-	pm_ts.addSource(ps_ts);
-	return 0;
+	pm_ts->addSource(pr_ts);
       }
     else
       {
 	return -1;
       }
-  }  
 
-  static void theTsPollReaderFnk(PollSource * ps)
-  {
-    struct ts_sample sample;
-    int button;
-    
-    while (ts_read(ts_dev, &sample, 1) > 0) {
-      button = (sample.pressure > 0) ? 1 : 0;
-      button <<= 2;	/* must report it as button 3 */
-      //FB_vgamousecallback(button, 0, sample.x, sample.y);
-      printf("FB_vgamousecallback\n");
-      printf("button : %i, relative: %i, dx: %i, dy: %i\n",button,0,sample.x,sample.y);
-    }
-    return;
-}
-
-  int GUI::eventLoop(void)
-  {
-    SDL_Event theEvent;
-
-    if(initTsPolling())
+    if(pm_ts->call_poll())
       {
-	std::cout << "initTsPolling returned witch error"<<std::endl;
+	std::cout << "pollManager returned witch error"<<std::endl;
       }
-    else
+#else
+    SDL_Event * theEvent = &this->theSDL_Event;
+    for(;;)
       {
-	if(call_poll())
+	if(SDL_WaitEvent(theEvent)==0)
 	  {
-	    std::cout << "pollMAnager returned witch error"<<std::endl;
+	    return -1; 
+	  }
+	processEvent(theEvent);
+	
+	if(theEvent->type==SDL_QUIT)
+	  {
+	    return 0;
 	  }
       }
-
-    for(;;){
-      if(SDL_WaitEvent(&theEvent)==0){
-	//printf("error while waiting for event\n");
-	return -1; 
-      }
-      if(pGUI->pActiveScreen){
-	if(pGUI->pActiveScreen->EvtTargets.Next){                            //EvtTargets Ausführen
-	  EvtTarget::processTargets(&theEvent,&pGUI->pActiveScreen->EvtTargets);
-	}
-	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets)){     //alle EventTargets auf bPaintRequest untersuchen
-	  pGUI->pActiveScreen->show(pGUI->pMainSurface);
-	  SDL_Flip(pGUI->pMainSurface);                                   //show buffer
-	  //if(theGUI.pSurface==theGUI.pDoubleBuf0)                      //point to next DoubleBuf
-	  // theGUI.pSurface = theGUI.pDoubleBuf1;
-	  //else
-	  //theGUI.pSurface = theGUI.pDoubleBuf0;
-	}
-      }
-      //if(pGUI->fnkSecondaryEvtHandler){ 
-      //(*theGUI.fnkSecondaryEvtHandler)(&theEvent);                 //zweite EventhandlerFunktion ausfuehren
-      //	}
-      if(theEvent.type==SDL_QUIT){
-	return 0;
-      }
-    }
+#endif
+    return 0;
   }
   
-
+  
+  void GUI::stopEventLoop()
+  {
+    if(pm_ts)
+      {
+	pm_ts->stopPolling();
+      }
+  }
+  
 }//end namespace

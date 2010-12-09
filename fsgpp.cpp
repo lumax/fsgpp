@@ -11,6 +11,7 @@
 //#include <fsgLabel.h>
 #include "Screen.h"
 #include "Globals.h"
+#include "Poll.h"
 #include "Main.h"
 
 using namespace std;

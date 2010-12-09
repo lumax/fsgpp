@@ -19,7 +19,7 @@ namespace EuMax01
   };
   
 
-   class GUI
+   class GUI:IPollListener
   {
 
   public:
@@ -29,8 +29,9 @@ namespace EuMax01
     void setActiveScreen(Screen * s);
     void activateScreen(Screen * s);
     int eventLoop(void);
-    int initTsPolling();
- 
+    void stopEventLoop();
+    //void theTsPollReaderFnk(PollSource * ps);
+    virtual void pollEvent(PollSource * s);
   private:
     static GUI * pGUI;
       GUI();
@@ -38,16 +39,19 @@ namespace EuMax01
 	{
 	  //delete(pActiveScreen);
 	  SDL_FreeSurface(pMainSurface);
-	  //free ts, pm ,ps
+	  delete(pr_ts);
+	  delete(pm_ts);
 	};
+      int processEvent(SDL_Event * theEvent);
       Screen * pActiveScreen;
       void (*fnkSecondaryEvtHandler)(SDL_Event * theEvent);
       SDL_Surface * pMainSurface;
+      SDL_Event theSDL_Event;
 
       struct tsdev *ts_dev;
-      PollManager pm_ts;
-      PollReader pr_ts;
-      void theTsPollReaderFnk(PollSource * ps);
+      PollManager*  pm_ts;
+      PollReader* pr_ts;
+      
   };
   
  

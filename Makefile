@@ -7,14 +7,17 @@ LIBS+=-lSDL -lSDL_ttf -lSDL_image
 #-lruputils
 #-L$(LIB_DIR)/
 
+ifdef CROSS_COMPILE
+CPPFLAGS+=-DTARGET_ARM
+endif
 
-CPPFLAGS+=-g -Wall 
+CPPFLAGS+=-g -Wall
 #`sdl-config --cflags`
-LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image 
+LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image -lts
 
 OBJS = LL.o Screen.o Main.o Tools.o Globals.o Event.o Button.o Poll.o
 
 include $(MAKE_DIR)/globalpp.mak
 
 public:
-	cp ${PROJECT_NAME} /home/lumax/eldk/arm138/usr/fsgpp/${PROJECT_NAME}
+	cp ${PROJECT_NAME} ${ELDK_FS}/usr/work/fsgpp/${PROJECT_NAME}
