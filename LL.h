@@ -15,6 +15,7 @@ namespace EuMax01
     LL * Next;
     int data;
     void addLL(LL * pItem);
+    //LL* removeLL(LL * pItem2Remove);
   };
   
 #endif /*__FGSLL_H__*/

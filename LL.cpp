@@ -17,4 +17,22 @@ namespace EuMax01
     this->Next = pItem;
   }
 
+  /*
+   * returns the seperated LL Pointer or 0 if LL not found
+   *
+   */
+  /*LL* LL::removeLL(LL * pItem2Remove)
+  {
+    LL * tmp = this->Next;
+    while(tmp)
+      {
+	if(tmp->Next==pItem2Remove)
+	  {
+	    tmp->Next=pItem2Remove->Next;
+	    return pItem2Remove;
+	  }
+	tmp=tmp->Next;
+      }
+    return 0;
+    }*/
 }
