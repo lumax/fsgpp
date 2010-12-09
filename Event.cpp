@@ -84,7 +84,8 @@ int EvtTarget::paintRequested(EvtTarget * t)
 
   if(evt->type==SDL_MOUSEMOTION)
     {
-      SDL_GetMouseState(&tmpx,&tmpy);
+      tmpx = evt->motion.x;
+      tmpy = evt->motion.y;
       pRect.x = this->pPosDimRect->x;
       pRect.y = this->pPosDimRect->y;
       pRect.w = this->pPosDimRect->w;
@@ -121,7 +122,8 @@ int EvtTarget::paintRequested(EvtTarget * t)
     {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-	  SDL_GetMouseState(&tmpx,&tmpy);
+	  tmpx = evt->motion.x;
+	  tmpy = evt->motion.y;
 	  pRect.x = this->pPosDimRect->x;
 	  pRect.y = this->pPosDimRect->y;
 	  pRect.w = this->pPosDimRect->w;
