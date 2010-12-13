@@ -15,7 +15,13 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  PollSource::PollSource(IPollListener * lis)
+  PollTimer::PollTimer(int ms,IPollTimerListener * lis)
+  {
+    this->timeout = ms;
+    this->lis = lis;
+  }
+
+  PollSource::PollSource(IPollReadListener * lis)
   {
     //clear memory
     char * pv = (char*)this;
@@ -27,7 +33,7 @@ namespace EuMax01
     this->lis = lis;
   }
   
-  PollReader::PollReader(IPollListener * lis):PollSource(lis)
+  PollReader::PollReader(IPollReadListener * lis):PollSource(lis)
   {
     
   }
@@ -74,6 +80,12 @@ namespace EuMax01
     newPrecondition = true;
   }
 
+  void PollManager::addTimer(PollTimer * pt)
+  {
+    timerTargets.addLL(pt);
+    timeout = pt->timeout;
+  }
+
   void PollManager::stopPolling()
   {
     this->polling = false;
@@ -86,7 +98,8 @@ namespace EuMax01
     struct pollfd fdinfo[AmountSources];
     PollSource* sources[AmountSources];
     PollSource* pTmp = (PollSource*)this->pollSources.Next;
-    
+    PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;
+
     polling = true;
     
     while(polling)
@@ -103,19 +116,30 @@ namespace EuMax01
 	    newPrecondition = false;
 	  }
 	
-	ret = poll(fdinfo,AmountSources,-1);
+	ret = poll(fdinfo,AmountSources,timeout);
 	  if(ret<0)
 	    {
 	      return ret;
 	    }
-	for(int i=0;i<AmountSources;i++)
-	  { 
-	    //reading
-	    if(fdinfo[i].revents & (POLLIN | POLLPRI) )
-	      {
-		sources[i]->lis->pollEvent(sources[i]);
-	      }
-	  }
+	  if(0==ret)
+	    {
+	      if(tmpTimer)
+		{
+		  tmpTimer->lis->pollTimerExpired();
+		}
+	    }
+	  else
+	    {
+	      for(int i=0;i<AmountSources;i++)
+		{ 
+		  //TODO POLLERR POLLHUB POLLNVAL
+		  //reading
+		  if(fdinfo[i].revents & (POLLIN | POLLPRI) )
+		    {
+		      sources[i]->lis->pollReadEvent(sources[i]);
+		    }
+		}
+	    }
       }//end while (polling)
     return 0;
   }

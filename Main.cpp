@@ -120,7 +120,7 @@ namespace EuMax01
     SDL_Flip(pGUI->pMainSurface);
   }
 
-  void GUI::pollEvent(PollSource * ps)
+  void GUI::pollReadEvent(PollSource * ps)
   {
     struct ts_sample sample;
     static bool buttonup=false;
@@ -158,14 +158,6 @@ namespace EuMax01
 	  }
 	printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
 	processEvent(&this->theSDL_Event);
-	/*	printf("FB_vgamousecallback\n");
-	printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
-	counter++;
-	if(300<counter)
-	  {
-	    std::cout << "exit from pollEvent"<<std::endl;
-	    exit(2);
-	    }*/
       }
     return;
   }
@@ -186,7 +178,18 @@ namespace EuMax01
       }
     return 0;
   }
-  
+
+  void GUI::pollTimerExpired()
+  {
+    static int counter = 0;
+    std::cout << "timerExpired" << std::endl;
+    counter++;
+    if(10<counter)
+      {
+	pm_ts->stopPolling();
+      }
+  }
+
   int GUI::eventLoop(void)
   {
 #ifdef TARGET_ARM   
@@ -208,6 +211,14 @@ namespace EuMax01
 	std::cout << "pollManager returned witch error"<<std::endl;
       }
 #else
+
+    PollTimer pt = PollTimer(500,this);
+    pm_ts->addTimer(&pt);
+     if(pm_ts->call_poll())
+      {
+	std::cout << "pollManager returned witch error"<<std::endl;
+      }  
+     
     SDL_Event * theEvent = &this->theSDL_Event;
     for(;;)
       {

@@ -19,7 +19,7 @@ namespace EuMax01
   };
   
 
-   class GUI:IPollListener
+   class GUI:IPollReadListener,IPollTimerListener
   {
 
   public:
@@ -31,7 +31,8 @@ namespace EuMax01
     int eventLoop(void);
     void stopEventLoop();
     //void theTsPollReaderFnk(PollSource * ps);
-    virtual void pollEvent(PollSource * s);
+    virtual void pollReadEvent(PollSource * s);
+    virtual void pollTimerExpired();
   private:
     static GUI * pGUI;
       GUI();
