@@ -181,15 +181,19 @@ namespace EuMax01
 
   void GUI::pollTimerExpired()
   {
-    static int counter = 0;
-    std::cout << "timerExpired" << std::endl;
-    counter++;
-    if(10<counter)
+    SDL_Event * theEvent = &this->theSDL_Event;
+
+    while(SDL_PollEvent(theEvent))
       {
-	pm_ts->stopPolling();
+	processEvent(theEvent);
+	
+	if(theEvent->type==SDL_QUIT)
+	  {
+	    pm_ts->stopPolling();
+	  }
       }
   }
-
+    
   int GUI::eventLoop(void)
   {
 #ifdef TARGET_ARM   
@@ -212,14 +216,14 @@ namespace EuMax01
       }
 #else
 
-    PollTimer pt = PollTimer(500,this);
+    PollTimer pt = PollTimer(30,this);
     pm_ts->addTimer(&pt);
      if(pm_ts->call_poll())
       {
 	std::cout << "pollManager returned witch error"<<std::endl;
       }  
      
-    SDL_Event * theEvent = &this->theSDL_Event;
+     /*    SDL_Event * theEvent = &this->theSDL_Event;
     for(;;)
       {
 	if(SDL_WaitEvent(theEvent)==0)
@@ -232,7 +236,7 @@ namespace EuMax01
 	  {
 	    return 0;
 	  }
-      }
+	  }*/
 #endif
     return 0;
   }
