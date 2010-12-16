@@ -13,7 +13,7 @@ namespace EuMax01
   {
    public:
     virtual ~IPollTimerListener() {}
-    virtual void (pollTimerExpired)() = 0;
+    virtual void (pollTimerExpired)(long time) = 0;
   };
  
   class PollTimer:public LL

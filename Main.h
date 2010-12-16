@@ -32,7 +32,7 @@ namespace EuMax01
     void stopEventLoop();
     //void theTsPollReaderFnk(PollSource * ps);
     virtual void pollReadEvent(PollSource * s);
-    virtual void pollTimerExpired();
+    virtual void pollTimerExpired(long us);
   private:
     static GUI * pGUI;
       GUI();

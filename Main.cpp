@@ -2,6 +2,9 @@
 Bastian Ruppert
 */
 
+#include <sys/time.h>
+
+
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
 #include <signal.h>
@@ -156,7 +159,7 @@ namespace EuMax01
 	      }	   
 	    buttonup = false;	  
 	  }
-	printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
+	//printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
 	processEvent(&this->theSDL_Event);
       }
     return;
@@ -178,11 +181,47 @@ namespace EuMax01
       }
     return 0;
   }
+#ifdef TARGET_ARM 
+  void GUI::pollTimerExpired(long us)
+  {
+    /*    static struct timeval start , last;
+    long mtime, seconds, useconds;    
+    //clock_gettime();
+    if(gettimeofday(&start, NULL))
+      std::cout << "error gettimeofday" << std::endl;
+    
+    seconds  = start.tv_sec  - last.tv_sec;
+    useconds = start.tv_usec - last.tv_usec;
 
-  void GUI::pollTimerExpired()
+    mtime = seconds * 1000000;
+    
+    if(0!=seconds)
+      {
+	mtime -=last.tv_usec; 
+	mtime +=start.tv_usec;
+      }
+    else
+      {
+	mtime += start.tv_usec - last.tv_usec;
+      }
+    
+
+    printf("last  : sec: %ld usec: %ld\n",last.tv_sec,last.tv_usec);
+    printf("start : sec: %ld usec: %ld\n",start.tv_sec,start.tv_usec);
+
+    last = start;
+    //mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+    
+
+    printf("Seconds: %ld useconds %ld\n", seconds,useconds);
+    printf("mtime: %ld \n",mtime);
+    */
+    std::cout << "timerExp:" << us << std::endl;
+  }
+#else
+  void GUI::pollTimerExpired(long us)
   {
     SDL_Event * theEvent = &this->theSDL_Event;
-
     while(SDL_PollEvent(theEvent))
       {
 	processEvent(theEvent);
@@ -193,6 +232,7 @@ namespace EuMax01
 	  }
       }
   }
+#endif
     
   int GUI::eventLoop(void)
   {
@@ -209,6 +249,8 @@ namespace EuMax01
       {
 	return -1;
       }
+    PollTimer pt = PollTimer(100,this);
+    pm_ts->addTimer(&pt);
 
     if(pm_ts->call_poll())
       {
