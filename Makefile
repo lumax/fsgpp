@@ -21,3 +21,9 @@ include $(MAKE_DIR)/globalpp.mak
 
 public:
 	cp ${PROJECT_NAME} ${ELDK_FS}/usr/work/fsgpp/${PROJECT_NAME}
+	cp Poll.cpp ${ELDK_FS}/usr/work/fsgpp/Poll.cpp
+	cp Main.cpp ${ELDK_FS}/usr/work/fsgpp/Main.cpp
+	cp Event.cpp ${ELDK_FS}/usr/work/fsgpp/Event.cpp
+	cp Screen.cpp ${ELDK_FS}/usr/work/fsgpp/Screen.cpp
+	cp LL.cpp ${ELDK_FS}/usr/work/fsgpp/LL.cpp
+	cp Button.cpp ${ELDK_FS}/usr/work/fsgpp/Button.cpp
