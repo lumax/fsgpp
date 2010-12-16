@@ -128,7 +128,9 @@ namespace EuMax01
     struct ts_sample sample;
     static bool buttonup=false;
     //SDL_Event * tmpEvent = &this->theSDL_Event;
-    while (ts_read(ts_dev, &sample, 1) > 0) 
+     for(int i = 0;i < 2; i++)
+     {
+    if (ts_read(ts_dev, &sample, 1) > 0) 
       {
 	//  button = (sample.pressure > 0) ? 1 : 0;
 	//  button <<= 2;	// must report it as button 3
@@ -161,7 +163,12 @@ namespace EuMax01
 	  }
 	//printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
 	processEvent(&this->theSDL_Event);
+      }//end if
+    else
+      {
+	return;
       }
+      }//end for
     return;
   }
 
@@ -249,7 +256,7 @@ namespace EuMax01
       {
 	return -1;
       }
-    PollTimer pt = PollTimer(100,this);
+    PollTimer pt = PollTimer(500,this);
     pm_ts->addTimer(&pt);
 
     if(pm_ts->call_poll())

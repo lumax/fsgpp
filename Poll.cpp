@@ -134,7 +134,7 @@ namespace EuMax01
 	      }
 	    newPrecondition = false;
 	  }
-	std::cout<<"---poll---"<<std::endl;
+	//std::cout<<"---poll---"<<std::endl;
 	ret = poll(fdinfo,AmountSources,timeout);
 	if(ret<0)
 	  {
@@ -160,7 +160,7 @@ namespace EuMax01
 	  }
 	last = start;
 
-	std::cout << "mtime: " << mtime << std::endl;
+	//std::cout << "mtime: " << mtime << std::endl;
 	
 	if(tmpTimer)
 	  {
