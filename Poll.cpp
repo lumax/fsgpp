@@ -20,6 +20,13 @@ namespace EuMax01
 
   PollTimer::PollTimer(int ms,IPollTimerListener * lis)
   {
+    //clear memory
+    char * pv = (char*)this;
+    for(unsigned int i=0; i<sizeof(PollTimer);i++)
+      {
+	*pv = 0;
+	pv++;
+      }
     this->timeout = ms;
     this->lis = lis;
   }
@@ -93,6 +100,22 @@ namespace EuMax01
   void PollManager::stopPolling()
   {
     this->polling = false;
+  }
+
+  void PollManager::timerHandling(long usActual)
+  {
+    static PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;
+
+    tmpTimer = (PollTimer*)this->timerTargets.Next;
+
+    if(tmpTimer)
+      {
+	if(tmpTimer->nextTimeout_us<=usActual)
+	  {
+	    //exec Funktion
+	    tmpTimer->lis->pollTimerExpired(mtime);
+	  }
+      }
   }
 
   int PollManager::call_poll()

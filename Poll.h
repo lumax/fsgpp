@@ -21,6 +21,7 @@ namespace EuMax01
   public:
     PollTimer(int ms,IPollTimerListener * lis);
     int timeout;
+    long nextTimeout_us;
     IPollTimerListener * lis;
   private:
     
@@ -61,6 +62,7 @@ namespace EuMax01
     void stopPolling();
     int call_poll();
   private:
+    void timerHandling(long usActual);
     LL pollSources;
     LL timerTargets;
     int timeout;
