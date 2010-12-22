@@ -102,50 +102,72 @@ namespace EuMax01
     this->polling = false;
   }
 
-  void PollManager::timerHandling(long usActual)
+  int PollManager::timerHandling(PollTimer * tmpTimer)
   {
-    static PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;
 
-    tmpTimer = (PollTimer*)this->timerTargets.Next;
-
-    if(tmpTimer)
+    long mtime = 0;
+    long seconds = 0;
+    long useconds = 0; 
+	
+    if(gettimeofday(&timerStart, NULL))
+      return -1;
+    
+    seconds  = timerStart.tv_sec  - timerLast.tv_sec;
+    useconds = timerStart.tv_usec - timerLast.tv_usec;
+    
+    mtime = seconds * 1000000;
+    
+    if(0!=seconds)
       {
-	if(tmpTimer->nextTimeout_us<=usActual)
-	  {
-	    //exec Funktion
-	    tmpTimer->lis->pollTimerExpired(mtime);
-	  }
+	mtime -=timerLast.tv_usec; 
+	mtime +=timerStart.tv_usec;
       }
+    else
+      {
+	mtime += timerStart.tv_usec - timerLast.tv_usec;
+      }
+    timerLast = timerStart;
+ 
+    while(tmpTimer)
+      {
+	if(tmpTimer)
+	  {
+	    if(tmpTimer->nextTimeout_us<=mtime)
+	      {
+		//exec Funktion
+		tmpTimer->lis->pollTimerExpired(mtime);
+	      }
+	  }
+	tmpTimer = (PollTimer*)tmpTimer->Next;
+      }
+    return 0;
   }
 
   int PollManager::call_poll()
   {
-    static struct timeval last;
-    struct timeval start;
-    int ret = 0;
-    int tmpi = 0;
-    long mtime = 0;
-    long seconds = 0;
-    long useconds = 0;    
+   
     struct pollfd fdinfo[AmountSources];
     PollSource* sources[AmountSources];
     PollSource* pTmp = (PollSource*)this->pollSources.Next;
-    PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;
- 
-    start.tv_sec = 0;
-    start.tv_usec = 0;
-    last.tv_sec = 0;
-    last.tv_usec = 0;
+    PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;  
+    int ret = 0;
+    int tmpi = 0;
+
+    timerStart.tv_sec = 0;
+    timerStart.tv_usec = 0;
+    timerLast.tv_sec = 0;
+    timerLast.tv_usec = 0;
 
     polling = true;
 
-    if(gettimeofday(&start, NULL))
+    if(gettimeofday(&timerStart, NULL))
       return -1;
     
-    last=start;
+    timerLast=timerStart;
 
     while(polling)
       {
+	//std::cout<<"---poll---"<<std::endl;
 	if(newPrecondition)//new fdinfos only when necessary
 	  {
 	    while(pTmp)//prepare fdinfo array for poll()
@@ -155,39 +177,23 @@ namespace EuMax01
 		pTmp = (PollSource*)pTmp->Next;
 		tmpi++;
 	      }
+	    tmpTimer = (PollTimer*)this->timerTargets.Next;
 	    newPrecondition = false;
 	  }
-	//std::cout<<"---poll---"<<std::endl;
+
 	ret = poll(fdinfo,AmountSources,timeout);
 	if(ret<0)
 	  {
 	    return ret;
 	  }
-	
-	if(gettimeofday(&start, NULL))
-	  return -1;
-	
-	seconds  = start.tv_sec  - last.tv_sec;
-	useconds = start.tv_usec - last.tv_usec;
-	
-	mtime = seconds * 1000000;
-	
-	if(0!=seconds)
-	  {
-	    mtime -=last.tv_usec; 
-	    mtime +=start.tv_usec;
-	  }
-	else
-	  {
-	    mtime += start.tv_usec - last.tv_usec;
-	  }
-	last = start;
 
 	//std::cout << "mtime: " << mtime << std::endl;
 	
 	if(tmpTimer)
 	  {
-	    tmpTimer->lis->pollTimerExpired(mtime);
+	    if(timerHandling(tmpTimer))
+	      return -2;
+	    
 	  }
 	if(0<ret)
 	  {

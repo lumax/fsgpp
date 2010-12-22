@@ -62,13 +62,15 @@ namespace EuMax01
     void stopPolling();
     int call_poll();
   private:
-    void timerHandling(long usActual);
+    int timerHandling(PollTimer * tmpTimer);
     LL pollSources;
     LL timerTargets;
     int timeout;
     int AmountSources;
     bool newPrecondition;
     bool polling;
+    struct timeval timerLast;
+    struct timeval timerStart;
   };
 
  

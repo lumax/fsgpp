@@ -231,12 +231,11 @@ namespace EuMax01
     SDL_Event * theEvent = &this->theSDL_Event;
     while(SDL_PollEvent(theEvent))
       {
-	processEvent(theEvent);
-	
 	if(theEvent->type==SDL_QUIT)
 	  {
 	    pm_ts->stopPolling();
 	  }
+	processEvent(theEvent);
       }
   }
 #endif
@@ -271,8 +270,8 @@ namespace EuMax01
       {
 	std::cout << "pollManager returned witch error"<<std::endl;
       }  
-     
-     /*    SDL_Event * theEvent = &this->theSDL_Event;
+    
+    /*     SDL_Event * theEvent = &this->theSDL_Event;
     for(;;)
       {
 	if(SDL_WaitEvent(theEvent)==0)
