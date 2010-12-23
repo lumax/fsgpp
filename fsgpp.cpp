@@ -13,6 +13,7 @@
 #include "Globals.h"
 #include "Poll.h"
 #include "Main.h"
+#include "ImagePool.h"
 
 using namespace std;
 using namespace EuMax01;
@@ -82,15 +83,39 @@ int main()
   Btn1->setMouseOverEvtHandler(evtBtn2);
 
   Button* Btn2=new Button("食食احساس   من",30,200,500,80);
-  if(Btn2->setImages("Images/png24_2.png","Images/buttonUp2.png"))
+  /*  if(Btn2->setImages("Images/png24_2.png","Images/buttonUp2.png"))
+    {
+      cout << "error loading Images"<< endl;
+      }*/
+  if(Btn2->setImages("Images/resources/elements/barrelButtonLeft.png",\
+		     "Images/resources/elements/barrelButtonPushedLeft.png"))
     {
       cout << "error loading Images"<< endl;
     }
+  
+  ImagePool StdBtn = ImagePool();
+  int ret = 0;
+  ret=StdBtn.setStdButton("Images/resources/elements/barrelButtonLeft.png", \
+			  "Images/resources/elements/barrelButtonMiddle.png", \
+			  "Images/resources/elements/barrelButtonRight.png", \
+			  "Images/resources/elements/barrelButtonPushedLeft.png", \
+			  "Images/resources/elements/barrelButtonPushedMiddle.png", \
+			  "Images/resources/elements/barrelButtonPushedRight.png", \
+			  500,						\
+			  80);
+  if(ret)
+    {
+      cout << "error loading Images for ImagePool"<< endl;
+    }
+  
+  Button* Btn3=new Button("lmaa",30,300,500,80);
+  Btn3->setImages(StdBtn.getStdBtnNormal(),StdBtn.getStdBtnMarked());
 
 
   Screen* s1 = new Screen();
   s1->addEvtTarget(Btn1);
   s1->addEvtTarget(Btn2);
+  s1->addEvtTarget(Btn3);
 
   theGUI->activateScreen(s1);
 

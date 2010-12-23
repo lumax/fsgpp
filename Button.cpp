@@ -113,7 +113,7 @@ namespace EuMax01
 
     //marked
     //this->pMarkedSurface = SDL_DisplayFormatAlpha(down);
-    this->pMarkedSurface = marked;
+    this->pMarkedSurface = down;
 
     this->PrivateShow = Button::showImages;
   }
