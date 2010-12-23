@@ -70,7 +70,7 @@ int main()
   }
 
 
-  SDL_Rect PosDimRect={10,10,150,30};
+  SDL_Rect PosDimRect={10,10,500,80};
   
   Button* Btn1=new Button("Τη γλώσσα",PosDimRect);
   if(Btn1->setImages("Images/buttonUp2.png","Images/buttonUp.png"))
@@ -81,7 +81,7 @@ int main()
   Btn1->setLMButtonUpEvtHandler(evtBtn2);
   Btn1->setMouseOverEvtHandler(evtBtn2);
 
-  Button* Btn2=new Button("食食احساس   من",30,200);
+  Button* Btn2=new Button("食食احساس   من",30,200,500,80);
   if(Btn2->setImages("Images/png24_2.png","Images/buttonUp2.png"))
     {
       cout << "error loading Images"<< endl;
