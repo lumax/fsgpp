@@ -108,9 +108,13 @@ namespace EuMax01
 			 SDL_Surface* down)
   {
     //normal
-    this->pNormalSurface = SDL_DisplayFormatAlpha(normal);
+    //this->pNormalSurface  = SDL_DisplayFormatAlpha(normal);
+    this->pNormalSurface = normal;
+
     //marked
-    this->pMarkedSurface = SDL_DisplayFormatAlpha(down);
+    //this->pMarkedSurface = SDL_DisplayFormatAlpha(down);
+    this->pMarkedSurface = marked;
+
     this->PrivateShow = Button::showImages;
   }
 
