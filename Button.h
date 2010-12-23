@@ -18,12 +18,18 @@ namespace EuMax01
   class Button : public EvtTarget
   {
   public:
-    Button(const char * text,short x,short y);
+    Button(const char * text,			\
+	   short x,				\
+	   short y,				\
+	   unsigned short w,			\
+	   unsigned short h);
     Button(const char * text,SDL_Rect PositionDimRect);
     static void createButton(Button* b,const char * t,SDL_Rect posDim);
     //~Button();
     void setText(const char* text);
     int setImages(const char* normal,const char* down);
+    void setImages(SDL_Surface* normal,		\
+		  SDL_Surface* down);
   private:
     SDL_Surface * pNormalSurface;
     SDL_Surface * pMarkedSurface;

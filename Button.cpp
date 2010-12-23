@@ -21,13 +21,17 @@ namespace EuMax01
     Button::createButton(this,text,PositionDimRect);
   }
   
-  Button::Button(const char * text,short x,short y)
+  Button::Button(const char * text,			\
+		 short x,				\
+		 short y,				\
+		 unsigned short w,			\
+		 unsigned short h)
   {
     SDL_Rect tmp;
     tmp.x = x;
     tmp.y = y;
-    tmp.w = 10;
-    tmp.h = 10;
+    tmp.w = w;
+    tmp.h = h;
     Button::createButton(this,text,tmp);
   }
   
@@ -53,7 +57,7 @@ namespace EuMax01
   }
 
   /* \brief Button is decorated by images and
-   * \brief Button get width and heigth by Normal Image 
+   * \brief width and heigth set by constructor 
    * \param normal repräsentiert den Normal-Zustand
    * \param down repräsentiert den Pressed-Zustand
    * \return 0 on success, -1 on error loading images
@@ -89,13 +93,25 @@ namespace EuMax01
 	goto NormalSurfaceOK;
       }
     SDL_FreeSurface(tmp);
-    this->PosDimRect.w = this->pNormalSurface->w;
-    this->PosDimRect.h = this->pNormalSurface->h;
     this->PrivateShow = Button::showImages;
     return 0;
   NormalSurfaceOK:
     SDL_FreeSurface(this->pNormalSurface);
     return -1;
+  }
+
+  /* \brief Button is decorated by images and
+   * \param normal repräsentiert den Normal-Zustand
+   * \param down repräsentiert den Pressed-Zustand
+   */
+  void Button::setImages(SDL_Surface* normal,	\
+			 SDL_Surface* down)
+  {
+    //normal
+    this->pNormalSurface = SDL_DisplayFormatAlpha(normal);
+    //marked
+    this->pMarkedSurface = SDL_DisplayFormatAlpha(down);
+    this->PrivateShow = Button::showImages;
   }
 
 /*void sdlBtn_destructor(_pTsdlButton b)
