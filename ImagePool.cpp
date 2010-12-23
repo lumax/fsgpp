@@ -93,7 +93,7 @@ namespace EuMax01
 	goto  loadingImagesReady;
       }
     
-    /*   this->stdBtnNormal = SDL_DisplayFormatAlpha(tmp);
+    this->stdBtnNormal = SDL_DisplayFormatAlpha(tmp);
     if(!this->stdBtnNormal)
       {
 	SDL_FreeSurface(tmp);
@@ -107,7 +107,7 @@ namespace EuMax01
 	goto stdBtnNormalReady;
       }
     SDL_FreeSurface(tmp);
-    */
+    
 
     //Background Normal & Background Marked
     tmpRect.x = 0;
