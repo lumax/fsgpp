@@ -105,7 +105,8 @@ namespace EuMax01
   int PollManager::timerHandling(PollTimer * tmpTimer)
   {
 
-    long mtime = 0;
+    long timediff = 0; //TODO timediff kann raus
+    unsigned long uptime = 0;
     long seconds = 0;
     long useconds = 0; 
 	
@@ -115,27 +116,30 @@ namespace EuMax01
     seconds  = timerStart.tv_sec  - timerLast.tv_sec;
     useconds = timerStart.tv_usec - timerLast.tv_usec;
     
-    mtime = seconds * 1000000;
+    timediff = seconds * 1000000;
     
     if(0!=seconds)
       {
-	mtime -=timerLast.tv_usec; 
-	mtime +=timerStart.tv_usec;
+	timediff -=timerLast.tv_usec; 
+	timediff +=timerStart.tv_usec;
       }
     else
       {
-	mtime += timerStart.tv_usec - timerLast.tv_usec;
+	timediff += timerStart.tv_usec - timerLast.tv_usec;
       }
+    uptime = (unsigned long)(timerStart.tv_sec * 1000000);
+    uptime += (unsigned long)(timerStart.tv_usec);
     timerLast = timerStart;
- 
     while(tmpTimer)
       {
 	if(tmpTimer)
 	  {
-	    if(tmpTimer->nextTimeout_us<=mtime)
+	    if(tmpTimer->nextTimeout_us<=uptime)
 	      {
+		//next Timeout
+		tmpTimer->nextTimeout_us = uptime+(tmpTimer->timeout*1000);
 		//exec Funktion
-		tmpTimer->lis->pollTimerExpired(mtime);
+		tmpTimer->lis->pollTimerExpired(/*timediff*/uptime);
 	      }
 	  }
 	tmpTimer = (PollTimer*)tmpTimer->Next;
@@ -181,7 +185,7 @@ namespace EuMax01
 	    newPrecondition = false;
 	  }
 
-	ret = poll(fdinfo,AmountSources,timeout);
+	ret = poll(fdinfo,AmountSources,/*timeout*/30);
 	if(ret<0)
 	  {
 	    return ret;
@@ -192,8 +196,7 @@ namespace EuMax01
 	if(tmpTimer)
 	  {
 	    if(timerHandling(tmpTimer))
-	      return -2;
-	    
+	      return -2;	    
 	  }
 	if(0<ret)
 	  {

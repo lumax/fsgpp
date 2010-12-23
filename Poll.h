@@ -21,7 +21,7 @@ namespace EuMax01
   public:
     PollTimer(int ms,IPollTimerListener * lis);
     int timeout;
-    long nextTimeout_us;
+    unsigned long nextTimeout_us;
     IPollTimerListener * lis;
   private:
     
