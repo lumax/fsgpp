@@ -104,29 +104,11 @@ namespace EuMax01
 
   int PollManager::timerHandling(PollTimer * tmpTimer)
   {
-
-    long timediff = 0; //TODO timediff kann raus
     unsigned long uptime = 0;
-    long seconds = 0;
-    long useconds = 0; 
 	
     if(gettimeofday(&timerStart, NULL))
       return -1;
     
-    seconds  = timerStart.tv_sec  - timerLast.tv_sec;
-    useconds = timerStart.tv_usec - timerLast.tv_usec;
-    
-    timediff = seconds * 1000000;
-    
-    if(0!=seconds)
-      {
-	timediff -=timerLast.tv_usec; 
-	timediff +=timerStart.tv_usec;
-      }
-    else
-      {
-	timediff += timerStart.tv_usec - timerLast.tv_usec;
-      }
     uptime = (unsigned long)(timerStart.tv_sec * 1000000);
     uptime += (unsigned long)(timerStart.tv_usec);
     timerLast = timerStart;
