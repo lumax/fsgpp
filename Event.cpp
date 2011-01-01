@@ -18,7 +18,10 @@ Bastian Ruppert
     bPaintRequest = false;
 
     pTSource = NULL;
-    pPosDimRect = NULL;
+    PosDimRect.x = 0;
+    PosDimRect.y = 0;
+    PosDimRect.w = 0;
+    PosDimRect.h = 0;
     fnkSelect=NULL;
     fnkUnSelect=NULL;
     PrivateSelectable=NULL;
@@ -86,10 +89,10 @@ int EvtTarget::paintRequested(EvtTarget * t)
     {
       tmpx = evt->motion.x;
       tmpy = evt->motion.y;
-      pRect.x = this->pPosDimRect->x;
-      pRect.y = this->pPosDimRect->y;
-      pRect.w = this->pPosDimRect->w;
-      pRect.h = this->pPosDimRect->h;
+      pRect.x = this->PosDimRect.x;
+      pRect.y = this->PosDimRect.y;
+      pRect.w = this->PosDimRect.w;
+      pRect.h = this->PosDimRect.h;
       
       if( (tmpx>=pRect.x)&&					\
 	  (tmpx<pRect.x+pRect.w) &&					\
@@ -124,10 +127,10 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	{
 	  tmpx = evt->motion.x;
 	  tmpy = evt->motion.y;
-	  pRect.x = this->pPosDimRect->x;
-	  pRect.y = this->pPosDimRect->y;
-	  pRect.w = this->pPosDimRect->w;
-	  pRect.h = this->pPosDimRect->h;
+	  pRect.x = this->PosDimRect.x;
+	  pRect.y = this->PosDimRect.y;
+	  pRect.w = this->PosDimRect.w;
+	  pRect.h = this->PosDimRect.h;
 	  if( (tmpx>=pRect.x)&&					\
 	      (tmpx<pRect.x+pRect.w) &&					\
 	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !

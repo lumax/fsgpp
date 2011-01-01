@@ -21,7 +21,7 @@ class EvtTarget:public LL
   bool bSelected;
   bool bPaintRequest;
   void * pTSource;
-  SDL_Rect * pPosDimRect;
+  SDL_Rect PosDimRect;
 
   EvtTarget();
   void addEvtTarget(EvtTarget * t);

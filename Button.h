@@ -33,9 +33,7 @@ namespace EuMax01
   private:
     SDL_Surface * pNormalSurface;
     SDL_Surface * pMarkedSurface;
-    //SDL_Surface * pTextSurface;
 
-    SDL_Rect PosDimRect;
     const char * pButtonText;
     TTF_Font * pFont;
     SDL_Color * pFontColor;

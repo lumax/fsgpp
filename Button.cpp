@@ -49,7 +49,6 @@ namespace EuMax01
     b->PosDimRect.y = PositionDimRect.y;
     b->PosDimRect.w = PositionDimRect.w;
     b->PosDimRect.h = PositionDimRect.h;
-    b->pPosDimRect = &b->PosDimRect;   //Position und Dimension der Quelle setzen
     b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
