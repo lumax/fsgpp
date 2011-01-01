@@ -28,21 +28,22 @@ class EvtTarget:public LL
   static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
   static int paintRequested(EvtTarget * t);
   int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
-  void setMouseOverEvtHandler(void (*pfnk)(SDL_Event *));
-  void setLMButtonDownEvtHandler(void (*pfnk)(SDL_Event *));
-  void setLMButtonUpEvtHandler(void (*pfnk)(SDL_Event *));
+  void setMouseOverEvtHandler(void (*pfnk)(void * src,SDL_Event *));
+  void setLMButtonDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
+  void setLMButtonUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
 
  protected:
   void (*fnkSelect)(void * source);
   void (*fnkUnSelect)(void * source);
   void (*PrivateSelectable)(void * b,bool selected);
+  void (*fnkKeyboardUp)(void * src,SDL_Event * theEvent,void * source);
+  void (*fnkMouseOver)(void * src,SDL_Event * theEvent);
+  void (*fnkLeftMouseButtonDown)(void * src,SDL_Event * theEvent);
+  void (*fnkLeftMouseButtonUp)(void * src,SDL_Event * theEvent);
 
  private:
   void processEvtTarget(SDL_Event * evt);
-  void (*fnkKeyboardUp)(SDL_Event * theEvent,void * source);
-  void (*fnkMouseOver)(SDL_Event * theEvent);
-  void (*fnkLeftMouseButtonDown)(SDL_Event * theEvent);
-  void (*fnkLeftMouseButtonUp)(SDL_Event * theEvent);
+
 
 };
 

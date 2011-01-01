@@ -33,17 +33,17 @@ Bastian Ruppert
     
   }
 
-  void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(SDL_Event *))
+  void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkMouseOver = pfnkEvtHandler;
   }
 
-  void EvtTarget::setLMButtonDownEvtHandler(void (*pfnkEvtHandler)(SDL_Event *))
+  void EvtTarget::setLMButtonDownEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkLeftMouseButtonDown = pfnkEvtHandler;
   }
 
-  void EvtTarget::setLMButtonUpEvtHandler(void (*pfnkEvtHandler)(SDL_Event *))
+  void EvtTarget::setLMButtonUpEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkLeftMouseButtonUp = pfnkEvtHandler;
   }
@@ -104,7 +104,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	      (*this->PrivateSelectable)((void*)this,true);
 	    }
 	    if(this->fnkMouseOver!=0){//there is a funktion to call
-	      (*this->fnkMouseOver)(evt);//execFnk 
+	      (*this->fnkMouseOver)(this->pTSource,evt);//execFnk 
 	      return;
 	    }
 	  }
@@ -137,7 +137,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    {
 	      if(this->fnkLeftMouseButtonDown&&this->bSelected)
 		{
-		  (*this->fnkLeftMouseButtonDown)(evt);
+		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
 		}
 	      return;
 	    }
@@ -152,7 +152,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    {
 	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
 		{
-		  (*this->fnkLeftMouseButtonUp)(evt);
+		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
 		}
 #ifdef TARGET_ARM  
 	      this->bSelected=false;
