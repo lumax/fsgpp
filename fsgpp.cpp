@@ -92,9 +92,9 @@ int main()
     {
       cout << "error loading Images"<< endl;
     }
-  
+
+  int ret = 0;  
   ImagePool StdBtn = ImagePool();
-  int ret = 0;
   ret=StdBtn.setStdButton("Images/resources/elements/barrelButtonLeft.png", \
 			  "Images/resources/elements/barrelButtonMiddle.png", \
 			  "Images/resources/elements/barrelButtonRight.png", \
@@ -102,20 +102,39 @@ int main()
 			  "Images/resources/elements/barrelButtonPushedMiddle.png", \
 			  "Images/resources/elements/barrelButtonPushedRight.png", \
 			  500,						\
-			  80);
+			  80,						\
+			  FSG_BACKGROUND);
   if(ret)
     {
       cout << "error loading Images for ImagePool"<< endl;
     }
+
+  ImagePool StdBtn2 = ImagePool();
+  ret=StdBtn2.setStdButton("Images/resources/elements/barrelButtonLeft.png", \
+			  "Images/resources/elements/barrelButtonMiddle.png", \
+			  "Images/resources/elements/barrelButtonRight.png", \
+			  "Images/resources/elements/barrelButtonPushedLeft.png", \
+			  "Images/resources/elements/barrelButtonPushedMiddle.png", \
+			  "Images/resources/elements/barrelButtonPushedRight.png", \
+			  300,						\
+			  80,						\
+			  FSG_BACKGROUND);
+  if(ret)
+    {
+      cout << "error loading Images for ImagePool"<< endl;
+    }
+
   
   Button* Btn3=new Button("lmaa",30,300,500,80);
   Btn3->setImages(StdBtn.getStdBtnNormal(),StdBtn.getStdBtnMarked());
 
-
+  Button* Btn4=new Button("lmaa",30,400,300,80);
+  Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
   Screen* s1 = new Screen();
   s1->addEvtTarget(Btn1);
   s1->addEvtTarget(Btn2);
   s1->addEvtTarget(Btn3);
+  s1->addEvtTarget(Btn4);
 
   theGUI->activateScreen(s1);
 
