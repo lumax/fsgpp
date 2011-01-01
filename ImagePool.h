@@ -21,7 +21,8 @@ namespace EuMax01
 		     const char * pathMarkedMiddle,	\
 		     const char * pathMarkedRight,	\
 		     unsigned short width,		\
-		     unsigned short height);
+		     unsigned short height,		\
+		     Uint32 BackgroundColor);
     SDL_Surface * getStdBtnNormal();
     SDL_Surface * getStdBtnMarked();
   private:

@@ -38,13 +38,14 @@ namespace EuMax01
 			      const char * pathMarkedMiddle,	\
 			      const char * pathMarkedRight,	\
 			      unsigned short width,		\
-			      unsigned short height)
+			      unsigned short height,		\
+			      Uint32 BackgroundColor)
   {
     SDL_Surface * tmp = 0; 
     SDL_Rect tmpRect;
     SDL_Rect tmpDestRect;
     SDL_PixelFormat * format = SDL_GetVideoSurface()->format;
-    SDL_Surface * surfaceArray[6] = {0,0,0,0,0,0};
+    static SDL_Surface * surfaceArray[6] = {0,0,0,0,0,0};
     const char * pathArray[6] = {pathNormalLeft,	\
 				 pathNormalMiddle,	\
 				 pathNormalRight,	\
@@ -56,20 +57,21 @@ namespace EuMax01
 	return -2;
       }
       
-    for(int i=0;i<6;i++)
+    for(int i=0;i<6;i++)//loading images
       {
 	tmp = IMG_Load(pathArray[i]);
 	if(!tmp)
 	  {
 	    goto loadingImagesReady;
 	  }
-	surfaceArray[i] = SDL_DisplayFormatAlpha(tmp);
+	surfaceArray[i] = SDL_DisplayFormatAlpha(tmp);//formating
 	SDL_FreeSurface(tmp);
 	if(!surfaceArray[i])
 	  {
 	    goto loadingImagesReady;
 	  }
       }
+
     if(this->stdBtnNormal)
       {
 	SDL_FreeSurface(this->stdBtnNormal);
@@ -80,7 +82,8 @@ namespace EuMax01
 	SDL_FreeSurface(this->stdBtnMarked);
       }
     
-    tmp=SDL_CreateRGBSurface(SDL_SWSURFACE,				\
+    //Grundlage Normal
+    tmp=SDL_CreateRGBSurface(SDL_SWSURFACE|SDL_SRCALPHA,		\
 			     width,					\
 			     height,					\
 			     FSGDEFAULTCOLORDEPTH,			\
@@ -92,24 +95,13 @@ namespace EuMax01
       {
 	goto  loadingImagesReady;
       }
-    
-    this->stdBtnNormal = SDL_DisplayFormatAlpha(tmp);
-    if(!this->stdBtnNormal)
+    //TODO: Alpha only functional with Background color
+    if(SDL_FillRect(tmp,0,BackgroundColor))
       {
-	SDL_FreeSurface(tmp);
 	goto  loadingImagesReady;
       }
     
-    this->stdBtnMarked = SDL_DisplayFormatAlpha(tmp);
-    if(!this->stdBtnMarked)
-      {
-	SDL_FreeSurface(tmp);
-	goto stdBtnNormalReady;
-      }
-    SDL_FreeSurface(tmp);
-    
-
-    //Background Normal & Background Marked
+    //Background Normal
     tmpRect.x = 0;
     tmpRect.y = 0;
     tmpRect.w = 1;
@@ -122,69 +114,38 @@ namespace EuMax01
     for(int i=0;i<width-(surfaceArray[0]->w+surfaceArray[2]->w);i++)
       {
 	if(SDL_BlitSurface(surfaceArray[1],&tmpRect,	\
-			   this->stdBtnNormal,&tmpDestRect)	\
+			   tmp,&tmpDestRect)	\
 	   )
 	  {
 	    goto stdBtnMarkedReady;
 	  }
-	if(SDL_BlitSurface(surfaceArray[4],&tmpRect,		\
-			   this->stdBtnMarked,&tmpDestRect)	\
-	   )
-	  {
-	    goto stdBtnMarkedReady;
-	  }	
 	tmpDestRect.x++;
       }
-	  
+    
     //Left Normal
     tmpDestRect.x = 0;
     tmpDestRect.y = 0;
     tmpDestRect.w = surfaceArray[0]->w;
     tmpDestRect.h = surfaceArray[0]->h;
     if(SDL_BlitSurface(surfaceArray[0],0,			\
-		       this->stdBtnNormal,&tmpDestRect)		\
+		       tmp,&tmpDestRect)		\
        )
       {
 	goto stdBtnMarkedReady;
       }
 
-   //Left Marked
-    tmpDestRect.x = 0;
-    tmpDestRect.y = 0;
-    tmpDestRect.w = surfaceArray[3]->w;
-    tmpDestRect.h = surfaceArray[3]->h;
-    if(SDL_BlitSurface(surfaceArray[3],&tmpRect,		\
-		       this->stdBtnMarked,&tmpDestRect)		\
-       )
-      {
-	goto stdBtnMarkedReady;
-      }	
-
-	  //right normal
+    //right normal
     tmpDestRect.x = width - surfaceArray[2]->w;
     tmpDestRect.y = 0;
     tmpDestRect.w = surfaceArray[2]->w;
     tmpDestRect.h = surfaceArray[2]->h;
     if(SDL_BlitSurface(surfaceArray[2],0,			\
-		       this->stdBtnNormal,&tmpDestRect)		\
-       )
-      {
-	goto stdBtnMarkedReady;
-      }
-
-    //right marked
-    tmpDestRect.x = width - surfaceArray[5]->w;
-    tmpDestRect.y = 0;
-    tmpDestRect.w = surfaceArray[5]->w;
-    tmpDestRect.h = surfaceArray[5]->h;
-    if(SDL_BlitSurface(surfaceArray[5],0,			\
-		       this->stdBtnMarked,&tmpDestRect)		\
+		       tmp,&tmpDestRect)		\
        )
       {
 	goto stdBtnMarkedReady;
       }
     
-    tmp = this->stdBtnNormal;
     this->stdBtnNormal = SDL_DisplayFormatAlpha(tmp);
     if(!this->stdBtnNormal)
       {
@@ -192,16 +153,79 @@ namespace EuMax01
 	goto stdBtnMarkedReady;
       }
     SDL_FreeSurface(tmp);
+
+   //Grundlage Marked
+    tmp=SDL_CreateRGBSurface(SDL_SWSURFACE|SDL_SRCALPHA,		\
+			     width,					\
+			     height,					\
+			     FSGDEFAULTCOLORDEPTH,			\
+			     format->Rmask,				\
+			     format->Gmask,				\
+			     format->Bmask,				\
+			     format->Amask);    
+    if(!tmp)
+      {
+	goto  loadingImagesReady;
+      }
+    //TODO: Alpha only functional with Background color
+    if(SDL_FillRect(tmp,0,BackgroundColor))
+      {
+	goto  loadingImagesReady;
+      }
     
-    tmp = this->stdBtnMarked;
+    //Background Marked
+    tmpRect.x = 0;
+    tmpRect.y = 0;
+    tmpRect.w = 1;
+    tmpRect.h = height;
+
+    tmpDestRect.x = surfaceArray[3]->w;
+    tmpDestRect.y = 0;
+    tmpDestRect.w = 1;
+    tmpDestRect.h = height;
+    for(int i=0;i<width-(surfaceArray[3]->w+surfaceArray[5]->w);i++)
+      {
+	if(SDL_BlitSurface(surfaceArray[4],&tmpRect,	\
+			   tmp,&tmpDestRect)	\
+	   )
+	  {
+	    goto stdBtnMarkedReady;
+	  }
+	tmpDestRect.x++;
+      }
+    
+    //Left Marked
+    tmpDestRect.x = 0;
+    tmpDestRect.y = 0;
+    tmpDestRect.w = surfaceArray[3]->w;
+    tmpDestRect.h = surfaceArray[3]->h;
+    if(SDL_BlitSurface(surfaceArray[3],0,			\
+		       tmp,&tmpDestRect)		\
+       )
+      {
+	goto stdBtnMarkedReady;
+      }
+
+    //right Marked
+    tmpDestRect.x = width - surfaceArray[5]->w;
+    tmpDestRect.y = 0;
+    tmpDestRect.w = surfaceArray[5]->w;
+    tmpDestRect.h = surfaceArray[5]->h;
+    if(SDL_BlitSurface(surfaceArray[5],0,			\
+		       tmp,&tmpDestRect)		\
+       )
+      {
+	goto stdBtnMarkedReady;
+      }
+    
     this->stdBtnMarked = SDL_DisplayFormatAlpha(tmp);
     if(!this->stdBtnMarked)
       {
 	SDL_FreeSurface(tmp);
 	goto stdBtnMarkedReady;
       }
-    SDL_FreeSurface(tmp);    
-    
+    SDL_FreeSurface(tmp);
+
     this->stdBtnWidth = width;
     this->stdBtnHeight = height;
     this->stdBtnIsSet = true;
@@ -209,14 +233,13 @@ namespace EuMax01
 	
   stdBtnMarkedReady:
     SDL_FreeSurface(stdBtnMarked);
-  stdBtnNormalReady:
-	  SDL_FreeSurface(stdBtnNormal);
-    loadingImagesReady:
-	  SDL_FreeSurface(tmp);
-	for(int ii=0;ii<6;ii++)
-	  {
-	    SDL_FreeSurface(surfaceArray[ii]);
-	  }
+    SDL_FreeSurface(stdBtnNormal);
+  loadingImagesReady:
+    SDL_FreeSurface(tmp);
+    for(int ii=0;ii<6;ii++)
+      {
+	SDL_FreeSurface(surfaceArray[ii]);
+      }
     return -1; 
   }
 }
