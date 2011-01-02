@@ -86,15 +86,15 @@ int EvtTarget::paintRequested(EvtTarget * t)
   int tmpx,tmpy;
   SDL_Rect pRect;
 
+  tmpx = evt->motion.x;
+  tmpy = evt->motion.y;
+  pRect.x = this->PosDimRect.x;
+  pRect.y = this->PosDimRect.y;
+  pRect.w = this->PosDimRect.w;
+  pRect.h = this->PosDimRect.h;
+
   if(evt->type==SDL_MOUSEMOTION)
     {
-      tmpx = evt->motion.x;
-      tmpy = evt->motion.y;
-      pRect.x = this->PosDimRect.x;
-      pRect.y = this->PosDimRect.y;
-      pRect.w = this->PosDimRect.w;
-      pRect.h = this->PosDimRect.h;
-   
       if( (tmpx>=pRect.x)&&						\
 	  (tmpx<pRect.x+pRect.w) &&					\
 	  (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
@@ -130,12 +130,6 @@ int EvtTarget::paintRequested(EvtTarget * t)
     {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-	  tmpx = evt->motion.x;
-	  tmpy = evt->motion.y;
-	  pRect.x = this->PosDimRect.x;
-	  pRect.y = this->PosDimRect.y;
-	  pRect.w = this->PosDimRect.w;
-	  pRect.h = this->PosDimRect.h;
 	  if( (tmpx>=pRect.x)&&					\
 	      (tmpx<pRect.x+pRect.w) &&					\
 	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
@@ -155,12 +149,6 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	{
 
 #ifdef TARGET_ARM
-	  tmpx = evt->motion.x;
-	  tmpy = evt->motion.y;
-	  pRect.x = this->PosDimRect.x;
-	  pRect.y = this->PosDimRect.y;
-	  pRect.w = this->PosDimRect.w;
-	  pRect.h = this->PosDimRect.h;
 	  if( (tmpx>=pRect.x)&&						\
 	      (tmpx<pRect.x+pRect.w) &&					\
 	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
