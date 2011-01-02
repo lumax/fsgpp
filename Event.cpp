@@ -140,7 +140,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	      (tmpx<pRect.x+pRect.w) &&					\
 	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	    {
-	      if(this->fnkLeftMouseButtonDown&&this->bSelected)
+	      if(this->fnkLeftMouseButtonDown/*&&this->bSelected*/)
 		{
 		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
 		}
