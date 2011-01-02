@@ -24,6 +24,16 @@ static void evtBtn2(void * src,SDL_Event * evt){
   //sdlMenuActivate(pTargetSurface);
 }
 
+class GestureListener : public IGestureListener
+{
+public:
+  void yGestureOccured(int yGes,int tempo);
+};
+
+void GestureListener::yGestureOccured(int yGes,int tempo)
+{
+  cout << "yGestureOccured :"<< yGes << " " << tempo <<endl;
+}
 
 int main()
 {
@@ -132,7 +142,8 @@ int main()
   Button* Btn4=new Button("lmaa",30,400,300,80);
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
   SDL_Rect gesturedim={0,0,640,480};
-  Gesture slideGesture = Gesture(gesturedim);
+  GestureListener GesLis = GestureListener();
+  Gesture slideGesture = Gesture(gesturedim,&GesLis);
   Screen* s1 = new Screen();
   s1->addEvtTarget(&slideGesture);
   s1->addEvtTarget(Btn1);

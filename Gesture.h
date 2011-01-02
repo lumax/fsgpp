@@ -11,12 +11,20 @@ namespace EuMax01
 #ifndef __FSGGESTURE_H__
 #define __FSGGESTURE_H__
 
+  class IGestureListener
+  {
+   public:
+    virtual ~IGestureListener() {}
+    virtual void yGestureOccured(int yGesture,int tempo) = 0;
+  };
+
   class Gesture : public EvtTarget
   {
   public:
-    Gesture(SDL_Rect ActiveArea);
+    Gesture(SDL_Rect ActiveArea,IGestureListener * lis);
 
   private:
+    IGestureListener * listener;
     int EvtCounter;
     int yPos;
     int yGesture;

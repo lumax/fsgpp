@@ -4,21 +4,19 @@ Bastian Ruppert
 01.01.2011
 */
 
-
 #include <SDL/SDL.h>
-
-//#include "Globals.h"
-//#include "Tools.h"
 #include "Event.h"
-
 #include "Gesture.h"
 
+#undef GESTURE_DEBUG 
+#ifdef GESTURE_DEBUG
 #include <iostream>
-
+using namespace std;
+#endif
 namespace EuMax01
 {
 
-  Gesture::Gesture(SDL_Rect ActiveArea)
+  Gesture::Gesture(SDL_Rect ActiveArea,IGestureListener * lis)
   {
     //clear memory
     char * pv = (char*)this;
@@ -27,8 +25,8 @@ namespace EuMax01
 	*pv = 0;
 	pv++;
       }
-
     this->GESTUREACTION = 20;
+    this->listener = lis;
     this->pTSource = this;//Quelle setzen
     this->PosDimRect.x = ActiveArea.x;
     this->PosDimRect.y = ActiveArea.y;
@@ -41,7 +39,6 @@ namespace EuMax01
   void Gesture::mouseMotion(void * src,SDL_Event * theEvent)
   {
     Gesture * pGes = (Gesture*)src;
-    int tmp=0;
     pGes->EvtCounter++;
     
     if(theEvent->motion.y<pGes->yPos)
@@ -53,6 +50,28 @@ namespace EuMax01
 	pGes->yGesture+= theEvent->motion.y-pGes->yPos;
       }
     pGes->yPos = theEvent->motion.y;
+#ifdef GESTURE_DEBUG
+    cout << "gesMM" << endl;
+#endif
+  }
+
+  void Gesture::mouseButtonDown(void * src,SDL_Event * theEvent)
+  {
+    Gesture * pGes = (Gesture*)src;
+    pGes->EvtCounter = 0;
+    pGes->yGesture = 0;
+    pGes->yPos = theEvent->motion.y;
+    pGes->fnkMouseMotion = Gesture::mouseMotion;
+#ifdef GESTURE_DEBUG
+    cout << "gesMD" << endl;
+#endif
+  }
+
+  void Gesture::mouseButtonUp(void * src,SDL_Event * theEvent)
+  {
+    Gesture * pGes = (Gesture*)src;
+    int tmp =0;
+    pGes->fnkMouseMotion = 0;
     if(pGes->yGesture<0)
       {
 	tmp = pGes->yGesture*(-1);
@@ -63,24 +82,11 @@ namespace EuMax01
       }
     if(tmp>=pGes->GESTUREACTION)
       {
-	std::cout << "Gesture:"<< pGes->yGesture <<"cnt:"<< pGes->EvtCounter<< std::endl;
-	Gesture::mouseButtonDown(src,theEvent);
+	pGes->listener->yGestureOccured(pGes->yGesture,pGes->EvtCounter);
       }
-  }
-  void Gesture::mouseButtonDown(void * src,SDL_Event * theEvent)
-  {
-    Gesture * pGes = (Gesture*)src;
-    pGes->EvtCounter = 0;
-    pGes->yGesture = 0;
-    pGes->yPos = theEvent->motion.y;
-    pGes->fnkMouseMotion = Gesture::mouseMotion;
-    std::cout << "Gesture : mouseButtonDown"<<std::endl; 
-  }
-  void Gesture::mouseButtonUp(void * src,SDL_Event * theEvent)
-  {
-    Gesture * pGes = (Gesture*)src;
-    pGes->fnkMouseMotion = 0;
-    std::cout << "Gesture : mouseButtonUp"<<std::endl; 
+#ifdef GESTURE_DEBUG
+    cout << "gesMU" << endl;
+#endif
   }
 
   /* \brief Button is decorated by images and
