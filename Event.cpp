@@ -6,8 +6,8 @@ Bastian Ruppert
 
 
 #include "Event.h"
-  //#include "fsgButton.h"
- namespace EuMax01
+
+namespace EuMax01
 {
  
   EvtTarget::EvtTarget():LL()
@@ -27,6 +27,7 @@ Bastian Ruppert
     PrivateSelectable=NULL;
     
     fnkKeyboardUp=NULL;
+    fnkMouseMotion=0;
     fnkMouseOver=NULL;
     fnkLeftMouseButtonDown=NULL;
     fnkLeftMouseButtonUp=NULL;
@@ -93,16 +94,20 @@ int EvtTarget::paintRequested(EvtTarget * t)
       pRect.y = this->PosDimRect.y;
       pRect.w = this->PosDimRect.w;
       pRect.h = this->PosDimRect.h;
-      
-      if( (tmpx>=pRect.x)&&					\
+   
+      if( (tmpx>=pRect.x)&&						\
 	  (tmpx<pRect.x+pRect.w) &&					\
 	  (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	{
+	  if(this->fnkMouseMotion!=0){
+	    (*this->fnkMouseMotion)(this->pTSource,evt);//execFnk
+	    }
 	  if(!this->bSelected){//Selected in not set
 	    this->bSelected = true;                    //set bSelected bit
 	    if(this->PrivateSelectable){//there is a funktion to call
 	      (*this->PrivateSelectable)((void*)this,true);
 	    }
+	      
 	    if(this->fnkMouseOver!=0){//there is a funktion to call
 	      (*this->fnkMouseOver)(this->pTSource,evt);//execFnk 
 	      return;

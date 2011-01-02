@@ -37,6 +37,7 @@ class EvtTarget:public LL
   void (*fnkUnSelect)(void * source);
   void (*PrivateSelectable)(void * b,bool selected);
   void (*fnkKeyboardUp)(void * src,SDL_Event * theEvent,void * source);
+  void (*fnkMouseMotion)(void * src,SDL_Event * theEvent);
   void (*fnkMouseOver)(void * src,SDL_Event * theEvent);
   void (*fnkLeftMouseButtonDown)(void * src,SDL_Event * theEvent);
   void (*fnkLeftMouseButtonUp)(void * src,SDL_Event * theEvent);
