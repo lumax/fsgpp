@@ -132,14 +132,14 @@ namespace EuMax01
      {
     if (ts_read(ts_dev, &sample, 1) > 0) 
       {
-	//  button = (sample.pressure > 0) ? 1 : 0;
-	//  button <<= 2;	// must report it as button 3
+	//printf("pressure : %i\n",sample.pressure);
 	if(0==sample.pressure)
 	  {
 	    buttonup = true;
 	    
 	    this->theSDL_Event.button.type = SDL_MOUSEBUTTONUP;
 	    this->theSDL_Event.button.state = SDL_RELEASED;
+	    this->theSDL_Event.button.button = SDL_BUTTON_LEFT;
 	    this->theSDL_Event.button.x = sample.x;
 	    this->theSDL_Event.button.y = sample.y;
 	  }
@@ -149,6 +149,7 @@ namespace EuMax01
 	      {
 		this->theSDL_Event.button.type = SDL_MOUSEBUTTONDOWN;
 		this->theSDL_Event.button.state = SDL_PRESSED;
+		this->theSDL_Event.button.button = SDL_BUTTON_LEFT;
 		this->theSDL_Event.button.x = sample.x;
 		this->theSDL_Event.button.y = sample.y;
 	      }
