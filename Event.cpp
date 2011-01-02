@@ -153,17 +153,37 @@ int EvtTarget::paintRequested(EvtTarget * t)
     {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-	  if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
-	    {
-	      (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
+
+#ifdef TARGET_ARM
+	  tmpx = evt->motion.x;
+	  tmpy = evt->motion.y;
+	  pRect.x = this->PosDimRect.x;
+	  pRect.y = this->PosDimRect.y;
+	  pRect.w = this->PosDimRect.w;
+	  pRect.h = this->PosDimRect.h;
+	  if( (tmpx>=pRect.x)&&						\
+	      (tmpx<pRect.x+pRect.w) &&					\
+	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
+	    {  
+	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
+		{
+		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
+		}
 	    }
-#ifdef TARGET_ARM  
 	  if(this->bSelected)
 	    {
 	      this->bSelected=false;
 	      if(this->PrivateSelectable){//there is a fnk to call
 		(*this->PrivateSelectable)((void*)this,false);
 	      }
+	    }
+#else
+	  if(this->bSelected)
+	    {
+	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
+		{
+		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
+		}
 	    }
 #endif
 	}
