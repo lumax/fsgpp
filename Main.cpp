@@ -191,38 +191,6 @@ namespace EuMax01
 #ifdef TARGET_ARM 
   void GUI::pollTimerExpired(long us)
   {
-    /*    static struct timeval start , last;
-    long mtime, seconds, useconds;    
-    //clock_gettime();
-    if(gettimeofday(&start, NULL))
-      std::cout << "error gettimeofday" << std::endl;
-    
-    seconds  = start.tv_sec  - last.tv_sec;
-    useconds = start.tv_usec - last.tv_usec;
-
-    mtime = seconds * 1000000;
-    
-    if(0!=seconds)
-      {
-	mtime -=last.tv_usec; 
-	mtime +=start.tv_usec;
-      }
-    else
-      {
-	mtime += start.tv_usec - last.tv_usec;
-      }
-    
-
-    printf("last  : sec: %ld usec: %ld\n",last.tv_sec,last.tv_usec);
-    printf("start : sec: %ld usec: %ld\n",start.tv_sec,start.tv_usec);
-
-    last = start;
-    //mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
-    
-
-    printf("Seconds: %ld useconds %ld\n", seconds,useconds);
-    printf("mtime: %ld \n",mtime);
-    */
     std::cout << "timerExp:" << us << std::endl;
   }
 #else
@@ -255,8 +223,8 @@ namespace EuMax01
       {
 	return -1;
       }
-    PollTimer pt = PollTimer(500,this);
-    pm_ts->addTimer(&pt);
+    //PollTimer pt = PollTimer(500,this);
+    //pm_ts->addTimer(&pt);
 
     if(pm_ts->call_poll())
       {
