@@ -126,7 +126,7 @@ namespace EuMax01
   void GUI::pollReadEvent(PollSource * ps)
   {
     struct ts_sample sample;
-    static bool buttonup=false;
+    static bool buttonup=true;
     //SDL_Event * tmpEvent = &this->theSDL_Event;
      for(int i = 0;i < 2; i++)
      {
