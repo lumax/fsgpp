@@ -16,7 +16,7 @@ CPPFLAGS+=-g -Wall
 LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image -lts
 
 OBJS = LL.o Screen.o Main.o Tools.o Globals.o Event.o Button.o Poll.o\
-	ImagePool.o
+	ImagePool.o Gesture.o
 
 include $(MAKE_DIR)/globalpp.mak
 

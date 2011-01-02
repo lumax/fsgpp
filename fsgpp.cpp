@@ -14,11 +14,12 @@
 #include "Poll.h"
 #include "Main.h"
 #include "ImagePool.h"
+#include "Gesture.h"
 
 using namespace std;
 using namespace EuMax01;
 
-static void evtBtn2(SDL_Event * evt){
+static void evtBtn2(void * src,SDL_Event * evt){
   cout << "evtBtn"<< endl;
   //sdlMenuActivate(pTargetSurface);
 }
@@ -130,7 +131,10 @@ int main()
 
   Button* Btn4=new Button("lmaa",30,400,300,80);
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
+  SDL_Rect gesturedim={0,0,640,480};
+  Gesture slideGesture = Gesture(gesturedim);
   Screen* s1 = new Screen();
+  s1->addEvtTarget(&slideGesture);
   s1->addEvtTarget(Btn1);
   s1->addEvtTarget(Btn2);
   s1->addEvtTarget(Btn3);
