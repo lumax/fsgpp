@@ -153,20 +153,19 @@ int EvtTarget::paintRequested(EvtTarget * t)
     {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
+	  if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
+	    {
+	      (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
+	    }
+#ifdef TARGET_ARM  
 	  if(this->bSelected)
 	    {
-	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
-		{
-		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
-		}
-#ifdef TARGET_ARM  
 	      this->bSelected=false;
-	      if(this->PrivateSelectable){//there is a funktion to call
+	      if(this->PrivateSelectable){//there is a fnk to call
 		(*this->PrivateSelectable)((void*)this,false);
 	      }
-#endif
-	      return;
 	    }
+#endif
 	}
     }
 }
