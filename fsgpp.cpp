@@ -1,6 +1,6 @@
-#include <iostream>
-
-#include <iostream>
+//#include <iostream>
+#include <stdio.h>
+//#include <iostream>
 //#include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
@@ -20,7 +20,7 @@ using namespace std;
 using namespace EuMax01;
 
 static void evtBtn2(void * src,SDL_Event * evt){
-  cout << "evtBtn"<< endl;
+  printf("evtBtn\n");//cout << "evtBtn"<< endl;
   //sdlMenuActivate(pTargetSurface);
 }
 
@@ -32,7 +32,7 @@ public:
 
 void GestureListener::yGestureOccured(int yGes,int tempo)
 {
-  cout << "yGestureOccured :"<< yGes << " " << tempo <<endl;
+  printf("yGesture Occured : %i, %i\n",yGes,tempo);//cout << "yGestureOccured :"<< yGes << " " << tempo <<endl;
 }
 
 int main()
@@ -54,11 +54,11 @@ int main()
 
   if(SDL_BYTEORDER==SDL_BIG_ENDIAN)
     {
-      cout << "SDL_BYTEORDER==SDL_BIG_ENDIAN"<<endl;
+      printf("SDL_BYTEORDER==SDL_BIG_ENDIAN\n");//cout << "SDL_BYTEORDER==SDL_BIG_ENDIAN"<<endl;
     }
   if(SDL_BYTEORDER==SDL_LIL_ENDIAN)
     {
-      cout << "SDL_BYTEORDER==SDL_LIL_ENDIAN"<<endl;
+      printf("SDL_BYTEORDER==SDL_LIL_ENDIAN\n");//cout << "SDL_BYTEORDER==SDL_LIL_ENDIAN"<<endl;
     }
 
 
@@ -71,7 +71,7 @@ int main()
   //pGUI = fsgMainInit(&props,0);
   theGUI=GUI::getInstance(&props,0);
   if(!theGUI){
-    cout << "failure GUI::getInstance()"<<endl;
+    printf("failure GUI::getInstance()\n");//cout << "failure GUI::getInstance()"<<endl;
     return -1;
   }
 
@@ -81,7 +81,7 @@ int main()
   Button* Btn1=new Button("Τη γλώσσα",PosDimRect);
   if(Btn1->setImages("Images/buttonUp2.png","Images/buttonUp.png"))
     {
-      cout << "error loading Images"<< endl;
+      printf("error loading Images\n");//cout << "error loading Images"<< endl;
     }
   Btn1->setLMButtonDownEvtHandler(evtBtn2);
   Btn1->setLMButtonUpEvtHandler(evtBtn2);
@@ -95,7 +95,7 @@ int main()
   if(Btn2->setImages("Images/resources/elements/barrelButtonLeft.png",\
 		     "Images/resources/elements/barrelButtonPushedLeft.png"))
     {
-      cout << "error loading Images"<< endl;
+      printf("error loading Images\n");//cout << "error loading Images"<< endl;
     }
 
   int ret = 0;  
@@ -111,7 +111,7 @@ int main()
 			  FSG_BACKGROUND);
   if(ret)
     {
-      cout << "error loading Images for ImagePool"<< endl;
+      printf("error loading Images for ImagePool\n");//cout << "error loading Images for ImagePool"<< endl;
     }
 
   ImagePool StdBtn2 = ImagePool();
@@ -126,7 +126,7 @@ int main()
 			  FSG_BACKGROUND);
   if(ret)
     {
-      cout << "error loading Images for ImagePool"<< endl;
+      printf("error loading Images for ImagePool\n");//cout << "error loading Images for ImagePool"<< endl;
     }
 
   
@@ -153,5 +153,4 @@ int main()
 
   theGUI->eventLoop();
 
-  cout << "huhu" << endl;
 }

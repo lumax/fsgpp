@@ -13,7 +13,8 @@ Bastian Ruppert
 
 #include "Poll.h"
 
-#include <iostream>
+//#include <iostream>
+#include <stdio.h>
 
 namespace EuMax01
 {

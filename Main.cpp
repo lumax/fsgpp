@@ -18,7 +18,8 @@ Bastian Ruppert
 
 #include "Main.h"
 
-#include <iostream>
+//#include <iostream>
+//#include <stdio.h>
 #include <stdio.h>
 
 namespace EuMax01
@@ -36,7 +37,7 @@ namespace EuMax01
 
   static void catch_sig(int i)
   {
-    std::cout<< "signal!!!"<<std::endl;
+    printf("signal!!!\n");//std::cout<< "signal!!!"<<std::endl;
      exit(2);
   }
 
@@ -192,7 +193,7 @@ namespace EuMax01
 #ifdef TARGET_ARM 
   void GUI::pollTimerExpired(long us)
   {
-    std::cout << "timerExp:" << us << std::endl;
+    printf("timerExp %li \n",us);//std::cout << "timerExp:" << us << std::endl;
   }
 #else
   void GUI::pollTimerExpired(long us)
@@ -229,7 +230,7 @@ namespace EuMax01
 
     if(pm_ts->call_poll())
       {
-	std::cout << "pollManager returned witch error"<<std::endl;
+	printf("pollManager returned witch error\n");//std::cout << "pollManager returned witch error"<<std::endl;
       }
 #else
 
@@ -237,7 +238,7 @@ namespace EuMax01
     pm_ts->addTimer(&pt);
      if(pm_ts->call_poll())
       {
-	std::cout << "pollManager returned witch error"<<std::endl;
+	printf("pollManager returned witch error\n");//std::cout << "pollManager returned witch error"<<std::endl;
       }  
     
     /*     SDL_Event * theEvent = &this->theSDL_Event;
