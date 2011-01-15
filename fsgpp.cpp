@@ -68,12 +68,6 @@ int main()
   props.bpp=0;
   props.flags=SDL_SWSURFACE;
 
-
-  /*GUI_Properties props={.width=320,		\
-			     .height=240,	\
-			     .bpp=0,		\
-			     .flags=SDL_SWSURFACE};
-  */
   //pGUI = fsgMainInit(&props,0);
   theGUI=GUI::getInstance(&props,0);
   if(!theGUI){
@@ -141,6 +135,10 @@ int main()
 
   Button* Btn4=new Button("lmaa",30,400,300,80);
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
+
+  //PollTimer pt = PollTimer(500,this);
+  //pm_ts->addTimer(&pt);
+
   SDL_Rect gesturedim={0,0,640,480};
   GestureListener GesLis = GestureListener();
   Gesture slideGesture = Gesture(gesturedim,&GesLis);
