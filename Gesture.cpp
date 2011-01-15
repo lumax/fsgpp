@@ -25,7 +25,7 @@ namespace EuMax01
 	*pv = 0;
 	pv++;
       }
-    this->GESTUREACTION = 20;
+    this->GESTUREACTION = 10;
     this->listener = lis;
     this->pTSource = this;//Quelle setzen
     this->PosDimRect.x = ActiveArea.x;
