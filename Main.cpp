@@ -268,4 +268,21 @@ namespace EuMax01
       }
   }
   
+  SDL_Surface *GUI:: getMainSurface()
+  {
+    if(pGUI)
+      return pGUI->pMainSurface;
+    else
+      return 0;
+  }
+  
+  void GUI::addPollTimer(PollTimer * p_pt)
+  {
+    pm_ts->addTimer(p_pt);
+  }
+  
+  void GUI::addPollReader(PollReader * p_pr)
+  {
+    pm_ts->addSource(p_pr);
+  }
 }//end namespace

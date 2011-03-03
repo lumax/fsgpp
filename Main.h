@@ -30,9 +30,12 @@ namespace EuMax01
     void activateScreen(Screen * s);
     int eventLoop(void);
     void stopEventLoop();
+    SDL_Surface * getMainSurface();
     //void theTsPollReaderFnk(PollSource * ps);
     virtual void pollReadEvent(PollSource * s);
     virtual void pollTimerExpired(long us);
+    void addPollTimer(PollTimer * p_pt);
+    void addPollReader(PollReader * p_pr);
   private:
     static GUI * pGUI;
       GUI();
