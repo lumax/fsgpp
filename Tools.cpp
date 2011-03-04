@@ -427,7 +427,14 @@ int Tool::renderBorderFrame(SDL_Surface * target,SDL_Rect * PosDim,Uint32 Color)
 
   int Tool::blankSurface(SDL_Surface * s, Uint32 color){
     return SDL_FillRect(s,0,color);
-}
+  }
+
+  int Tool::blankSurface(SDL_Surface * s,	\
+			 Uint32 color,		\
+			 SDL_Rect * area)
+  {
+    return SDL_FillRect(s,area,color);
+  }
 
 int Tool::blitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,SDL_Color * pFontColor,const char * text)
 {
