@@ -281,8 +281,8 @@ namespace EuMax01
     pm_ts->addTimer(p_pt);
   }
   
-  void GUI::addPollReader(PollReader * p_pr)
+  int GUI::addPollReader(PollReader * p_pr)
   {
-    pm_ts->addSource(p_pr);
+    return pm_ts->addSource(p_pr);
   }
 }//end namespace

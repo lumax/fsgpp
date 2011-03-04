@@ -56,7 +56,7 @@ namespace EuMax01
   {   
   public:
     PollManager();
-    void addSource(PollSource * ps);
+    int addSource(PollSource * ps);
     void addTimer(PollTimer * pt);
     
     void stopPolling();
@@ -66,11 +66,12 @@ namespace EuMax01
     LL pollSources;
     LL timerTargets;
     int timeout;
-    int AmountSources;
+    unsigned int AmountSources;
     bool newPrecondition;
     bool polling;
     struct timeval timerLast;
     struct timeval timerStart;
+    unsigned int MaxPollSources;
   };
 
  

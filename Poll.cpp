@@ -77,19 +77,26 @@ namespace EuMax01
   {
       //clear memory
     char * pv = (char*)this;
+    //this->MaxPollSources=16;
     for(unsigned int i=0; i<sizeof(PollManager);i++)
       {
 	*pv=0;
 	pv++;
       }
     this->timeout = -1;
+    this->MaxPollSources=16;
   }
 
-  void PollManager::addSource(PollSource * ps)
+  int PollManager::addSource(PollSource * ps)
   {
-    pollSources.addLL(ps);
-    AmountSources++;
-    newPrecondition = true;
+    if(AmountSources < this->MaxPollSources)
+      {
+	pollSources.addLL(ps);
+	AmountSources++;
+	newPrecondition = true;
+	return 0;
+      }
+    return -1;
   }
 
   void PollManager::addTimer(PollTimer * pt)
@@ -133,9 +140,9 @@ namespace EuMax01
   int PollManager::call_poll()
   {
    
-    struct pollfd fdinfo[AmountSources];
-    PollSource* sources[AmountSources];
-    PollSource* pTmp = (PollSource*)this->pollSources.Next;
+    struct pollfd fdinfo[this->MaxPollSources];
+    PollSource* sources[this->MaxPollSources];
+    PollSource* pTmp = 0;
     PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;  
     int ret = 0;
     int tmpi = 0;
@@ -157,10 +164,15 @@ namespace EuMax01
 	//std::cout<<"---poll---"<<std::endl;
 	if(newPrecondition)//new fdinfos only when necessary
 	  {
+	    //pTmp = 0;
+	    pTmp = (PollSource*)this->pollSources.Next;
+	    tmpi = 0;
 	    while(pTmp)//prepare fdinfo array for poll()
 	      {
-		fdinfo[tmpi]=pTmp->thePollfd;
 		sources[tmpi] = pTmp;
+		fdinfo[tmpi]=pTmp->thePollfd;
+		//fdinfo[tmpi].fd=pTmp->thePollfd.fd;
+		//fdinfo[tmpi].events=pTmp->thePollfd.events;
 		pTmp = (PollSource*)pTmp->Next;
 		tmpi++;
 	      }
@@ -183,7 +195,7 @@ namespace EuMax01
 	  }
 	if(0<ret)
 	  {
-	    for(int i=0;i<AmountSources;i++)
+	    for(unsigned int i=0;i<AmountSources;i++)
 	      { 
 		//TODO POLLERR POLLHUB POLLNVAL
 		//reading
