@@ -201,14 +201,32 @@ void Button::setText(const char* text)
       }
     }
     //Text
-    if(b->pButtonText){                                        
-      if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
-	return -1;
+    if(b->bSelected)
+      {
+	tmpRect.x +=2;
+	tmpRect.y +=2;
+	if(b->pButtonText)
+	  {
+	    if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+	      return -1;
+	    }
+	  }
+	tmpRect.x -=2;
+	tmpRect.y -=2;
       }
-    }
+    else
+      {
+	if(b->pButtonText)
+	  {
+	    if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+	      return -1;
+	    }
+	  }
+      }
+
     //Border
     if(b->bSelected){
-      if( Tool::renderBorderDown(target,&tmpRect,FSG_COLOR_MARKED)){
+      if( Tool::renderBorderDown(target,&tmpRect,FSG_COLOR_NORMAL)){
 	return -1;
       }
       //if(fsgToolRenderBorder(target,&tmpRect,FSG_BOARDERWIDTH,FSG_BOARDERCOLOR_MARKED)){
@@ -218,9 +236,6 @@ void Button::setText(const char* text)
       if( Tool::renderBorderUp(target,&tmpRect,FSG_COLOR_MARKED)){
 	return -1;
       }
-      //if(fsgToolRenderBorder(target,&tmpRect,FSG_BOARDERWIDTH,FSG_BOARDERCOLOR_NORMAL)){
-      //  return -1;
-      //}
     }
 #ifdef FSGPP_SHOW_IMMEDIATELY 
     SDL_UpdateRect(target,tmpRect.x,tmpRect.y,tmpRect.w,tmpRect.h);
