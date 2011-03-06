@@ -17,7 +17,7 @@ namespace EuMax01
 
 #define DEFAULTFONT "aispec.ttf"
   //#define DEFAULTFONT "sfd/FreeSerif.ttf"
-#define FONTBUTTONDEFAULTSIZE 20
+#define FONTBUTTONDEFAULTSIZE 12
 #define FSGDEFAULTCOLORDEPTH 24
 
   static const unsigned char R_SEW_ORANGE = 238; 
@@ -98,11 +98,11 @@ class Globals
 
 //#define FSG_BOARDERWIDTH 2
 
-#define FSG_BACKGROUND Globals::GlobalUint32ColorSewBlau
+#define FSG_BACKGROUND Globals::GlobalUint32ColorBlack
 #define FSG_COLOR_NORMAL Globals::GlobalUint32ColorDarkGray
 #define FSG_COLOR_MARKED Globals::GlobalUint32ColorBrightGray
 
-#define FSG_LABEL_BACKGROUND Globals::GlobalUint32ColorSewBlau
+//#define FSG_LABEL_BACKGROUND Globals::GlobalUint32ColorBlack
 
 /* Sew - Style
 #define FSG_BACKGROUND Globals::GlobalUint32ColorSewBlau

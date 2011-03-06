@@ -40,23 +40,14 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
       int offset = cam*wMalZwei;
 
       //Fadenkreuz
-      unsigned int crossBreite = 88;
-      unsigned int crossDicke = 4;
+      unsigned int crossBreite = cap->camWidth;
+      unsigned int crossDicke = 2;
       int zeile = w*2;
       //unsigned int crossX = w/2-crossBreite/2;
       //unsigned int crossY = h/2-crossDicke;
-      unsigned int crossX = 100;
-      unsigned int crossY = 200;
-      if(cam)
-	{
-	  crossX = 200;
-	  crossY = 150;
-	}
-      else
-	{
-	  crossX = 50;
-	  crossY = 50;
-	}
+      unsigned int crossX = cap->camCrossX;
+      unsigned int crossY = cap->camHeight/4*3;
+
       int start = crossX*2+zeile*crossY;
       //int lineoffset = crossY*h*4;
       char * pc = (char *)p;
@@ -71,8 +62,8 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
 	  start+=zeile;
 	}
       //vertikale Linie
-      start = (crossX+crossBreite/2)*2+zeile*(crossY-crossBreite/2);
-      for(i=0;i<crossBreite;i++)
+      start = (crossX*2);//+zeile*(crossBreite/2);
+      for(i=0;i<h;i++)
 	{
 	  for(ii=0;ii<crossDicke*2;ii++)
 	    {
@@ -204,13 +195,34 @@ void CamControl::pollTimerExpired(long us)
     {
       printf("TODO remove PollTimer\n");
       counter++;
-      if(counter>=10)
+      if(counter>=40)
 	ptheGUI->stopEventLoop();
     }
 }
 
-static void evtBtn2(void * src,SDL_Event * evt){
-  printf("evtBtn\n");
+static void evtB1(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(0,-10);
+}
+static void evtB2(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(0,-1);
+}
+static void evtB3(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(0,1);
+}
+static void evtB4(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(0,10);
+}
+static void evtB5(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(1,-10);
+}
+static void evtB6(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(1,-1);
+}
+static void evtB7(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(1,1);
+}
+static void evtB8(void * src,SDL_Event * evt){
+  cap_cam_addCrossX(1,10);
 }
 
 int main()
@@ -219,7 +231,6 @@ int main()
   GUI_Properties props;
   GUI* theGUI;
 
-  int Y = 300;
   camwidth = 352;
   camheight = 288;
 
@@ -243,22 +254,94 @@ int main()
     return -1;
   }
 
-  SDL_Rect PosDimRect={10,10+Y,500,80};
-  Button* Btn1=new Button("huhu",PosDimRect);
-  /*if(Btn1->setImages("Images/buttonUp2.png","Images/buttonUp.png"))
-    {
-      printf("error loading Images\n");
-      }*/
-  Btn1->setLMButtonDownEvtHandler(evtBtn2);
-  Btn1->setLMButtonUpEvtHandler(evtBtn2);
-  Btn1->setMouseOverEvtHandler(evtBtn2);
+  CamControl camCtrl = CamControl(theGUI);
+
+/*
+<------------------| sdlwidth/2
+
+<------------- camwidth*2 ---------------->
+
+___________________________________________
+|                  |                      |
+|                  |                      |
+|                  |                      |
+|                  |                      |
+|                  |                      |
+|                  |                      |
+|__________________|______________________|
+
+         | camhalbe0
+           camhalbe1          | 
+
+camhalbe0 =  sdlwidth/2 -camwidth/2
+camhalbe1 =  sdlwidth/2 +camwidth/2
+
+    B1 B2 B3 B4          B5 B6 B7 B8   
+    << < | > >>          << < | > >>
+
+B1 = camhalbe0 - 2*Buttonwidth - 2*Abstand
+B2 = camhalbe0 - 1*Buttonwidth - 1*Abstand
+B3 = camhalbe0 + 0*Buttonwidth + 1*Abstand
+B4 = camhalbe0 + 1*Buttonwidth + 2*Abstand
+B5 = camhalbe1 - 2*ButtonWidth - 2*Abstand
+B6 = camhalbe1 - 1*            - 1*Abstand
+B7 = camhalbe1 + 0*            + 1*
+B8 = camhalbe1 + 1*            + 2*  
+*/
+  int sdlw = props.width;
+  int camhalbe0 = sdlw/2 - camwidth/2;
+  int camhalbe1 = sdlw/2 + camwidth/2;
+  int X = 0;
+  int Y = camheight + 20;//hier fangen die Buttons an
+  int BtnW=60;
+  int BtnH=30;
+  int Abstand = 5;
+
+  SDL_Rect PosDimRect={0+X,0+Y,BtnW,BtnH};
+
+  PosDimRect.x = camhalbe0 - 2*BtnW - 2*Abstand;
+  Button* B1=new Button("<<",PosDimRect);
+  B1->setLMButtonUpEvtHandler(evtB1);
+
+  PosDimRect.x = camhalbe0 - 1*BtnW - 1*Abstand;
+  Button* B2=new Button("<",PosDimRect);
+  B2->setLMButtonUpEvtHandler(evtB2);
+
+  PosDimRect.x = camhalbe0 + 0*BtnW + 1*Abstand;
+  Button* B3=new Button(">",PosDimRect);
+  B3->setLMButtonUpEvtHandler(evtB3);
+
+  PosDimRect.x = camhalbe0 + 1*BtnW + 2*Abstand;
+  Button* B4=new Button(">>",PosDimRect);
+  B4->setLMButtonUpEvtHandler(evtB4);
+
+  PosDimRect.x = camhalbe1 - 2*BtnW - 2*Abstand;
+  Button* B5=new Button("<<",PosDimRect);
+  B5->setLMButtonUpEvtHandler(evtB5);
+
+  PosDimRect.x = camhalbe1 - 1*BtnW - 1*Abstand;
+  Button* B6=new Button("<",PosDimRect);
+  B6->setLMButtonUpEvtHandler(evtB6);
+
+  PosDimRect.x = camhalbe1 + 0*BtnW + 1*Abstand;
+  Button* B7=new Button(">",PosDimRect);
+  B7->setLMButtonUpEvtHandler(evtB7);
+
+  PosDimRect.x = camhalbe1 + 1*BtnW + 2*Abstand;
+  Button* B8=new Button(">>",PosDimRect);
+  B8->setLMButtonUpEvtHandler(evtB8);
 
   Screen* s1 = new Screen();
-  s1->addEvtTarget(Btn1);
-   CamControl camCtrl = CamControl(theGUI);
+  s1->addEvtTarget(B1);
+  s1->addEvtTarget(B2);
+  s1->addEvtTarget(B3);
+  s1->addEvtTarget(B4);
+  s1->addEvtTarget(B5);
+  s1->addEvtTarget(B6);
+  s1->addEvtTarget(B7);
+  s1->addEvtTarget(B8);
 
-    theGUI->activateScreen(s1);
+  theGUI->activateScreen(s1);
 
   theGUI->eventLoop();
-
 }

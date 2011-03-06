@@ -4,27 +4,16 @@ Bastian Ruppert
 #include <SDL/SDL_ttf.h>
 #include "LL.h"
 #include "Event.h"
-  #include "Tools.h"
-  #include "Globals.h"
-  #include "Button.h"
-  //#include "fsgLabel.h"
-  //#include "fsgCheckBox.h"
+#include "Tools.h"
+#include "Globals.h"
+#include "Button.h"
+//#include "fsgLabel.h"
+//#include "fsgCheckBox.h"
 
 #include "Screen.h"
 
 namespace EuMax01
 {
-
-
-
-/*_pTfsgScreen fsgScreenConstructor(){
-
-  _pTfsgScreen s = (_pTfsgScreen)malloc(sizeof(_TfsgScreen)); 
-  if(s == 0)
-    return NULL; 
-  s->EvtTargets.Next = 0;
-  return s;
-  }*/
 
   Screen::Screen()
   {
@@ -48,8 +37,8 @@ namespace EuMax01
   {
     int i;
     EvtTarget * pTmpEvtTarget;
-    Globals * pGlobals = Globals::getInstance();
-    i = Tool::blankSurface(pSurface,pGlobals->GlobalUint32ColorSewBlau);//TODO Rückgabewert
+    //Globals * pGlobals = Globals::getInstance();
+    i = Tool::blankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
     pTmpEvtTarget = (EvtTarget*)this->EvtTargets.Next;
     
     while(pTmpEvtTarget)
