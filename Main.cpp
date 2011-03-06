@@ -53,6 +53,7 @@ namespace EuMax01
     signal (SIGTERM, catch_sig);
 
       if(SDL_Init(SDL_INIT_VIDEO)==-1){
+	printf("Couldn't initialize SDL: %s\n", SDL_GetError());
 	return NULL;
       }
       else{
@@ -185,7 +186,9 @@ namespace EuMax01
 	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets))
 	  {     //alle EventTargets auf bPaintRequest untersuchen
 	    pGUI->pActiveScreen->show(pGUI->pMainSurface);
+#ifndef FSGPP_SHOW_IMMEDIATELY
 	    SDL_Flip(pGUI->pMainSurface);                                   //show buffer
+#endif
 	  }
       }
     return 0;

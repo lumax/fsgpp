@@ -8,10 +8,11 @@ LIBS+=-lSDL -lSDL_ttf -lSDL_image
 #-L$(LIB_DIR)/
 
 ifdef CROSS_COMPILE
-CPPFLAGS+=-DTARGET_ARM
+CPPFLAGS+=
+#-DTARGET_ARM
 endif
 
-CPPFLAGS+=-g -Wall
+CPPFLAGS+=-g -Wall -DFSGPP_SHOW_IMMEDIATELY
 #`sdl-config --cflags`
 LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image -lts
 
@@ -27,3 +28,5 @@ public:
 	cp Screen.cpp ${ELDK_FS}/usr/work/${PROJECT_NAME}/Screen.cpp
 	cp LL.cpp ${ELDK_FS}/usr/work/${PROJECT_NAME}/LL.cpp
 	cp Button.cpp ${ELDK_FS}/usr/work/${PROJECT_NAME}/Button.cpp
+	cp Globals.cpp ${ELDK_FS}/usr/work/${PROJECT_NAME}/Globals.cpp
+	cp cap.cpp ${ELDK_FS}/usr/work/${PROJECT_NAME}/cap.cpp

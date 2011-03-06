@@ -137,7 +137,7 @@ void Button::setText(const char* text)
 {
   this->pButtonText = text;
 }
-
+  
   int Button::showImages(void * v,SDL_Surface* target)
   {
     SDL_Rect tmpRect;
@@ -170,6 +170,9 @@ void Button::setText(const char* text)
 	return -1;
       }
     }
+#ifdef FSGPP_SHOW_IMMEDIATELY 
+    SDL_UpdateRect(target,tmpRect.x,tmpRect.y,tmpRect.w,tmpRect.h);
+#endif
     return 0;
   }
   
@@ -219,8 +222,10 @@ void Button::setText(const char* text)
       //  return -1;
       //}
     }
-    //SDL_UpdateRect(target,tmpRect.x,tmpRect.y,tmpRect.w,tmpRect.h);
-    // SDL_Flip(target);
+#ifdef FSGPP_SHOW_IMMEDIATELY 
+    SDL_UpdateRect(target,tmpRect.x,tmpRect.y,tmpRect.w,tmpRect.h);
+#endif
+     // SDL_Flip(target);
     return 0;
   }
   
@@ -243,7 +248,7 @@ void Button::setText(const char* text)
 	(*b->fnkUnSelect)(b->pTSource);//execFnk 
       }
     }
-  b->bPaintRequest = true;
+    b->bPaintRequest = true;
 } 
 
  /* //SDL_Surface Konstruktion
