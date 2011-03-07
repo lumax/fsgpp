@@ -48,7 +48,7 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
       unsigned int crossX = cap->camCrossX;
       unsigned int crossY = cap->camHeight/4*3;
 
-      int start = crossX*2+zeile*crossY;
+      int start = /*crossX*2+*/zeile*crossY;
       //int lineoffset = crossY*h*4;
       char * pc = (char *)p;
 
@@ -204,10 +204,10 @@ static void evtB1(void * src,SDL_Event * evt){
   cap_cam_addCrossX(0,-10);
 }
 static void evtB2(void * src,SDL_Event * evt){
-  cap_cam_addCrossX(0,-1);
+  cap_cam_addCrossX(0,-2);
 }
 static void evtB3(void * src,SDL_Event * evt){
-  cap_cam_addCrossX(0,1);
+  cap_cam_addCrossX(0,2);
 }
 static void evtB4(void * src,SDL_Event * evt){
   cap_cam_addCrossX(0,10);
@@ -216,10 +216,10 @@ static void evtB5(void * src,SDL_Event * evt){
   cap_cam_addCrossX(1,-10);
 }
 static void evtB6(void * src,SDL_Event * evt){
-  cap_cam_addCrossX(1,-1);
+  cap_cam_addCrossX(1,-2);
 }
 static void evtB7(void * src,SDL_Event * evt){
-  cap_cam_addCrossX(1,1);
+  cap_cam_addCrossX(1,2);
 }
 static void evtB8(void * src,SDL_Event * evt){
   cap_cam_addCrossX(1,10);
