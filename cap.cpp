@@ -13,15 +13,120 @@
 #include "Globals.h"
 #include "Poll.h"
 #include "Main.h"
+#include "utils.h"
 
 #include "v4l_capture.h"
 
 using namespace std;
 using namespace EuMax01;
 
+class CamControl:IPollTimerListener,IPollReadListener
+{
+public:
+  CamControl(GUI * pGUI);
+  virtual void pollReadEvent(PollSource * s);
+  virtual void pollTimerExpired(long us);
+  unsigned char *framebuffer;
+private:
+  bool cam0ready;
+  bool cam1ready;
+  PollTimer * pPollTimer;
+  PollReader * pPollReaderCam0;
+  PollReader * pPollReaderCam1;
+  GUI * ptheGUI;
+  int PixelFormat;//0 = normal, 1 = MJPEG
+};
+
 static int camwidth = 0;
 static int camheight = 0;
 
+
+static CamControl * camCtrl;
+
+/***************************************************************/
+static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_t len)
+{
+  unsigned int i,ii;
+
+  if(method==IO_METHOD_MMAP)
+    {
+      printf("pixelformat = MJPEG\n");
+      
+      i = jpeg_decode(&camCtrl->framebuffer,(unsigned char*)p,\
+		      &cap->camWidth,\
+		      &cap->camHeight);
+
+      
+      SDL_LockSurface(cap->mainSurface);
+      SDL_LockYUVOverlay(cap->sdlOverlay);
+
+      int w = cap->camWidth;
+      int h = cap->camHeight;
+      int alles = 0;
+      int cam = cap->camnumber;
+      int wMalZwei = w*2;
+      int wMalVier = w*4;
+      int offset = cam*wMalZwei;
+
+      //Fadenkreuz
+      unsigned int crossBreite = cap->camWidth;
+      unsigned int crossDicke = 2;
+      int zeile = w*2;
+      //unsigned int crossX = w/2-crossBreite/2;
+      //unsigned int crossY = h/2-crossDicke;
+      unsigned int crossX = cap->camCrossX;
+      unsigned int crossY = cap->camHeight/4*3;
+
+      int start = /*crossX*2+*/zeile*crossY;
+      //int lineoffset = crossY*h*4;
+      char * pc = (char *)p;
+
+      //horizontale Linie
+      for(i=0;i<crossDicke;i++)
+	{
+	  for(ii=0;ii<crossBreite*2;ii++)
+	    {
+	      pc[start+ii]=0x00;
+	    }
+	  start+=zeile;
+	}
+      //vertikale Linie
+      start = (crossX*2);//+zeile*(crossBreite/2);
+      for(i=0;i<h;i++)
+	{
+	  for(ii=0;ii<crossDicke*2;ii++)
+	    {
+	      pc[start+ii]=0x00;
+	    }
+	  start+=zeile;
+	}
+
+      memcpy(cap->sdlOverlay->pixels[0], camCtrl->framebuffer,
+	       cap->camWidth * (cap->camHeight) * 2);
+      
+      /*for(i=0;i<h;i++)
+	{
+	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,p+alles, wMalZwei);
+	  alles += w*2;
+	  }*/
+      //printf("alles = %i, len = %i\n",alles,len);
+      SDL_UnlockYUVOverlay(cap->sdlOverlay);
+      SDL_UnlockSurface(cap->mainSurface);
+
+      /*tmpRect.h=tmpRect.h*MULTIPLIKATOR;*2;//untereinander
+	tmpRect.w=tmpRect.w*2*MULTIPLIKATOR;*4;//nebeneinander*/
+      SDL_DisplayYUVOverlay(cap->sdlOverlay, &cap->sdlRect);
+    }
+  else if(method==IO_METHOD_USERPTR)
+    {
+      printf("IO_METHOD_USEPTR not supported in process_image2\n");
+    }
+  else
+    {
+      fputc ('_', stdout);
+      fflush (stdout);
+    }
+}
 /***************************************************************/
 static void processImages(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
@@ -96,29 +201,17 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
     }
 }
 
-class CamControl:IPollTimerListener,IPollReadListener
-{
-public:
-  CamControl(GUI * pGUI);
-  virtual void pollReadEvent(PollSource * s);
-  virtual void pollTimerExpired(long us);
-private:
-  bool cam0ready;
-  bool cam1ready;
-  PollTimer * pPollTimer;
-  PollReader * pPollReaderCam0;
-  PollReader * pPollReaderCam1;
-  GUI * ptheGUI;
-};
+
 
 CamControl::CamControl(GUI * pGUI)
 {
   this->ptheGUI = pGUI;
+  this->PixelFormat = 1;
   cap_init(pGUI->getMainSurface(),	\
 	   camwidth,				\
 	   camheight,				\
 	   0,				\
-	   0);
+	   this->PixelFormat);
   cam0ready=false;
   cam1ready=false;
   pPollTimer = new PollTimer(1000,this);
@@ -127,6 +220,11 @@ CamControl::CamControl(GUI * pGUI)
 
   pGUI->addPollTimer(pPollTimer);
   // cap_uninit();
+
+  this->framebuffer =
+    (unsigned char *) calloc(1,
+			     (size_t) camwidth * (camheight +
+						   8) * 2);
 }
 
 void CamControl::pollReadEvent(PollSource * s)
@@ -156,7 +254,15 @@ void CamControl::pollTimerExpired(long us)
   int camfd = 0;
   if(!this->cam0ready)
     {
-      camfd=cap_cam_init(0,processImages);
+      if(this->PixelFormat)
+	{
+	  camfd=cap_cam_init(0,processMJPEG);
+	}
+      else
+	{
+	  camfd=cap_cam_init(0,processImages);
+	}
+
       if(camfd<0)
 	{
 	  again = true;
@@ -173,7 +279,14 @@ void CamControl::pollTimerExpired(long us)
 
   if(!this->cam1ready)
     {
-      camfd = cap_cam_init(1,processImages);
+      if(this->PixelFormat)
+	{
+	  camfd=cap_cam_init(1,processMJPEG);
+	}
+      else
+	{
+	  camfd=cap_cam_init(1,processImages);
+	}
       if(camfd<0)
 	{
 	  again = true;
@@ -254,7 +367,7 @@ int main()
     return -1;
   }
 
-  CamControl camCtrl = CamControl(theGUI);
+camCtrl = new CamControl(theGUI);
 
 /*
 <------------------| sdlwidth/2
