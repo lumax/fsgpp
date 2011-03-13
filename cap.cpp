@@ -26,7 +26,8 @@ public:
   CamControl(GUI * pGUI);
   virtual void pollReadEvent(PollSource * s);
   virtual void pollTimerExpired(long us);
-  unsigned char *framebuffer;
+  unsigned char *framebuffer0;
+  unsigned char *framebuffer1;
 private:
   bool cam0ready;
   bool cam1ready;
@@ -47,12 +48,22 @@ static CamControl * camCtrl;
 static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
   unsigned int i,ii;
-
+  unsigned char *framebuffer;
+  //if(cap->camnumber)
+  //  return;
   if(method==IO_METHOD_MMAP)
     {
       printf("pixelformat = MJPEG\n");
-      
-      i = jpeg_decode(&camCtrl->framebuffer,(unsigned char*)p,\
+
+      if(cap->camnumber)
+	{
+	  framebuffer = camCtrl->framebuffer1;
+	}
+      else
+	{
+	  framebuffer = camCtrl->framebuffer0;
+	}
+      i = jpeg_decode(&framebuffer,(unsigned char*)p,\
 		      &cap->camWidth,\
 		      &cap->camHeight);
 
@@ -77,10 +88,10 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
       unsigned int crossX = cap->camCrossX;
       unsigned int crossY = cap->camHeight/4*3;
 
-      int start = /*crossX*2+*/zeile*crossY;
+      int start = zeile*crossY;
       //int lineoffset = crossY*h*4;
-      char * pc = (char *)p;
-
+      char * pc = (char *)framebuffer;
+      
       //horizontale Linie
       for(i=0;i<crossDicke;i++)
 	{
@@ -100,15 +111,17 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
 	    }
 	  start+=zeile;
 	}
-
-      memcpy(cap->sdlOverlay->pixels[0], camCtrl->framebuffer,
-	       cap->camWidth * (cap->camHeight) * 2);
       
-      /*for(i=0;i<h;i++)
+      /*  memcpy(cap->sdlOverlay->pixels[0], camCtrl->framebuffer,
+	     cap->camWidth * (cap->camHeight) *2);
+      */
+      for(i=0;i<h;i++)
 	{
-	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,p+alles, wMalZwei);
+	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,	\
+		 framebuffer+alles,\ 
+		 wMalZwei);
 	  alles += w*2;
-	  }*/
+	  }
       //printf("alles = %i, len = %i\n",alles,len);
       SDL_UnlockYUVOverlay(cap->sdlOverlay);
       SDL_UnlockSurface(cap->mainSurface);
@@ -206,7 +219,7 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
 CamControl::CamControl(GUI * pGUI)
 {
   this->ptheGUI = pGUI;
-  this->PixelFormat = 1;
+  this->PixelFormat = 1;//1 = MJPEG
   cap_init(pGUI->getMainSurface(),	\
 	   camwidth,				\
 	   camheight,				\
@@ -221,7 +234,11 @@ CamControl::CamControl(GUI * pGUI)
   pGUI->addPollTimer(pPollTimer);
   // cap_uninit();
 
-  this->framebuffer =
+  this->framebuffer0 =
+    (unsigned char *) calloc(1,
+			     (size_t) camwidth * (camheight +
+						   8) * 2);
+  this->framebuffer1 =
     (unsigned char *) calloc(1,
 			     (size_t) camwidth * (camheight +
 						   8) * 2);
@@ -344,11 +361,11 @@ int main()
   GUI_Properties props;
   GUI* theGUI;
 
-  camwidth = 352;
-  camheight = 288;
+  camwidth = 640;//352;
+  camheight = 480;//288;
 
-  props.width=720;
-  props.height=576;
+  props.width=1280;//720;
+  props.height=768;//576;
   props.bpp=0;
   props.flags=SDL_SWSURFACE;//SDL_HWSURFACE;//|SDL_DOUBLEBUF;
 
