@@ -47,13 +47,19 @@ static CamControl * camCtrl;
 /***************************************************************/
 static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
+  static int counter =0;
   unsigned int i,ii;
   unsigned char *framebuffer;
   //if(cap->camnumber)
   //  return;
+  if(counter<=50)
+    {
+      counter++;
+      return;
+    }
   if(method==IO_METHOD_MMAP)
     {
-      printf("pixelformat = MJPEG\n");
+      //printf("pixelformat = MJPEG\n");
 
       if(cap->camnumber)
 	{
@@ -192,7 +198,7 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
 
       for(i=0;i<h;i++)
 	{
-	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,p+alles, wMalZwei);
+	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,pc+alles, wMalZwei);
 	  alles += w*2;
 	}
       //printf("alles = %i, len = %i\n",alles,len);
@@ -354,20 +360,49 @@ static void evtB7(void * src,SDL_Event * evt){
 static void evtB8(void * src,SDL_Event * evt){
   cap_cam_addCrossX(1,10);
 }
+const char * usage =				\
+  "cap -xga for 1024x768 else PAL Widescreen with 1024*576\n"\
+  "    -fullscreen for Fullscreen\n";
 
-int main()
+int main(int argc, char *argv[])
 {
   //SDL_version compile_version;
-  GUI_Properties props;
   GUI* theGUI;
+  int sdlwidth = 1024;
+  int sdlheight = 576;
+  GUI_Properties props;
+  props.width=0;
+  props.height=0;
+  props.bpp=0;
+  props.flags=0;
+
+  argc--;
+  while(argc)
+    {
+      if(!strcmp(argv[argc],"-xga")||!strcmp(argv[argc],"-XGA"))
+	{
+	  sdlwidth = 1024;
+	  sdlheight = 768;
+	}
+      else if(!strcmp(argv[argc],"-fullscreen"))
+	{
+	  props.flags|=SDL_FULLSCREEN;
+	}
+      else
+	{
+	  printf("%s",usage);
+	  return 0;
+	}
+      argc--;
+    }
 
   camwidth = 640;//352;
   camheight = 480;//288;
 
-  props.width=1280;//720;
-  props.height=768;//576;
+  props.width=sdlwidth;//1280;//720;
+  props.height=sdlheight;//576;
   props.bpp=0;
-  props.flags=SDL_SWSURFACE;//SDL_HWSURFACE;//|SDL_DOUBLEBUF;
+  props.flags|=SDL_SWSURFACE;//SDL_HWSURFACE;//|SDL_DOUBLEBUF;
 
   if(SDL_BYTEORDER==SDL_BIG_ENDIAN)
     {
