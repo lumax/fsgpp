@@ -13,8 +13,8 @@
 #include "Globals.h"
 #include "Poll.h"
 #include "Main.h"
-#include "utils.h"
 
+#include <dsp_jpeg.h>
 #include "v4l_capture.h"
 
 using namespace std;
@@ -69,7 +69,7 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
 	{
 	  framebuffer = camCtrl->framebuffer0;
 	}
-      i = jpeg_decode(&framebuffer,(unsigned char*)p,\
+      i = jpeg_decode(framebuffer,(unsigned char*)p,\
 		      &cap->camWidth,\
 		      &cap->camHeight);
 
@@ -240,6 +240,16 @@ CamControl::CamControl(GUI * pGUI)
   pGUI->addPollTimer(pPollTimer);
   // cap_uninit();
 
+#ifdef C6COMPILE
+  this->framebuffer0 =
+    (unsigned char *) C6RUN_MEM_calloc(1,
+			     (size_t) camwidth * (camheight +
+						   8) * 2);
+  this->framebuffer1 =
+    (unsigned char *) C6RUN_MEM_calloc(1,
+			     (size_t) camwidth * (camheight +
+						   8) * 2);
+#else
   this->framebuffer0 =
     (unsigned char *) calloc(1,
 			     (size_t) camwidth * (camheight +
@@ -248,6 +258,7 @@ CamControl::CamControl(GUI * pGUI)
     (unsigned char *) calloc(1,
 			     (size_t) camwidth * (camheight +
 						   8) * 2);
+#endif /* C6COMPILE */
 }
 
 void CamControl::pollReadEvent(PollSource * s)

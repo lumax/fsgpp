@@ -19,6 +19,7 @@ LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image -lts
 
 ifdef CROSS_COMPILE
 LIBS+=../capture/libc6_dsp_jpeg.lib
+CPPFLAGS+= -DC6COMPILE
 else
 LDFLAGS+=-ldsp_jpeg
 endif
