@@ -283,7 +283,6 @@ void CamControl::pollReadEvent(PollSource * s)
 
 void CamControl::pollTimerExpired(long us)
 {
-  static int counter = 0;
   bool again = false;
   int camfd = 0;
   if(!this->cam0ready)
@@ -341,9 +340,6 @@ void CamControl::pollTimerExpired(long us)
   else
     {
       printf("TODO remove PollTimer\n");
-      counter++;
-      if(counter>=40)
-	ptheGUI->stopEventLoop();
     }
 }
 
@@ -371,6 +367,10 @@ static void evtB7(void * src,SDL_Event * evt){
 static void evtB8(void * src,SDL_Event * evt){
   cap_cam_addCrossX(1,10);
 }
+static void evtExit(void * src,SDL_Event * evt){
+  GUI::getInstance(0,0)->stopEventLoop();
+}
+
 const char * usage =				\
   "cap -xga for 1024x768 else PAL Widescreen with 1024*576\n"\
   "    -fullscreen for Fullscreen\n";
@@ -452,7 +452,7 @@ ___________________________________________
 camhalbe0 =  sdlwidth/2 -camwidth/2
 camhalbe1 =  sdlwidth/2 +camwidth/2
 
-    B1 B2 B3 B4          B5 B6 B7 B8   
+    B1 B2 B3 B4   Bexit  B5 B6 B7 B8   
     << < | > >>          << < | > >>
 
 B1 = camhalbe0 - 2*Buttonwidth - 2*Abstand
@@ -462,7 +462,8 @@ B4 = camhalbe0 + 1*Buttonwidth + 2*Abstand
 B5 = camhalbe1 - 2*ButtonWidth - 2*Abstand
 B6 = camhalbe1 - 1*            - 1*Abstand
 B7 = camhalbe1 + 0*            + 1*
-B8 = camhalbe1 + 1*            + 2*  
+B8 = camhalbe1 + 1*            + 2*
+Bexit = sdlw/2 - Buttonwidth/2  
 */
   int sdlw = props.width;
   int camhalbe0 = sdlw/2 - camwidth/2;
@@ -506,6 +507,10 @@ B8 = camhalbe1 + 1*            + 2*
   PosDimRect.x = camhalbe1 + 1*BtnW + 2*Abstand;
   Button* B8=new Button(">>",PosDimRect);
   B8->setLMButtonUpEvtHandler(evtB8);
+  
+  PosDimRect.x = sdlw/2 - BtnW/2;
+  Button* Bexit=new Button("QUIT",PosDimRect);
+  Bexit->setLMButtonUpEvtHandler(evtExit);  
 
   Screen* s1 = new Screen();
   s1->addEvtTarget(B1);
@@ -516,6 +521,7 @@ B8 = camhalbe1 + 1*            + 2*
   s1->addEvtTarget(B6);
   s1->addEvtTarget(B7);
   s1->addEvtTarget(B8);
+  s1->addEvtTarget(Bexit);
 
   theGUI->activateScreen(s1);
 
