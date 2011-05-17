@@ -92,7 +92,7 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
       //unsigned int crossX = w/2-crossBreite/2;
       //unsigned int crossY = h/2-crossDicke;
       unsigned int crossX = cap->camCrossX;
-      unsigned int crossY = cap->camHeight/4*3;
+      unsigned int crossY = cap->camHeight/2;
 
       int start = zeile*crossY;
       //int lineoffset = crossY*h*4;
@@ -124,7 +124,7 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
       for(i=0;i<h;i++)
 	{
 	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,	\
-		 framebuffer+alles,\ 
+		 framebuffer+alles,\
 		 wMalZwei);
 	  alles += w*2;
 	  }
