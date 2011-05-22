@@ -19,7 +19,7 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  PollTimer::PollTimer(int ms,IPollTimerListener * lis)
+  PollTimer::PollTimer(unsigned int ms,IPollTimerListener * lis)
   {
     //clear memory
     char * pv = (char*)this;
@@ -43,10 +43,10 @@ namespace EuMax01
       }
     this->lis = lis;
   }
-  
+
   PollReader::PollReader(IPollReadListener * lis):PollSource(lis)
   {
-    
+
   }
 
   /*
@@ -67,7 +67,7 @@ namespace EuMax01
   {
     if(this->thePollfd.fd)
       return -2;
-    
+
     this->thePollfd.fd = fd;
     this->thePollfd.events = POLLIN | POLLPRI;
     return 0;
@@ -112,24 +112,34 @@ namespace EuMax01
 
   int PollManager::timerHandling(PollTimer * tmpTimer)
   {
-    unsigned long uptime = 0;
-	
+    unsigned int sec,i=0;
     if(gettimeofday(&timerStart, NULL))
       return -1;
-    
-    uptime = (unsigned long)(timerStart.tv_sec * 1000000);
-    uptime += (unsigned long)(timerStart.tv_usec);
-    timerLast = timerStart;
+
     while(tmpTimer)
       {
 	if(tmpTimer)
 	  {
-	    if(tmpTimer->nextTimeout_us<=uptime)
+	    if(tmpTimer->nextTimeout.tv_sec<timerStart.tv_sec||\
+	       (tmpTimer->nextTimeout.tv_sec==timerStart.tv_sec &&	\
+		tmpTimer->nextTimeout.tv_usec<=timerStart.tv_usec) )
 	      {
 		//next Timeout
-		tmpTimer->nextTimeout_us = uptime+(tmpTimer->timeout*1000);
+		if(tmpTimer->timeout)
+		  sec = tmpTimer->timeout/1000;
+
+		i = timerStart.tv_usec+tmpTimer->timeout*1000;
+		if(i>=1000000)
+		{
+		  sec = i/1000000;
+		  i=i-sec*1000000;
+		}
+
+		tmpTimer->nextTimeout.tv_sec = timerStart.tv_sec+sec;
+		tmpTimer->nextTimeout.tv_usec = i;
+
 		//exec Funktion
-		tmpTimer->lis->pollTimerExpired(/*timediff*/uptime);
+		tmpTimer->lis->pollTimerExpired(/*timediff*//*uptime*/0);
 	      }
 	  }
 	tmpTimer = (PollTimer*)tmpTimer->Next;
@@ -139,7 +149,7 @@ namespace EuMax01
 
   int PollManager::call_poll()
   {
-   
+
     struct pollfd fdinfo[this->MaxPollSources];
     PollSource* sources[this->MaxPollSources];
     PollSource* pTmp = 0;
@@ -149,15 +159,11 @@ namespace EuMax01
 
     timerStart.tv_sec = 0;
     timerStart.tv_usec = 0;
-    timerLast.tv_sec = 0;
-    timerLast.tv_usec = 0;
 
     polling = true;
 
     if(gettimeofday(&timerStart, NULL))
       return -1;
-    
-    timerLast=timerStart;
 
     while(polling)
       {
@@ -187,7 +193,7 @@ namespace EuMax01
 	  }
 
 	//std::cout << "mtime: " << mtime << std::endl;
-	
+
 	if(tmpTimer)
 	  {
 	    if(timerHandling(tmpTimer))

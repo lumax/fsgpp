@@ -19,9 +19,9 @@ namespace EuMax01
   class PollTimer:public LL
   {
   public:
-    PollTimer(int ms,IPollTimerListener * lis);
-    int timeout;
-    unsigned long nextTimeout_us;
+    PollTimer(unsigned int ms,IPollTimerListener * lis);
+    unsigned int timeout;
+    struct timeval nextTimeout;
     IPollTimerListener * lis;
   private:
     
@@ -69,7 +69,6 @@ namespace EuMax01
     unsigned int AmountSources;
     bool newPrecondition;
     bool polling;
-    struct timeval timerLast;
     struct timeval timerStart;
     unsigned int MaxPollSources;
   };
