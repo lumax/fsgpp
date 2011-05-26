@@ -44,12 +44,64 @@ static int camheight = 0;
 
 static CamControl * camCtrl;
 
+static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
+{
+  unsigned int i,ii;
+  int w = cap->camWidth;
+  int h = cap->camHeight;
+  int alles = 0;
+  int cam = cap->camnumber;
+  int wMalZwei = w*2;
+  int wMalVier = w*4;
+  int offset = cam*wMalZwei;
+
+  //Fadenkreuz
+  unsigned int crossBreite = cap->camWidth;
+  unsigned int crossDicke = 2;
+  int zeile = w*2;
+  //unsigned int crossX = w/2-crossBreite/2;
+  //unsigned int crossY = h/2-crossDicke;
+  unsigned int crossX = cap->camCrossX;
+  unsigned int crossY = cap->camHeight/2;
+
+  int start = zeile*crossY;
+  //int lineoffset = crossY*h*4;
+
+  //horizontale Linie
+  for(i=0;i<crossDicke;i++)
+    {
+      for(ii=0;ii<crossBreite*2;ii++)
+	{
+	  pc[start+ii]=0x00;
+	}
+      start+=zeile;
+    }
+  //vertikale Linie
+  start = (crossX*2);//+zeile*(crossBreite/2);
+  for(i=0;i<h;i++)
+    {
+      for(ii=0;ii<crossDicke*2;ii++)
+	{
+	  pc[start+ii]=0x00;
+	}
+      start+=zeile;
+    }
+
+  for(i=0;i<h;i++)
+    {
+      memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,	\
+	     pc+alles,					\
+	     wMalZwei);
+	  alles += w*2;
+    }
+}
+
 /***************************************************************/
 static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
   static int counter =0;
-  unsigned int i,ii;
   unsigned char *framebuffer;
+  int i;
   //if(cap->camnumber)
   //  return;
   if(counter<=50)
@@ -72,63 +124,14 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
       i = jpeg_decode(framebuffer,(unsigned char*)p,\
 		      &cap->camWidth,\
 		      &cap->camHeight);
+      if(i)
+	printf("error jpeg_decode\n");
 
-      
       SDL_LockSurface(cap->mainSurface);
       SDL_LockYUVOverlay(cap->sdlOverlay);
 
-      int w = cap->camWidth;
-      int h = cap->camHeight;
-      int alles = 0;
-      int cam = cap->camnumber;
-      int wMalZwei = w*2;
-      int wMalVier = w*4;
-      int offset = cam*wMalZwei;
+      overlayAndCrossair(cap,(char *)framebuffer,len);
 
-      //Fadenkreuz
-      unsigned int crossBreite = cap->camWidth;
-      unsigned int crossDicke = 2;
-      int zeile = w*2;
-      //unsigned int crossX = w/2-crossBreite/2;
-      //unsigned int crossY = h/2-crossDicke;
-      unsigned int crossX = cap->camCrossX;
-      unsigned int crossY = cap->camHeight/2;
-
-      int start = zeile*crossY;
-      //int lineoffset = crossY*h*4;
-      char * pc = (char *)framebuffer;
-      
-      //horizontale Linie
-      for(i=0;i<crossDicke;i++)
-	{
-	  for(ii=0;ii<crossBreite*2;ii++)
-	    {
-	      pc[start+ii]=0x00;
-	    }
-	  start+=zeile;
-	}
-      //vertikale Linie
-      start = (crossX*2);//+zeile*(crossBreite/2);
-      for(i=0;i<h;i++)
-	{
-	  for(ii=0;ii<crossDicke*2;ii++)
-	    {
-	      pc[start+ii]=0x00;
-	    }
-	  start+=zeile;
-	}
-      
-      /*  memcpy(cap->sdlOverlay->pixels[0], camCtrl->framebuffer,
-	     cap->camWidth * (cap->camHeight) *2);
-      */
-      for(i=0;i<h;i++)
-	{
-	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,	\
-		 framebuffer+alles,\
-		 wMalZwei);
-	  alles += w*2;
-	  }
-      //printf("alles = %i, len = %i\n",alles,len);
       SDL_UnlockYUVOverlay(cap->sdlOverlay);
       SDL_UnlockSurface(cap->mainSurface);
 
@@ -155,52 +158,9 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
       SDL_LockSurface(cap->mainSurface);
       SDL_LockYUVOverlay(cap->sdlOverlay);
 
-      int w = cap->camWidth;
-      int h = cap->camHeight;
-      int alles = 0;
-      int cam = cap->camnumber;
-      int wMalZwei = w*2;
-      int wMalVier = w*4;
-      int offset = cam*wMalZwei;
-
-      //Fadenkreuz
-      unsigned int crossBreite = cap->camWidth;
-      unsigned int crossDicke = 2;
-      int zeile = w*2;
-      //unsigned int crossX = w/2-crossBreite/2;
-      //unsigned int crossY = h/2-crossDicke;
-      unsigned int crossX = cap->camCrossX;
-      unsigned int crossY = cap->camHeight/4*3;
-
-      int start = /*crossX*2+*/zeile*crossY;
-      //int lineoffset = crossY*h*4;
       char * pc = (char *)p;
+      overlayAndCrossair(cap,(char *)pc,len);
 
-      //horizontale Linie
-      for(i=0;i<crossDicke;i++)
-	{
-	  for(ii=0;ii<crossBreite*2;ii++)
-	    {
-	      pc[start+ii]=0x00;
-	    }
-	  start+=zeile;
-	}
-      //vertikale Linie
-      start = (crossX*2);//+zeile*(crossBreite/2);
-      for(i=0;i<h;i++)
-	{
-	  for(ii=0;ii<crossDicke*2;ii++)
-	    {
-	      pc[start+ii]=0x00;
-	    }
-	  start+=zeile;
-	}
-
-      for(i=0;i<h;i++)
-	{
-	  memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,pc+alles, wMalZwei);
-	  alles += w*2;
-	}
       //printf("alles = %i, len = %i\n",alles,len);
       SDL_UnlockYUVOverlay(cap->sdlOverlay);
       SDL_UnlockSurface(cap->mainSurface);
