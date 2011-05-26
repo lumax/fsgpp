@@ -225,7 +225,7 @@ void CamControl::pollReadEvent(PollSource * s)
 {
   if(s==pPollReaderCam0)
     {
-      printf("0");
+      //printf("0");
       if(-1==cap_read_frame(0))
 	{
 	  printf("error on polling camera0\n");
@@ -233,7 +233,7 @@ void CamControl::pollReadEvent(PollSource * s)
     }
     if(s==pPollReaderCam1)
     {
-      printf("1");
+      //printf("1");
       if(-1==cap_read_frame(1))
 	{
 	  printf("error on polling camera1\n");
@@ -299,7 +299,7 @@ void CamControl::pollTimerExpired(long us)
     }
   else
     {
-      printf("TODO remove PollTimer\n");
+      //printf("TODO remove PollTimer\n");
     }
 }
 
