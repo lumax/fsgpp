@@ -44,6 +44,23 @@ static int camheight = 0;
 
 static CamControl * camCtrl;
 
+static unsigned char getYfromRGB(unsigned char r,unsigned char g,unsigned char b)
+{
+  //double d = ((0.257*r)+(0.504*g)+(0.098*(double)b)+16);
+  //return (unsigned char)d;
+  return (unsigned char)((0.257*r)+(0.504*g)+(0.098*b)+16);
+}
+
+static unsigned char getUfromRGB(unsigned char r,unsigned char g,unsigned char b)
+{
+  return (unsigned char)((0.439*r)-(0.368*g)-(0.071*b)+128);
+}
+
+static unsigned char getVfromRGB(unsigned char r,unsigned char g,unsigned char b)
+{
+  return (unsigned char)(-(0.148*r)-(0.291*g)+(0.439*b)+128);
+}
+
 static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
 {
   unsigned int i,ii;
@@ -57,7 +74,7 @@ static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
 
   //Fadenkreuz
   unsigned int crossBreite = cap->camWidth;
-  unsigned int crossDicke = 2;
+  unsigned int crossDicke = 1;
   int zeile = w*2;
   //unsigned int crossX = w/2-crossBreite/2;
   //unsigned int crossY = h/2-crossDicke;
@@ -65,14 +82,31 @@ static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
   unsigned int crossY = cap->camHeight/2;
 
   int start = zeile*crossY;
+  int flag = 1;
+  unsigned char Y = 106,U = 221,V = 202;
+
+
+  /*  if(flag)
+    {
+      Y = getYfromRGB(255,0,255);
+      U = getUfromRGB(255,0,255);
+      V = getVfromRGB(255,0,255);
+      printf("Y = %i, U=%i, V=%i\n",Y,U,V);
+      flag=0;
+      }*/
+
   //int lineoffset = crossY*h*4;
 
   //horizontale Linie
   for(i=0;i<crossDicke;i++)
     {
-      for(ii=0;ii<crossBreite*2;ii++)
+      for(ii=0;ii<crossBreite*2;ii+=4)//ii++)
 	{
-	  pc[start+ii]=0x00;
+	  //pc[start+ii]=0x00;
+	  pc[start+ii]=Y;
+	  pc[start+ii+1]=V;
+	  pc[start+ii+2]=Y;
+	  pc[start+ii+3]=U;
 	}
       start+=zeile;
     }
@@ -80,9 +114,19 @@ static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
   start = (crossX*2);//+zeile*(crossBreite/2);
   for(i=0;i<h;i++)
     {
-      for(ii=0;ii<crossDicke*2;ii++)
+      for(ii=0;ii<crossDicke/**2*/;ii+=4)
 	{
-	  pc[start+ii]=0x00;
+	  pc[start+ii]=Y;
+	  if(i%2)//ein Pixel in Abhängigkeit
+	    {
+	      pc[start+ii+1]=U;
+	    }
+	  else
+	    {
+	      pc[start+ii+1]=V;
+	    }
+	  //pc[start+ii+2]=Y;
+	  //pc[start+ii+3]=U;
 	}
       start+=zeile;
     }
@@ -335,6 +379,25 @@ const char * usage =				\
   "cap -xga for 1024x768 else PAL Widescreen with 1024*576\n"\
   "    -fullscreen for Fullscreen\n";
 
+static void theSecondaryEvtHandling(SDL_Event * theEvent)
+{
+  switch(theEvent->type)
+    {
+    case (SDL_ACTIVEEVENT):
+      {
+	printf("---\n");
+	printf("SDL_ACTIVEEVENT type %i,\n",theEvent->type);
+	printf("SDL_ACTIVEEVENT gain %i,\n",theEvent->active.gain);
+	printf("SDL_ACTIVEEVENT type %i,\n",theEvent->active.state);
+	break;
+      }
+    default:
+      {
+	printf("eventType %i,\n",theEvent->type);
+      }
+    }
+}
+
 int main(int argc, char *argv[])
 {
   //SDL_version compile_version;
@@ -367,8 +430,8 @@ int main(int argc, char *argv[])
       argc--;
     }
 
-  camwidth = 640;//352;
-  camheight = 480;//288;
+  camwidth = 640;//352;//800;
+  camheight = 480;//288;//600;
 
   props.width=sdlwidth;//1280;//720;
   props.height=sdlheight;//576;
@@ -384,7 +447,7 @@ int main(int argc, char *argv[])
       printf("SDL_BYTEORDER==SDL_LIL_ENDIAN\n");
     }
 
-  theGUI=GUI::getInstance(&props,0);
+  theGUI=GUI::getInstance(&props,/*theSecondaryEvtHandling*/0);
   if(!theGUI){
     printf("failure GUI::getInstance()\n");
     return -1;
