@@ -23,7 +23,7 @@ using namespace EuMax01;
 class CamControl:IPollTimerListener,IPollReadListener
 {
 public:
-  CamControl(GUI * pGUI);
+  CamControl(GUI * pGUI,int PixelFormat);
   virtual void pollReadEvent(PollSource * s);
   virtual void pollTimerExpired(long us);
   unsigned char *framebuffer0;
@@ -82,7 +82,7 @@ static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
   unsigned int crossY = cap->camHeight/2;
 
   int start = zeile*crossY;
-  int flag = 1;
+  //int flag = 1;
   unsigned char Y = 106,U = 221,V = 202;
 
 
@@ -226,10 +226,15 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
 
 
 
-CamControl::CamControl(GUI * pGUI)
+CamControl::CamControl(GUI * pGUI,int Pixelformat)
 {
   this->ptheGUI = pGUI;
-  this->PixelFormat = 1;//1 = MJPEG
+
+  if(Pixelformat)
+    this->PixelFormat = 1;//1 = MJPEG
+  else
+    this->PixelFormat = 0;
+
   cap_init(pGUI->getMainSurface(),	\
 	   camwidth,				\
 	   camheight,				\
@@ -377,7 +382,8 @@ static void evtExit(void * src,SDL_Event * evt){
 
 const char * usage =				\
   "cap -xga for 1024x768 else PAL Widescreen with 1024*576\n"\
-  "    -fullscreen for Fullscreen\n";
+  "    -fullscreen for Fullscreen\n"\
+  "    -m for MJPEG (normally use RAW\n";
 
 static void theSecondaryEvtHandling(SDL_Event * theEvent)
 {
@@ -405,6 +411,7 @@ int main(int argc, char *argv[])
   int sdlwidth = 1024;
   int sdlheight = 576;
   GUI_Properties props;
+  int Pixelformat = 0;//0 = normal, 1 = MJPEG
   props.width=0;
   props.height=0;
   props.bpp=0;
@@ -421,6 +428,10 @@ int main(int argc, char *argv[])
       else if(!strcmp(argv[argc],"-fullscreen"))
 	{
 	  props.flags|=SDL_FULLSCREEN;
+	}
+      else if(!strcmp(argv[argc],"-m"))
+	{
+	  Pixelformat=1;;
 	}
       else
 	{
@@ -453,7 +464,7 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-camCtrl = new CamControl(theGUI);
+  camCtrl = new CamControl(theGUI,Pixelformat);
 
 /*
 <------------------| sdlwidth/2
