@@ -540,7 +540,7 @@ int main(int argc, char *argv[])
     }
   if(!iniParser_getParam("cap.conf","pixelformat",tmp,64))
     {
-      if(strcmp("mjpeg",tmp))
+      if(!strcmp("mjpeg",tmp))
 	{
 	  Pixelformat=1;
 	  printf("pixelformat = mjpeg\n");
