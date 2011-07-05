@@ -16,6 +16,7 @@
 
 #include <dsp_jpeg.h>
 #include "v4l_capture.h"
+#include "iniParser.h"
 
 using namespace std;
 using namespace EuMax01;
@@ -134,7 +135,7 @@ static void overlayAndCrossair(struct v4l_capture* cap,char * pc,size_t len)
   for(i=0;i<h;i++)
     {
       memcpy(cap->sdlOverlay->pixels[0]+i*wMalVier+offset,	\
-	     pc+alles,					\
+	     pc+alles,						\
 	     wMalZwei);
 	  alles += w*2;
     }
@@ -196,7 +197,6 @@ static void processMJPEG(struct v4l_capture* cap,const void * p,int method,size_
 /***************************************************************/
 static void processImages(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
-  unsigned int i,ii;
   if(method==IO_METHOD_MMAP)
     {
       SDL_LockSurface(cap->mainSurface);
@@ -224,6 +224,101 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
     }
 }
 
+static void convertYUYVtoRGB(char * src,char * target,int w,int h)
+{
+  //R = 1.164(Y - 16) + 1.596(V - 128)
+  //G = 1.164(Y - 16) - 0.813(V - 128) - 0.391(U - 128)
+  //B = 1.164(Y - 16) + 2.018(U - 128)
+
+  //target : RGBA
+  //source Y0 U0 Y1 V0  Y2 U2 Y3 V2  ...usw.
+  //Es gibt w*h Pixel! YUYV hat zwei Pixel in vier Bytes
+
+  unsigned int len = (w*h)/8;
+  unsigned int i;
+  double term1 = 0;
+  char alpha = 128;
+
+  char * ps = src;
+  char * pt = target;
+  for(i=0;i<len;i++)
+    {
+      term1 = (double)(1.164*(ps[0]-16));
+      pt[0] = (char)( term1 + 1.596*(ps[3]-128) );//R
+      pt[1] = (char)( term1 - 0.813*(ps[3]-128) - 0.391*(ps[1] - 128) );//G
+      pt[2] = (char)( term1 + 2.018*(ps[1]-128) );//B
+      pt[3] = alpha;
+
+      pt+=4; // das nächste Pixel beim Target
+
+      term1 = 1.164*(ps[2]-16);
+      pt[0] = (char)( term1 + 1.596*(ps[3]-128) );//R
+      pt[1] = (char)( term1 - 0.813*(ps[3]-128) - 0.391*(ps[1] - 128) );//G
+      pt[2] = (char)( term1 + 2.018*(ps[1]-128) );//B
+      pt[3] = alpha;
+
+      pt+=4;
+      ps+=4;
+    }
+}
+
+static void processRGBImages(struct v4l_capture* cap,const void * p,int method,size_t len)
+{
+  static SDL_Surface * pSf = 0;
+  static int initNotDone = 1;
+
+  if(method==IO_METHOD_MMAP)
+    {
+      if(cap->cam==0)
+	{
+	  if(initNotDone)
+	    {
+	      //SDL_SWSURFACE|SDL_SRCALPHA,
+	      pSf =SDL_CreateRGBSurface(SDL_HWSURFACE,                 \
+					cap->camWidth,			\
+					cap->camHeight,			\
+					8,				\
+					SDL_GetVideoSurface()->format->Rmask, \
+					SDL_GetVideoSurface()->format->Gmask, \
+					SDL_GetVideoSurface()->format->Bmask, \
+					SDL_GetVideoSurface()->format->Amask);
+	      if(!pSf)
+		{
+		  printf("SDL_CreateRGBSurface failed in processRGBImages\n");
+		  exit(-1);
+		}
+	      initNotDone = 0;
+	    }
+	  else
+	    {
+	      char * pc = (char *)p;
+	      convertYUYVtoRGB(pc,(char *)pSf->pixels,cap->camWidth,cap->camHeight);
+	      SDL_Rect destrect;
+	      destrect.x = 50;
+	      destrect.y = 50;
+	      destrect.w=cap->camWidth;
+	      destrect.h = cap->camHeight;
+	      if(SDL_BlitSurface(pSf,0,cap->mainSurface,&destrect))
+		printf("Blitting failed in processRGBImages\n");
+	      if(SDL_Flip(cap->mainSurface))
+		printf("Flipping failed in processRGBImages\n");
+	    }//end else initNotDone
+	}//end if cap->cam  == 1
+      else
+	{
+	  printf("not yet support for cam %i\n",cap->cam);
+	}
+    }
+  else if(method==IO_METHOD_USERPTR)
+    {
+      printf("IO_METHOD_USEPTR not supported in process_image2\n");
+    }
+  else
+    {
+      fputc ('_', stdout);
+      fflush (stdout);
+    }
+}
 
 
 CamControl::CamControl(GUI * pGUI,int Pixelformat)
@@ -296,7 +391,8 @@ void CamControl::pollTimerExpired(long us)
   int camfd = 0;
   if(!this->cam0ready)
     {
-      if(this->PixelFormat)
+      //camfd=cap_cam_init(0,processRGBImages);
+      if(this->PixelFormat==1)
 	{
 	  camfd=cap_cam_init(0,processMJPEG);
 	}
@@ -304,7 +400,6 @@ void CamControl::pollTimerExpired(long us)
 	{
 	  camfd=cap_cam_init(0,processImages);
 	}
-
       if(camfd<0)
 	{
 	  again = true;
@@ -321,6 +416,7 @@ void CamControl::pollTimerExpired(long us)
 
   if(!this->cam1ready)
     {
+      //camfd=cap_cam_init(1,processRGBImages);
       if(this->PixelFormat)
 	{
 	  camfd=cap_cam_init(1,processMJPEG);
@@ -412,10 +508,49 @@ int main(int argc, char *argv[])
   int sdlheight = 576;
   GUI_Properties props;
   int Pixelformat = 0;//0 = normal, 1 = MJPEG
+  char tmp[64];
+
   props.width=0;
   props.height=0;
   props.bpp=0;
   props.flags=0;
+
+  //camwidth = 640;//352;//800;
+  //camheight = 480;//288;//600
+
+  if(!iniParser_getParam("cap.conf","sdlwidth",tmp,64))
+    {
+      sdlwidth = atoi(tmp);
+      printf("sdlwidth = %i\n",sdlwidth);
+    }
+  if(!iniParser_getParam("cap.conf","sdlheight",tmp,64))
+    {
+      sdlheight = atoi(tmp);
+      printf("sdlheigth = %i\n",sdlheight);
+    }
+  if(!iniParser_getParam("cap.conf","camwidth",tmp,64))
+    {
+      camwidth = atoi(tmp);
+      printf("camwidth = %i\n",camwidth);
+    }
+ if(!iniParser_getParam("cap.conf","camheight",tmp,64))
+    {
+      camheight = atoi(tmp);
+      printf("camheight = %i\n",camheight);
+    }
+  if(!iniParser_getParam("cap.conf","pixelformat",tmp,64))
+    {
+      if(strcmp("mjpeg",tmp))
+	{
+	  Pixelformat=1;
+	  printf("pixelformat = mjpeg\n");
+	}
+      else
+	{
+	  Pixelformat = 0;
+	  printf("pixelformat = normal\n");
+	}	  
+    }
 
   argc--;
   while(argc)
@@ -431,7 +566,7 @@ int main(int argc, char *argv[])
 	}
       else if(!strcmp(argv[argc],"-m"))
 	{
-	  Pixelformat=1;;
+	  Pixelformat=1;
 	}
       else
 	{
@@ -440,9 +575,6 @@ int main(int argc, char *argv[])
 	}
       argc--;
     }
-
-  camwidth = 640;//352;//800;
-  camheight = 480;//288;//600;
 
   props.width=sdlwidth;//1280;//720;
   props.height=sdlheight;//576;
