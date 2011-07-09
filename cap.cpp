@@ -224,6 +224,36 @@ static void processImages(struct v4l_capture* cap,const void * p,int method,size
     }
 }
 
+/*static inline unsigned char clamp (double x)
+{
+int r = x;      // round to nearest
+
+        if (r < 0)         return 0;
+        else if (r > 255)  return 255;
+        else               return r;
+}
+
+static void inverseConversion()
+{
+  int Y1, Cb, Cr;         // gamma pre-corrected input [0;255]
+int ER, EG, EB;         // output [0;255]
+
+ double r, g, b;         // temporaries
+  double y1, pb, pr;
+
+  y1 = (255 / 219.0) * (Y1 - 16);
+  pb = (255 / 224.0) * (Cb - 128);
+  pr = (255 / 224.0) * (Cr - 128);
+
+  r = 1.0 * y1 + 0     * pb + 1.402 * pr;
+  g = 1.0 * y1 - 0.344 * pb - 0.714 * pr;
+  b = 1.0 * y1 + 1.772 * pb + 0     * pr;
+
+  ER = clamp (r * 255); // [ok? one should prob. limit y1,pb,pr]
+  EG = clamp (g * 255);
+  EB = clamp (b * 255);
+}
+*/
 static void convertYUYVtoRGB(char * src,char * target,int w,int h)
 {
   //R = 1.164(Y - 16) + 1.596(V - 128)
@@ -234,10 +264,10 @@ static void convertYUYVtoRGB(char * src,char * target,int w,int h)
   //source Y0 U0 Y1 V0  Y2 U2 Y3 V2  ...usw.
   //Es gibt w*h Pixel! YUYV hat zwei Pixel in vier Bytes
 
-  unsigned int len = (w*h)/8;
+  unsigned int len = (w*h)/2;
   unsigned int i;
   double term1 = 0;
-  char alpha = 128;
+  char alpha = 0;//255;//128;
 
   char * ps = src;
   char * pt = target;
@@ -266,18 +296,22 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 {
   static SDL_Surface * pSf = 0;
   static int initNotDone = 1;
-
+  //printf("processRGBImages len:%i\n",len);
   if(method==IO_METHOD_MMAP)
     {
-      if(cap->cam==0)
+      //printf("cap->cam : %i\n",cap->camnumber);
+      if(cap->camnumber==0)
 	{
 	  if(initNotDone)
 	    {
+	      printf("mainSurface BitsPerPixel:%i, BytesPerPixel :%i\n",\
+		     cap->mainSurface->format->BitsPerPixel,		\
+		     cap->mainSurface->format->BytesPerPixel);
 	      //SDL_SWSURFACE|SDL_SRCALPHA,
 	      pSf =SDL_CreateRGBSurface(SDL_HWSURFACE,                 \
 					cap->camWidth,			\
 					cap->camHeight,			\
-					8,				\
+					32,				\
 					SDL_GetVideoSurface()->format->Rmask, \
 					SDL_GetVideoSurface()->format->Gmask, \
 					SDL_GetVideoSurface()->format->Bmask, \
@@ -287,6 +321,7 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 		  printf("SDL_CreateRGBSurface failed in processRGBImages\n");
 		  exit(-1);
 		}
+	      printf("pSf pitch:%i\n",pSf->pitch);
 	      initNotDone = 0;
 	    }
 	  else
@@ -306,7 +341,7 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 	}//end if cap->cam  == 1
       else
 	{
-	  printf("not yet support for cam %i\n",cap->cam);
+	  //printf("not yet support for cam %i\n",cap->cam);
 	}
     }
   else if(method==IO_METHOD_USERPTR)
@@ -391,15 +426,20 @@ void CamControl::pollTimerExpired(long us)
   int camfd = 0;
   if(!this->cam0ready)
     {
-      //camfd=cap_cam_init(0,processRGBImages);
-      if(this->PixelFormat==1)
+      camfd=cap_cam_init(0,processRGBImages);
+      printf("cap_cam_init(0,processRGBImages);\n");
+      /*if(this->PixelFormat==2)
+	{
+
+	}*/
+      /*if(this->PixelFormat==1)
 	{
 	  camfd=cap_cam_init(0,processMJPEG);
 	}
       else
 	{
 	  camfd=cap_cam_init(0,processImages);
-	}
+	  }*/
       if(camfd<0)
 	{
 	  again = true;
@@ -416,15 +456,16 @@ void CamControl::pollTimerExpired(long us)
 
   if(!this->cam1ready)
     {
-      //camfd=cap_cam_init(1,processRGBImages);
-      if(this->PixelFormat)
+      camfd=cap_cam_init(1,processRGBImages);
+      printf("cap_cam_init(1,processRGBImages);\n");
+      /*if(this->PixelFormat)
 	{
 	  camfd=cap_cam_init(1,processMJPEG);
 	}
       else
 	{
 	  camfd=cap_cam_init(1,processImages);
-	}
+	  }*/
       if(camfd<0)
 	{
 	  again = true;
