@@ -18,6 +18,8 @@
 #include "v4l_capture.h"
 #include "iniParser.h"
 
+#include "dsp_color.h"
+
 using namespace std;
 using namespace EuMax01;
 
@@ -254,6 +256,56 @@ int ER, EG, EB;         // output [0;255]
   EB = clamp (b * 255);
 }
 */
+static unsigned char Rtable[256][256];
+static unsigned char Gtable[256][256][256];
+static unsigned char Btable[256][256];
+static void initRGBtables(void);
+static unsigned char getRfromTable(unsigned char Y,unsigned char V);
+static unsigned char getGfromTable(unsigned char Y,unsigned char U,unsigned char V);
+static unsigned char getBfromTable(unsigned char Y,unsigned char U);
+static void initRGBtables(void)
+{
+  int i,ii,iii;
+  for(i=0;i<256;i++)
+    {
+      for(ii=0;ii<256;ii++)
+	{
+	  Rtable[i][ii]=R_FROMYV(i,ii);
+	}
+    }
+  for(i=0;i<256;i++)
+    {
+      for(ii=0;ii<256;ii++)
+	{
+	  for(iii=0;iii<256;iii++)
+	    {
+	       Gtable[i][ii][iii]=G_FROMYUV(i,ii,iii);
+	    }
+	}
+    }
+ for(i=0;i<256;i++)
+    {
+      for(ii=0;ii<256;ii++)
+	{
+	  Btable[i][ii]=B_FROMYU(i,ii);
+	}
+    }
+}
+static inline unsigned char getRfromTable(unsigned char Y,unsigned char V)
+{
+  return Rtable[Y][V];
+}
+
+static inline unsigned char getGfromTable(unsigned char Y,unsigned char U,unsigned char V)
+{
+  return Gtable[Y][U][V];
+}
+
+static inline unsigned char getBfromTable(unsigned char Y,unsigned char U)
+{
+  return Btable[Y][U];
+}
+
 static void convertYUYVtoRGB(char * src,char * target,int w,int h)
 {
   //R = 1.164(Y - 16) + 1.596(V - 128)
@@ -271,21 +323,66 @@ static void convertYUYVtoRGB(char * src,char * target,int w,int h)
 
   char * ps = src;
   char * pt = target;
+
+#define rYa ps[0]
+#define rYb ps[2]
+#define rU  ps[1]
+#define rV  ps[3]
+
   for(i=0;i<len;i++)
     {
-      term1 = (double)(1.164*(ps[0]-16));
-      pt[0] = (char)( term1 + 1.596*(ps[3]-128) );//R
+      /*      term1 = (double)(1.164*(ps[0]-16));
+      pt[2] = (char)( term1 + 1.596*(ps[3]-128) );//R
       pt[1] = (char)( term1 - 0.813*(ps[3]-128) - 0.391*(ps[1] - 128) );//G
-      pt[2] = (char)( term1 + 2.018*(ps[1]-128) );//B
+      pt[0] = (char)( term1 + 2.018*(ps[1]-128) );//B
       pt[3] = alpha;
+      */
+      /*
+      pt[2]=R_FROMYV(rYa,rV);
+      pt[1]=G_FROMYUV(rYa,rU,rV);
+      pt[0]=B_FROMYU(rYa,rU);
+      */
+      /*     pt[2]=Rtable[rYa][rV];//getRfromTable(rYa,rV);
+      pt[1]=Gtable[rYa][rU][rV];//getGfromTable(rYa,rU,rV);
+      pt[0]=Btable[rYa][rU];//getBfromTable(rYa,rU);
+      */
+      /*
+      pt[2]=Rtable[ps[0]][ps[3]];//getRfromTable(rYa,rV);
+      pt[1]=Gtable[ps[0]][ps[1]][ps[3]];//getGfromTable(rYa,rU,rV);
+      pt[0]=Btable[ps[0]][ps[1]];//getBfromTable(rYa,rU);
+      */
+
+      pt[2]=getRfromTable(rYa,rV);
+      pt[1]=getGfromTable(rYa,rU,rV);
+      pt[0]=getBfromTable(rYa,rU);
 
       pt+=4; // das nächste Pixel beim Target
 
-      term1 = 1.164*(ps[2]-16);
-      pt[0] = (char)( term1 + 1.596*(ps[3]-128) );//R
+      /*  term1 = 1.164*(ps[2]-16);
+      pt[2] = (char)( term1 + 1.596*(ps[3]-128) );//R
       pt[1] = (char)( term1 - 0.813*(ps[3]-128) - 0.391*(ps[1] - 128) );//G
-      pt[2] = (char)( term1 + 2.018*(ps[1]-128) );//B
+      pt[0] = (char)( term1 + 2.018*(ps[1]-128) );//B
       pt[3] = alpha;
+      */
+      /*
+      pt[2]=R_FROMYV(rYb,rV);
+      pt[1]=G_FROMYUV(rYb,rU,rV);
+      pt[0]=B_FROMYU(rYb,rU);
+      */
+      /*
+      pt[2]=Rtable[rYb][rV];//getRfromTable(rYb,rV);
+      pt[1]=Gtable[rYb][rU][rV];//getGfromTable(rYb,rU,rV);
+      pt[0]=Btable[rYb][rU];//getBfromTable(rYb,rU);
+      */
+      /*
+      pt[2]=Rtable[ps[2]][ps[3]];//getRfromTable(rYb,rV);
+      pt[1]=Gtable[ps[2]][ps[3]][ps[1]];//getGfromTable(rYb,rU,rV);
+      pt[0]=Btable[ps[2]][ps[1]];//getBfromTable(rYb,rU);
+      */
+
+      pt[2]=getRfromTable(rYb,rV);
+      pt[1]=getGfromTable(rYb,rU,rV);
+      pt[0]=getBfromTable(rYb,rU);
 
       pt+=4;
       ps+=4;
@@ -304,6 +401,10 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 	{
 	  if(initNotDone)
 	    {
+	      initLut();
+	      printf("initRGBtables()...\n");
+	      initRGBtables();
+	      printf("initRGBtables() done!\n");
 	      printf("mainSurface BitsPerPixel:%i, BytesPerPixel :%i\n",\
 		     cap->mainSurface->format->BitsPerPixel,		\
 		     cap->mainSurface->format->BytesPerPixel);
@@ -337,8 +438,8 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 	      char * pc = (char *)p;
 	      convertYUYVtoRGB(pc,(char *)pSf->pixels,cap->camWidth,cap->camHeight);
 	      SDL_Rect destrect;
-	      destrect.x = 50;
-	      destrect.y = 50;
+	      destrect.x = 10;
+	      destrect.y = 10;
 	      destrect.w=cap->camWidth;
 	      destrect.h = cap->camHeight;
 	      if(SDL_BlitSurface(pSf,0,cap->mainSurface,&destrect))
