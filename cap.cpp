@@ -392,65 +392,89 @@ static void convertYUYVtoRGB(char * src,char * target,int w,int h)
 static void processRGBImages(struct v4l_capture* cap,const void * p,int method,size_t len)
 {
   static SDL_Surface * pSf = 0;
+  static SDL_Surface * pSf1 = 0;
   static int initNotDone = 1;
   //printf("processRGBImages len:%i\n",len);
   if(method==IO_METHOD_MMAP)
     {
-      //printf("cap->cam : %i\n",cap->camnumber);
-      if(cap->camnumber==0)
+      if(initNotDone)
 	{
-	  if(initNotDone)
+	  initLut();
+	  printf("initRGBtables()...\n");
+	  initRGBtables();
+	  printf("initRGBtables() done!\n");
+	  printf("mainSurface BitsPerPixel:%i, BytesPerPixel :%i\n",	\
+		 cap->mainSurface->format->BitsPerPixel,		\
+		 cap->mainSurface->format->BytesPerPixel);
+	  //SDL_SWSURFACE|SDL_SRCALPHA,
+	  pSf =SDL_CreateRGBSurface(SDL_HWSURFACE,			\
+				    cap->camWidth,			\
+				    cap->camHeight,			\
+				    32,					\
+				    SDL_GetVideoSurface()->format->Rmask, \
+				    SDL_GetVideoSurface()->format->Gmask, \
+				    SDL_GetVideoSurface()->format->Bmask, \
+				    SDL_GetVideoSurface()->format->Amask);
+	  if(!pSf)
 	    {
-	      initLut();
-	      printf("initRGBtables()...\n");
-	      initRGBtables();
-	      printf("initRGBtables() done!\n");
-	      printf("mainSurface BitsPerPixel:%i, BytesPerPixel :%i\n",\
-		     cap->mainSurface->format->BitsPerPixel,		\
-		     cap->mainSurface->format->BytesPerPixel);
-	      //SDL_SWSURFACE|SDL_SRCALPHA,
-	      pSf =SDL_CreateRGBSurface(SDL_HWSURFACE,                 \
-					cap->camWidth,			\
-					cap->camHeight,			\
-					32,				\
-					SDL_GetVideoSurface()->format->Rmask, \
-					SDL_GetVideoSurface()->format->Gmask, \
-					SDL_GetVideoSurface()->format->Bmask, \
-					SDL_GetVideoSurface()->format->Amask);
-	      if(!pSf)
-		{
-		  printf("SDL_CreateRGBSurface failed in processRGBImages\n");
-		  exit(-1);
-		}
-	      printf("pSf pitch:%i\n",pSf->pitch);
-	      printf("SDL_GetVideoSurface()->format->Rmask: %x\n",SDL_GetVideoSurface()->format->Rmask);
-	      printf("SDL_GetVideoSurface()->format->Gmask: %x\n",SDL_GetVideoSurface()->format->Gmask);
-	      printf("SDL_GetVideoSurface()->format->Bmask: %x\n",SDL_GetVideoSurface()->format->Bmask);
-	      printf("SDL_GetVideoSurface()->format->Amask: %x\n",SDL_GetVideoSurface()->format->Amask);
-	      printf("SDL_GetVideoSurface()->format->BitsPerPixel: %i\n",SDL_GetVideoSurface()->format->BitsPerPixel);
-	      printf("SDL_GetVideoSurface()->format->BytesPerPixel: %i\n",SDL_GetVideoSurface()->format->BytesPerPixel);
-	      printf("SDL_GetVideoSurface()->format->alpha: %i\n",SDL_GetVideoSurface()->format->alpha);
-	      printf("SDL_GetVideoSurface()->format->palette: %x\n",SDL_GetVideoSurface()->format->palette);
-	      initNotDone = 0;
+	      printf("SDL_CreateRGBSurface failed in processRGBImages for cam 0\n");
+	      exit(-1);
 	    }
-	  else
+	  pSf1 =SDL_CreateRGBSurface(SDL_HWSURFACE,			\
+				     cap->camWidth,			\
+				     cap->camHeight,			\
+				     32,				\
+				     SDL_GetVideoSurface()->format->Rmask, \
+				     SDL_GetVideoSurface()->format->Gmask, \
+				     SDL_GetVideoSurface()->format->Bmask, \
+				     SDL_GetVideoSurface()->format->Amask);
+	  if(!pSf1)
 	    {
-	      char * pc = (char *)p;
-	      convertYUYVtoRGB(pc,(char *)pSf->pixels,cap->camWidth,cap->camHeight);
-	      SDL_Rect destrect;
-	      destrect.x = 10;
-	      destrect.y = 10;
-	      destrect.w=cap->camWidth;
-	      destrect.h = cap->camHeight;
-	      if(SDL_BlitSurface(pSf,0,cap->mainSurface,&destrect))
-		printf("Blitting failed in processRGBImages\n");
-	      if(SDL_Flip(cap->mainSurface))
-		printf("Flipping failed in processRGBImages\n");
-	    }//end else initNotDone
-	}//end if cap->cam  == 1
+	      printf("SDL_CreateRGBSurface failed in processRGBImages for cam 1\n");
+	      exit(-1);
+	    }
+	  printf("pSf pitch:%i\n",pSf->pitch);
+	  printf("SDL_GetVideoSurface()->format->Rmask: %x\n",SDL_GetVideoSurface()->format->Rmask);
+	  printf("SDL_GetVideoSurface()->format->Gmask: %x\n",SDL_GetVideoSurface()->format->Gmask);
+	  printf("SDL_GetVideoSurface()->format->Bmask: %x\n",SDL_GetVideoSurface()->format->Bmask);
+	  printf("SDL_GetVideoSurface()->format->Amask: %x\n",SDL_GetVideoSurface()->format->Amask);
+	  printf("SDL_GetVideoSurface()->format->BitsPerPixel: %i\n",SDL_GetVideoSurface()->format->BitsPerPixel);
+	  printf("SDL_GetVideoSurface()->format->BytesPerPixel: %i\n",SDL_GetVideoSurface()->format->BytesPerPixel);
+	  printf("SDL_GetVideoSurface()->format->alpha: %i\n",SDL_GetVideoSurface()->format->alpha);
+	  printf("SDL_GetVideoSurface()->format->palette: %x\n",SDL_GetVideoSurface()->format->palette);
+	  initNotDone = 0;
+	}
+      else if(cap->camnumber==0)
+	{
+	  char * pc = (char *)p;
+	  convertYUYVtoRGB(pc,(char *)pSf->pixels,cap->camWidth,cap->camHeight);
+	  SDL_Rect destrect;
+	  destrect.x = 10;
+	  destrect.y = 10;
+	  destrect.w=cap->camWidth;
+	  destrect.h = cap->camHeight;
+	  if(SDL_BlitSurface(pSf,0,cap->mainSurface,&destrect))
+	    printf("Blitting failed in processRGBImages\n");
+	  if(SDL_Flip(cap->mainSurface))
+	    printf("Flipping failed in processRGBImages\n");
+	}//end if cap->camnumber == 0
+      else if(cap->camnumber==1)
+	{
+	  char * pc = (char *)p;
+	  convertYUYVtoRGB(pc,(char *)pSf1->pixels,cap->camWidth,cap->camHeight);
+	  SDL_Rect destrect;
+	  destrect.x = 10+cap->camWidth;
+	  destrect.y = 10;
+	  destrect.w=cap->camWidth;
+	  destrect.h = cap->camHeight;
+	  if(SDL_BlitSurface(pSf1,0,cap->mainSurface,&destrect))
+	    printf("Blitting failed in processRGBImages\n");
+	  if(SDL_Flip(cap->mainSurface))
+	    printf("Flipping failed in processRGBImages\n");	  
+	}
       else
 	{
-	  //printf("not yet support for cam %i\n",cap->cam);
+	  printf("unknown camnumber: %i, should not occur!\n",cap->camnumber);
 	}
     }
   else if(method==IO_METHOD_USERPTR)
