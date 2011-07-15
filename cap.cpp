@@ -26,12 +26,13 @@ using namespace EuMax01;
 class CamControl:IPollTimerListener,IPollReadListener
 {
 public:
-  CamControl(GUI * pGUI,int PixelFormat,bool RGB_mode);
+  CamControl(GUI * pGUI,int PixelFormat,bool RGB_mode,int yBottomSide);
   virtual void pollReadEvent(PollSource * s);
   virtual void pollTimerExpired(long us);
   unsigned char *framebuffer0;
   unsigned char *framebuffer1;
 private:
+  int yBottomSide;
   bool RGB_Mode;
   bool cam0ready;
   bool cam1ready;
@@ -489,10 +490,11 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 }
 
 
-CamControl::CamControl(GUI * pGUI,int Pixelformat,bool RGB_Mode)
+CamControl::CamControl(GUI * pGUI,int Pixelformat,bool RGB_Mode,int yBottomSide)
 {
   this->ptheGUI = pGUI;
   this->RGB_Mode = RGB_Mode;
+  this->yBottomSide = yBottomSide;
 
   if(Pixelformat)
     this->PixelFormat = 1;//MJPEG
@@ -589,6 +591,7 @@ void CamControl::pollTimerExpired(long us)
 	    {
 	      printf("enable50HzFilter failed\n");
 	    }
+	  cap_cam_setOverlayBottomSide(this->yBottomSide);
 	}
     }
 
@@ -623,6 +626,7 @@ void CamControl::pollTimerExpired(long us)
 	    {
 	      printf("enable50HzFilter failed\n");
 	    }
+	  cap_cam_setOverlayBottomSide(this->yBottomSide);
 	}
     }
   if(again)
@@ -697,7 +701,8 @@ int main(int argc, char *argv[])
   int Pixelformat = 0;//0 = normal, 1 = MJPEG, 2 = RGB
   char tmp[64];
   bool rgb_mode = false;
-
+  int ButtonAreaHeight = 0;
+  
   props.width=0;
   props.height=0;
   props.bpp=0;
@@ -792,7 +797,9 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-  camCtrl = new CamControl(theGUI,Pixelformat,rgb_mode);
+  ButtonAreaHeight = sdlheight - 168;
+  camCtrl = new CamControl(theGUI,Pixelformat,rgb_mode,ButtonAreaHeight);
+  ButtonAreaHeight = ButtonAreaHeight + 5;
 
 /*
 <------------------| sdlwidth/2
@@ -831,7 +838,7 @@ Bexit = sdlw/2 - Buttonwidth/2
   int camhalbe0 = sdlw/2 - camwidth/2;
   int camhalbe1 = sdlw/2 + camwidth/2;
   int X = 0;
-  int Y = camheight + 20;//hier fangen die Buttons an
+  int Y = ButtonAreaHeight; //camheight + 20;//hier fangen die Buttons an
   int BtnW=60;
   int BtnH=30;
   int Abstand = 5;
