@@ -26,12 +26,13 @@ using namespace EuMax01;
 class CamControl:IPollTimerListener,IPollReadListener
 {
 public:
-  CamControl(GUI * pGUI,int PixelFormat);
+  CamControl(GUI * pGUI,int PixelFormat,bool RGB_mode);
   virtual void pollReadEvent(PollSource * s);
   virtual void pollTimerExpired(long us);
   unsigned char *framebuffer0;
   unsigned char *framebuffer1;
 private:
+  bool RGB_Mode;
   bool cam0ready;
   bool cam1ready;
   PollTimer * pPollTimer;
@@ -43,7 +44,6 @@ private:
 
 static int camwidth = 0;
 static int camheight = 0;
-
 
 static CamControl * camCtrl;
 
@@ -489,14 +489,15 @@ static void processRGBImages(struct v4l_capture* cap,const void * p,int method,s
 }
 
 
-CamControl::CamControl(GUI * pGUI,int Pixelformat)
+CamControl::CamControl(GUI * pGUI,int Pixelformat,bool RGB_Mode)
 {
   this->ptheGUI = pGUI;
+  this->RGB_Mode = RGB_Mode;
 
   if(Pixelformat)
-    this->PixelFormat = 1;//1 = MJPEG
+    this->PixelFormat = 1;//MJPEG
   else
-    this->PixelFormat = 0;
+    this->PixelFormat = 0;//uncompressed
 
   cap_init(pGUI->getMainSurface(),	\
 	   camwidth,				\
@@ -559,20 +560,20 @@ void CamControl::pollTimerExpired(long us)
   int camfd = 0;
   if(!this->cam0ready)
     {
-      camfd=cap_cam_init(0,processRGBImages);
-      printf("cap_cam_init(0,processRGBImages);\n");
-      /*if(this->PixelFormat==2)
+      if(this->PixelFormat)
 	{
-
-	}*/
-      /*if(this->PixelFormat==1)
-	{
-	  camfd=cap_cam_init(0,processMJPEG);
+	  if(this->RGB_Mode)
+	    camfd=cap_cam_init(0,processRGBImages);
+	  else
+	    camfd=cap_cam_init(0,processMJPEG);
 	}
       else
 	{
-	  camfd=cap_cam_init(0,processImages);
-	  }*/
+	  if(this->RGB_Mode)
+	    camfd=cap_cam_init(0,processRGBImages);
+	  else
+	    camfd=cap_cam_init(0,processImages);
+	}
       if(camfd<0)
 	{
 	  again = true;
@@ -584,21 +585,29 @@ void CamControl::pollTimerExpired(long us)
 	  this->pPollReaderCam0->setReadSource(camfd);
 	  if(this->ptheGUI->addPollReader(pPollReaderCam0)!=0)
 	    printf("addPollReader failed\n");
+	  if(cap_cam_enable50HzFilter(camfd))
+	    {
+	      printf("enable50HzFilter failed\n");
+	    }
 	}
     }
 
   if(!this->cam1ready)
     {
-      camfd=cap_cam_init(1,processRGBImages);
-      printf("cap_cam_init(1,processRGBImages);\n");
-      /*if(this->PixelFormat)
+      if(this->PixelFormat)
 	{
-	  camfd=cap_cam_init(1,processMJPEG);
+	  if(this->RGB_Mode)
+	    camfd=cap_cam_init(1,processRGBImages);
+	  else
+	    camfd=cap_cam_init(1,processMJPEG);
 	}
       else
 	{
-	  camfd=cap_cam_init(1,processImages);
-	  }*/
+	  if(this->RGB_Mode)
+	    camfd=cap_cam_init(1,processRGBImages);
+	  else
+	    camfd=cap_cam_init(1,processImages);
+	  }
       if(camfd<0)
 	{
 	  again = true;
@@ -610,6 +619,10 @@ void CamControl::pollTimerExpired(long us)
 	  this->pPollReaderCam1->setReadSource(camfd);
 	  if(this->ptheGUI->addPollReader(pPollReaderCam1)!=0)
 	    printf("addPollReader failed\n");
+	  if(cap_cam_enable50HzFilter(camfd))
+	    {
+	      printf("enable50HzFilter failed\n");
+	    }
 	}
     }
   if(again)
@@ -681,8 +694,9 @@ int main(int argc, char *argv[])
   int sdlwidth = 1024;
   int sdlheight = 576;
   GUI_Properties props;
-  int Pixelformat = 0;//0 = normal, 1 = MJPEG
+  int Pixelformat = 0;//0 = normal, 1 = MJPEG, 2 = RGB
   char tmp[64];
+  bool rgb_mode = false;
 
   props.width=0;
   props.height=0;
@@ -717,13 +731,21 @@ int main(int argc, char *argv[])
       if(!strcmp("mjpeg",tmp))
 	{
 	  Pixelformat=1;
-	  printf("pixelformat = mjpeg\n");
+	  printf("pixelformat = MJPEG\n");
 	}
       else
 	{
 	  Pixelformat = 0;
-	  printf("pixelformat = normal\n");
+	  printf("pixelformat = NORMAL\n");
 	}	  
+    }
+  if(!iniParser_getParam("cap.conf","rgb_mode",tmp,64))
+    {
+      if(!strcmp("true",tmp))
+	{
+	  rgb_mode=true;
+	  printf("using RGB_MODE\n");
+	}
     }
 
   argc--;
@@ -770,7 +792,7 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-  camCtrl = new CamControl(theGUI,Pixelformat);
+  camCtrl = new CamControl(theGUI,Pixelformat,rgb_mode);
 
 /*
 <------------------| sdlwidth/2
