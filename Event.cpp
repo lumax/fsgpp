@@ -27,6 +27,7 @@ namespace EuMax01
     PrivateSelectable=NULL;
     
     fnkKeyboardUp=NULL;
+    fnkKeyboardDown=NULL;
     fnkMouseMotion=0;
     fnkMouseOver=NULL;
     fnkLeftMouseButtonDown=NULL;
@@ -47,6 +48,11 @@ namespace EuMax01
   void EvtTarget::setLMButtonUpEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkLeftMouseButtonUp = pfnkEvtHandler;
+  }
+
+  void EvtTarget::setKeyboardDownEvtHandler(void (*pfnk)(void * src,SDL_Event *))
+  {
+    this->fnkKeyboardDown = pfnk;
   }
 
   void EvtTarget::addEvtTarget(EvtTarget * t)
@@ -82,72 +88,72 @@ int EvtTarget::paintRequested(EvtTarget * t)
 }
 
   void EvtTarget::processEvtTarget(SDL_Event * evt)
-{
-  int tmpx,tmpy;
-  SDL_Rect pRect;
-
-  tmpx = evt->motion.x;
-  tmpy = evt->motion.y;
-  pRect.x = this->PosDimRect.x;
-  pRect.y = this->PosDimRect.y;
-  pRect.w = this->PosDimRect.w;
-  pRect.h = this->PosDimRect.h;
-
-  if(evt->type==SDL_MOUSEMOTION)
-    {
-      if( (tmpx>=pRect.x)&&						\
-	  (tmpx<pRect.x+pRect.w) &&					\
-	  (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
-	{
-	  if(this->fnkMouseMotion!=0){
-	    (*this->fnkMouseMotion)(this->pTSource,evt);//execFnk
+  {
+    int tmpx,tmpy;
+    SDL_Rect pRect;
+    
+    tmpx = evt->motion.x;
+    tmpy = evt->motion.y;
+    pRect.x = this->PosDimRect.x;
+    pRect.y = this->PosDimRect.y;
+    pRect.w = this->PosDimRect.w;
+    pRect.h = this->PosDimRect.h;
+    
+    if(evt->type==SDL_MOUSEMOTION)
+      {
+	if( (tmpx>=pRect.x)&&						\
+	    (tmpx<pRect.x+pRect.w) &&					\
+	    (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
+	  {
+	    if(this->fnkMouseMotion!=0){
+	      (*this->fnkMouseMotion)(this->pTSource,evt);//execFnk
 	    }
-	  if(!this->bSelected){//Selected in not set
-	    this->bSelected = true;                    //set bSelected bit
-	    if(this->PrivateSelectable){//there is a funktion to call
-	      (*this->PrivateSelectable)((void*)this,true);
-	    }
-	      
-	    if(this->fnkMouseOver!=0){//there is a funktion to call
-	      (*this->fnkMouseOver)(this->pTSource,evt);//execFnk 
-	      return;
-	    }
-	  }
-	}
-      else//Mouse is not over
-	{
-	  if(this->bSelected)// Selected is set
-	    {
-	      this->bSelected = false;          //unset Selected
+	    if(!this->bSelected){//Selected in not set
+	      this->bSelected = true;                    //set bSelected bit
 	      if(this->PrivateSelectable){//there is a funktion to call
-		(*this->PrivateSelectable)((void*)this,false);
+		(*this->PrivateSelectable)((void*)this,true);
+	      }
+	      
+	      if(this->fnkMouseOver!=0){//there is a funktion to call
+		(*this->fnkMouseOver)(this->pTSource,evt);//execFnk 
+		return;
 	      }
 	    }
-	}    
-    }
-  
-  if(evt->type==SDL_MOUSEBUTTONDOWN)
-    {
-      if(evt->button.button==SDL_BUTTON_LEFT)
-	{
-	  if( (tmpx>=pRect.x)&&					\
-	      (tmpx<pRect.x+pRect.w) &&					\
-	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
-	    {
-	      if(this->fnkLeftMouseButtonDown/*&&this->bSelected*/)
-		{
-		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
+	  }
+	else//Mouse is not over
+	  {
+	    if(this->bSelected)// Selected is set
+	      {
+		this->bSelected = false;          //unset Selected
+		if(this->PrivateSelectable){//there is a funktion to call
+		  (*this->PrivateSelectable)((void*)this,false);
 		}
-	      return;
-	    }
-	}
-    }
-  
-  if(evt->type==SDL_MOUSEBUTTONUP)
-    {
+	      }
+	  }    
+      }
+    
+    if(evt->type==SDL_MOUSEBUTTONDOWN)
+      {
+	if(evt->button.button==SDL_BUTTON_LEFT)
+	  {
+	    if( (tmpx>=pRect.x)&&					\
+		(tmpx<pRect.x+pRect.w) &&				\
+		(tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
+	      {
+		if(this->fnkLeftMouseButtonDown/*&&this->bSelected*/)
+		  {
+		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
+		  }
+		return;
+	      }
+	  }
+      }
+    
+    if(evt->type==SDL_MOUSEBUTTONUP)
+      {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-
+	  
 #ifdef TARGET_ARM
 	  if( (tmpx>=pRect.x)&&						\
 	      (tmpx<pRect.x+pRect.w) &&					\
@@ -175,6 +181,15 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    }
 #endif
 	}
-    }
-}
+      }
+
+    if(evt->type == SDL_KEYDOWN)//  SDL_KEYUP
+      {
+	if(this->fnkKeyboardDown)
+	  {
+	    (*this->fnkKeyboardDown)(this->pTSource,evt);//execFnk
+	    return;
+	  }
+      }
+  }
 }//namespace

@@ -34,14 +34,14 @@ namespace EuMax01
     SDL_Surface * pNormalSurface;
     SDL_Surface * pMarkedSurface;
 
+    static int showImages(void * v,SDL_Surface* target);
+    static void select(void * b,bool seleced);
+
+  protected:
     const char * pButtonText;
     TTF_Font * pFont;
     SDL_Color * pFontColor;
-
-    static int showImages(void * v,SDL_Surface* target);
     static int show(void * pB,SDL_Surface * pSurface);
-    static void select(void * b,bool seleced);
-    
   };
 
 #endif /* __FSGBUTTON_H__*/

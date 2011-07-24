@@ -136,6 +136,7 @@ namespace EuMax01
 void Button::setText(const char* text)
 {
   this->pButtonText = text;
+  this->bPaintRequest = true;
 }
   
   int Button::showImages(void * v,SDL_Surface* target)

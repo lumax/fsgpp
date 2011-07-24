@@ -31,12 +31,14 @@ class EvtTarget:public LL
   void setMouseOverEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
+  void setKeyboardDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
 
  protected:
   void (*fnkSelect)(void * source);
   void (*fnkUnSelect)(void * source);
   void (*PrivateSelectable)(void * b,bool selected);
   void (*fnkKeyboardUp)(void * src,SDL_Event * theEvent,void * source);
+  void (*fnkKeyboardDown)(void * src,SDL_Event * theEvent);
   void (*fnkMouseMotion)(void * src,SDL_Event * theEvent);
   void (*fnkMouseOver)(void * src,SDL_Event * theEvent);
   void (*fnkLeftMouseButtonDown)(void * src,SDL_Event * theEvent);

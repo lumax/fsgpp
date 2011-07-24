@@ -191,6 +191,8 @@ namespace EuMax01
 #endif
 	  }
       }
+    if(pGUI->fnkSecondaryEvtHandler)
+      (*pGUI->fnkSecondaryEvtHandler)(theEvent);
     return 0;
   }
 #ifdef TARGET_ARM 

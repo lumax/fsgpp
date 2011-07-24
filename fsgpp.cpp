@@ -15,12 +15,26 @@
 #include "Main.h"
 #include "ImagePool.h"
 #include "Gesture.h"
+#include "Label.h"
 
 using namespace std;
 using namespace EuMax01;
 
+Label* label1;
+
 static void evtBtn2(void * src,SDL_Event * evt){
+  static int counter = 0;
   printf("evtBtn\n");//cout << "evtBtn"<< endl;
+
+  if(counter%2)
+    {
+      label1->setText("huhu");
+    }
+  else
+    {
+      label1->setText("Tachauch");
+    }
+  counter++;
   //sdlMenuActivate(pTargetSurface);
 }
 
@@ -136,6 +150,8 @@ int main()
   Button* Btn4=new Button("lmaa",30,400,300,80);
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
 
+  label1=new Label("label",200,250,100,20);
+
   //PollTimer pt = PollTimer(500,this);
   //pm_ts->addTimer(&pt);
 
@@ -148,6 +164,7 @@ int main()
   s1->addEvtTarget(Btn2);
   s1->addEvtTarget(Btn3);
   s1->addEvtTarget(Btn4);
+  s1->addEvtTarget(label1);
 
   theGUI->activateScreen(s1);
 
