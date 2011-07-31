@@ -35,15 +35,16 @@ namespace EuMax01
   {
   public:
     TextField(const char * text,			\
-	      unsigned int textLen,			\
 	      short x,					\
 	      short y,					\
 	      unsigned short w,				\
 	      unsigned short h);
-    //TextField(const char * text,unsigned int textLen,SDL_Rect PositionDimRect);
+    void removeChar(void);
+    void addChar(char c);
   private:
-    static const unsigned int MaxTextLen = 128;
-    unsigned char TextLen;
+    static const unsigned int MaxTextLen = 8;
+    char textBuffer[MaxTextLen];
+    unsigned int TextLen;
   };
 
 #endif /* __FSGLABEL_H__*/

@@ -4,10 +4,10 @@ Bastian Ruppert
 07.2011
 */
 
-
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "Globals.h"
 #include "Tools.h"
@@ -19,8 +19,9 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  static void keyboardDownEvt(void * src,SDL_Event * evt)
+  static void keyboardDownEvtTextField(void * src,SDL_Event * evt)
   {
+    TextField* tf = (TextField*)src;
     SDL_KeyboardEvent * key = (SDL_KeyboardEvent *)&evt->key;
     char zeichen = 0;
     SDLMod mod = key->keysym.mod;
@@ -37,15 +38,19 @@ namespace EuMax01
 	//PrintKeyInfo( key );
 	if(key->keysym.sym == SDLK_DELETE)
 	  {
-	    printf("entf\n");
+	    tf->removeChar();
 	  }
-	if(key->keysym.sym == SDLK_BACKSPACE)
+	else if(key->keysym.sym == SDLK_BACKSPACE)
 	  {
-	    printf("backspace\n");
+	    tf->removeChar();
 	  }
-	if(key->keysym.sym == SDLK_ESCAPE)
+	else if(key->keysym.sym == SDLK_ESCAPE)
 	  {
 	    printf("escape\n");
+	  }
+	else if(key->keysym.sym == SDLK_RETURN)
+	  {
+	    printf("enter\n");
 	  }
 	else
 	  {
@@ -53,47 +58,69 @@ namespace EuMax01
 	  }
 	if(zeichen)
 	  {
-	    printf("%c",zeichen);
+	    tf->addChar(zeichen);
+	    //printf("%c",zeichen);
 	    fflush(0);
 	  }
       }
     //PrintKeyInfo( key );
   }
 
-  /*  TextField::TextField(const char * text,				\
-		       unsigned int textLen,				\
-		       SDL_Rect PositionDimRect):Label(text,	\
-							   textLen,	\
-							   PositionDimRect.x, \
-							   PositionDimRect.y, \
-							   PositionDimRect.w, \
-							   PositionDimRect.h)
-  {
-
-  }*/
-
   TextField::TextField(const char * text,			\
-		       unsigned int textLen,			\
 		       short x,					\
 		       short y,					\
 		       unsigned short w,			\
 		       unsigned short h):Label(text,x,y,w,h)
   {
-    SDL_Rect tmp;
-    this->setKeyboardDownEvtHandler(keyboardDownEvt);
+    //SDL_Rect tmp;
+    unsigned int len = 0;
+    this->setKeyboardDownEvtHandler(keyboardDownEvtTextField);
+    textBuffer[MaxTextLen-1]='\0';
+    textBuffer[0]='\0';
 
-    if(textLen>TextField::MaxTextLen)
-      this->TextLen = TextField::MaxTextLen;
+    if(text)
+      {
+	len = strlen(text);
+	len++;
+	if(len>TextField::MaxTextLen-1)
+	  {
+	    this->TextLen = TextField::MaxTextLen;
+	  }
+	else
+	  {
+	    this->TextLen = len;
+	  }
+	strncpy(this->textBuffer,text,this->TextLen);
+      }
     else
-      this->TextLen = textLen;
+      {
+	this->TextLen = 0;
+      }
+    this->setText(this->textBuffer);
     //this->setKeyboardUpEvtHandler(keyboardEvt);
   }
 
-  /*  Label::Label(const char * text,SDL_Rect PositionDimRect):Button(text,PositionDimRect)
+  void TextField::addChar(char c)
   {
+    if(this->TextLen<=TextField::MaxTextLen-1)
+      {
+	this->textBuffer[this->TextLen]=c;
+	this->TextLen++;
+	this->textBuffer[this->TextLen]='\0';
+	this->setText(this->textBuffer);
+      }
+  }
 
-  }*/
-  
+  void TextField::removeChar()
+  {
+    if(this->TextLen)
+      {
+	this->TextLen--;
+	this->textBuffer[TextLen] = '\0';
+	this->setText(this->textBuffer);
+      }
+  }
+
   Label::Label(const char * text,			\
 		 short x,				\
 		 short y,				\
@@ -134,9 +161,7 @@ namespace EuMax01
     tmpRect.y +=2;
     if(b->pButtonText)
       {
-	if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
-	  return -1;
-	}
+	Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText);
       }
     tmpRect.x -=2;
     tmpRect.y -=2;
