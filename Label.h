@@ -35,6 +35,7 @@ namespace EuMax01
   {
   public:
     TextField(const char * text,			\
+	      unsigned int maxTextLen,			\
 	      short x,					\
 	      short y,					\
 	      unsigned short w,				\
@@ -43,6 +44,7 @@ namespace EuMax01
     void addChar(char c);
   private:
     static const unsigned int MaxTextLen = 8;
+    unsigned int MaxInstanceTextLen;
     char textBuffer[MaxTextLen];
     unsigned int TextLen;
   };

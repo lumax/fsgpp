@@ -67,6 +67,7 @@ namespace EuMax01
   }
 
   TextField::TextField(const char * text,			\
+		       unsigned int maxTextLen,			\
 		       short x,					\
 		       short y,					\
 		       unsigned short w,			\
@@ -77,14 +78,19 @@ namespace EuMax01
     this->setKeyboardDownEvtHandler(keyboardDownEvtTextField);
     textBuffer[MaxTextLen-1]='\0';
     textBuffer[0]='\0';
-
+    
+    if(maxTextLen>TextField::MaxTextLen-1)
+      this->MaxInstanceTextLen = TextField::MaxTextLen-1;
+    else
+      this->MaxInstanceTextLen = maxTextLen;
+    
     if(text)
       {
 	len = strlen(text);
 	len++;
-	if(len>TextField::MaxTextLen-1)
+	if(len>this->MaxInstanceTextLen)
 	  {
-	    this->TextLen = TextField::MaxTextLen;
+	    this->TextLen = this->MaxInstanceTextLen;
 	  }
 	else
 	  {
@@ -102,7 +108,7 @@ namespace EuMax01
 
   void TextField::addChar(char c)
   {
-    if(this->TextLen<=TextField::MaxTextLen-1)
+    if(this->TextLen<this->MaxInstanceTextLen)
       {
 	this->textBuffer[this->TextLen]=c;
 	this->TextLen++;

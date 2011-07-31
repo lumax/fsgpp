@@ -152,7 +152,7 @@ int main()
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
 
   label1=new Label("label",200,250,100,20);
-  label2=new TextField("1234567890",200,200,100,20);
+  label2=new TextField("1234567890",5,200,200,100,20);
 
   //PollTimer pt = PollTimer(500,this);
   //pm_ts->addTimer(&pt);
