@@ -55,6 +55,11 @@ namespace EuMax01
     this->fnkKeyboardDown = pfnk;
   }
 
+  void EvtTarget::setKeyboardUpEvtHandler(void (*pfnk)(void * src,SDL_Event *))
+  {
+    this->fnkKeyboardUp = pfnk;
+  }
+
   void EvtTarget::addEvtTarget(EvtTarget * t)
   {
     this->addLL(t);
@@ -183,11 +188,19 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	}
       }
 
-    if(evt->type == SDL_KEYDOWN)//  SDL_KEYUP
+    if(evt->type == SDL_KEYDOWN)
       {
 	if(this->fnkKeyboardDown)
 	  {
 	    (*this->fnkKeyboardDown)(this->pTSource,evt);//execFnk
+	    return;
+	  }
+      }
+    else if(evt->type == SDL_KEYUP)
+      {
+	if(this->fnkKeyboardUp)
+	  {
+	    (*this->fnkKeyboardUp)(this->pTSource,evt);//execFnk
 	    return;
 	  }
       }

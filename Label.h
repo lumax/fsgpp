@@ -23,12 +23,27 @@ namespace EuMax01
 	   short y,				\
 	   unsigned short w,			\
 	   unsigned short h);
-    Label(const char * text,SDL_Rect PositionDimRect);
+    //Label(const char * text,SDL_Rect PositionDimRect);
     //static void createLabel(Label* b,const char * t,SDL_Rect posDim);
-  private:
+  protected:
     bool bBorder;
     static int showLabel(void * v,SDL_Surface* target);
     
+  };
+
+  class TextField : public Label
+  {
+  public:
+    TextField(const char * text,			\
+	      unsigned int textLen,			\
+	      short x,					\
+	      short y,					\
+	      unsigned short w,				\
+	      unsigned short h);
+    //TextField(const char * text,unsigned int textLen,SDL_Rect PositionDimRect);
+  private:
+    static const unsigned int MaxTextLen = 128;
+    unsigned char TextLen;
   };
 
 #endif /* __FSGLABEL_H__*/

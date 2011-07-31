@@ -4,6 +4,7 @@ Bastian Ruppert
 
 
 //#include <defs.h>
+#include <stdio.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
@@ -492,5 +493,275 @@ int Tool::blitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,S
   SDL_FreeSurface(tmp);
   return ret;
 }
+
+/* Print all information about a key event */
+  void Tool::PrintKeyInfo( SDL_KeyboardEvent *key ){
+  /* Is it a release or a press? */
+  if( key->type == SDL_KEYUP )
+    printf( "Release:- " );
+  else
+    printf( "Press:- " );
+
+  /* Print the hardware scancode first */
+  printf( "Scancode: 0x%02X", key->keysym.scancode );
+  /* Print the name of the key */
+  printf( ", Name: %s", SDL_GetKeyName( key->keysym.sym ) );
+  /* We want to print the unicode info, but we need to make */
+  /* sure its a press event first (remember, release events */
+  /* don't have unicode info                                */
+  if( key->type == SDL_KEYDOWN ){
+    /* If the Unicode value is less than 0x80 then the    */
+    /* unicode value can be used to get a printable       */
+    /* representation of the key, using (char)unicode.    */
+    printf(", Unicode: " );
+    if( key->keysym.unicode < 0x80 && key->keysym.unicode > 0 ){
+      printf( "%c (0x%04X)", (char)key->keysym.unicode,
+	      key->keysym.unicode );
+    }
+    else{
+      printf( "? (0x%04X)", key->keysym.unicode );
+    }
+  }
+  printf( "\n" );
+  /* Print modifier info */
+  Tool::PrintModifiers( key->keysym.mod );
+}
+
+    /* Print modifier info */
+void Tool::PrintModifiers( SDLMod mod ){
+  printf( "Modifers: " );
+
+  /* If there are none then say so and return */
+  if( mod == KMOD_NONE ){
+    printf( "None\n" );
+    return;
+  }
+
+  /* Check for the presence of each SDLMod value */
+  /* This looks messy, but there really isn't    */
+  /* a clearer way.                              */
+  if( mod & KMOD_NUM ) printf( "NUMLOCK " );
+  if( mod & KMOD_CAPS ) printf( "CAPSLOCK " );
+  if( mod & KMOD_LCTRL ) printf( "LCTRL " );
+  if( mod & KMOD_RCTRL ) printf( "RCTRL " );
+  if( mod & KMOD_RSHIFT ) printf( "RSHIFT " );
+  if( mod & KMOD_LSHIFT ) printf( "LSHIFT " );
+  if( mod & KMOD_RALT ) printf( "RALT " );
+  if( mod & KMOD_LALT ) printf( "LALT " );
+  if( mod & KMOD_CTRL ) printf( "CTRL " );
+  if( mod & KMOD_SHIFT ) printf( "SHIFT " );
+  if( mod & KMOD_ALT ) printf( "ALT " );
+  printf( "\n" );
+}
+
+char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
+{
+  SDLMod mod = key->keysym.mod;
+  char zeichen = 0;
+  if(key->keysym.sym == SDLK_0)
+    {
+      zeichen = '0';
+    }
+  else if(key->keysym.sym == SDLK_1)
+    {
+      zeichen = '1';
+    }
+  else if(key->keysym.sym == SDLK_2)
+    {
+      zeichen = '2';
+    }
+  else if(key->keysym.sym == SDLK_3)
+    {
+      zeichen = '3';
+    }
+  else if(key->keysym.sym == SDLK_4)
+    {
+      zeichen = '4';
+    }
+  else if(key->keysym.sym == SDLK_5)
+    {
+      zeichen = '5';
+    }
+  else if(key->keysym.sym == SDLK_6)
+    {
+      zeichen = '6';
+    }
+  else if(key->keysym.sym == SDLK_7)
+    {
+      zeichen = '7';
+    }
+  else if(key->keysym.sym == SDLK_8)
+    {
+      zeichen = '8';
+    }
+  else if(key->keysym.sym == SDLK_9)
+    {
+	zeichen = '9';
+    }
+  else if(key->keysym.sym == SDLK_a)
+    {
+      zeichen = 'a';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_b)
+    {
+      zeichen='b';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_c)
+    {
+      zeichen='c';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_d)
+    {
+      zeichen='d';
+      if(mod & KMOD_SHIFT )
+	  zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_e)
+    {
+      zeichen='e';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_f)
+    {
+      zeichen='f';
+	if(mod & KMOD_SHIFT )
+	  zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_g)
+      {
+	zeichen='g';
+	if(mod & KMOD_SHIFT )
+	  zeichen -= 0x20;
+      }
+  else if(key->keysym.sym == SDLK_h)
+      {
+	zeichen='h';
+	if(mod & KMOD_SHIFT )
+	  zeichen -= 0x20;
+      }
+  else if(key->keysym.sym == SDLK_i)
+    {
+      zeichen='i';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_j)
+    {
+      zeichen='j';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_k)
+    {
+      zeichen='k';
+	if(mod & KMOD_SHIFT )
+	  zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_l)
+    {
+      zeichen='l';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_m)
+    {
+      zeichen='m';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_n)
+    {
+      zeichen='n';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_o)
+    {
+      zeichen='o';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_p)
+    {
+      zeichen='p';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_q)
+    {
+      zeichen='q';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_r)
+    {
+      zeichen='r';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_s)
+    {
+      zeichen='s';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_t)
+    {
+      zeichen='t';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_u)
+    {
+      zeichen='u';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_v)
+    {
+      zeichen='v';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_w)
+    {
+      zeichen='w';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_x)
+    {
+      zeichen='x';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_y)
+    {
+      zeichen='y';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  else if(key->keysym.sym == SDLK_z)
+    {
+      zeichen='z';
+      if(mod & KMOD_SHIFT )
+	zeichen -= 0x20;
+    }
+  if(key->keysym.sym == SDLK_MINUS)
+    {
+      zeichen='-';
+      if(mod & KMOD_SHIFT )
+	  zeichen = '_';
+    }
+  return zeichen;
+}
+
 }//end namespace
 

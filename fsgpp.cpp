@@ -21,6 +21,7 @@ using namespace std;
 using namespace EuMax01;
 
 Label* label1;
+TextField* label2;
 
 static void evtBtn2(void * src,SDL_Event * evt){
   static int counter = 0;
@@ -151,6 +152,7 @@ int main()
   Btn4->setImages(StdBtn2.getStdBtnNormal(),StdBtn2.getStdBtnMarked());
 
   label1=new Label("label",200,250,100,20);
+  label2=new TextField("label2",16,200,200,100,20);
 
   //PollTimer pt = PollTimer(500,this);
   //pm_ts->addTimer(&pt);
@@ -165,6 +167,7 @@ int main()
   s1->addEvtTarget(Btn3);
   s1->addEvtTarget(Btn4);
   s1->addEvtTarget(label1);
+  s1->addEvtTarget(label2);
 
   theGUI->activateScreen(s1);
 

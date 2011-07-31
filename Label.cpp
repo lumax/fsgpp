@@ -1,7 +1,7 @@
 /*
-Button.cpp
+Label.cpp
 Bastian Ruppert
-04.12.2010
+07.2011
 */
 
 
@@ -18,76 +18,81 @@ Bastian Ruppert
 
 namespace EuMax01
 {
-  void PrintModifiers( SDLMod mod );
-   /* Print all information about a key event */
-    void PrintKeyInfo( SDL_KeyboardEvent *key ){
-        /* Is it a release or a press? */
-        if( key->type == SDL_KEYUP )
-            printf( "Release:- " );
-        else
-            printf( "Press:- " );
 
-        /* Print the hardware scancode first */
-        printf( "Scancode: 0x%02X", key->keysym.scancode );
-        /* Print the name of the key */
-        printf( ", Name: %s", SDL_GetKeyName( key->keysym.sym ) );
-        /* We want to print the unicode info, but we need to make */
-        /* sure its a press event first (remember, release events */
-        /* don't have unicode info                                */
-        if( key->type == SDL_KEYDOWN ){
-            /* If the Unicode value is less than 0x80 then the    */
-            /* unicode value can be used to get a printable       */
-            /* representation of the key, using (char)unicode.    */
-            printf(", Unicode: " );
-            if( key->keysym.unicode < 0x80 && key->keysym.unicode > 0 ){
-                printf( "%c (0x%04X)", (char)key->keysym.unicode,
-                        key->keysym.unicode );
-            }
-            else{
-                printf( "? (0x%04X)", key->keysym.unicode );
-            }
-        }
-        printf( "\n" );
-        /* Print modifier info */
-        PrintModifiers( key->keysym.mod );
-    }
-
-    /* Print modifier info */
-    void PrintModifiers( SDLMod mod ){
-        printf( "Modifers: " );
-
-        /* If there are none then say so and return */
-        if( mod == KMOD_NONE ){
-            printf( "None\n" );
-            return;
-        }
-
-        /* Check for the presence of each SDLMod value */
-        /* This looks messy, but there really isn't    */
-        /* a clearer way.                              */
-        if( mod & KMOD_NUM ) printf( "NUMLOCK " );
-        if( mod & KMOD_CAPS ) printf( "CAPSLOCK " );
-        if( mod & KMOD_LCTRL ) printf( "LCTRL " );
-        if( mod & KMOD_RCTRL ) printf( "RCTRL " );
-        if( mod & KMOD_RSHIFT ) printf( "RSHIFT " );
-        if( mod & KMOD_LSHIFT ) printf( "LSHIFT " );
-        if( mod & KMOD_RALT ) printf( "RALT " );
-        if( mod & KMOD_LALT ) printf( "LALT " );
-        if( mod & KMOD_CTRL ) printf( "CTRL " );
-        if( mod & KMOD_SHIFT ) printf( "SHIFT " );
-        if( mod & KMOD_ALT ) printf( "ALT " );
-        printf( "\n" );
-    }
-
-  static void keyboardUp(void * src,SDL_Event * evt)
+  static void keyboardDownEvt(void * src,SDL_Event * evt)
   {
-    PrintKeyInfo( &evt->key );
+    SDL_KeyboardEvent * key = (SDL_KeyboardEvent *)&evt->key;
+    char zeichen = 0;
+    SDLMod mod = key->keysym.mod;
+    //Tool::PrintKeyInfo( key );
+    //return;
+
+    if( key->type == SDL_KEYUP )
+      {
+	//printf( "Release:- " );
+      }
+    else
+      {
+	//printf( "Press:- " );
+	//PrintKeyInfo( key );
+	if(key->keysym.sym == SDLK_DELETE)
+	  {
+	    printf("entf\n");
+	  }
+	if(key->keysym.sym == SDLK_BACKSPACE)
+	  {
+	    printf("backspace\n");
+	  }
+	if(key->keysym.sym == SDLK_ESCAPE)
+	  {
+	    printf("escape\n");
+	  }
+	else
+	  {
+	    zeichen = Tool::getStdASCII_Char(key);
+	  }
+	if(zeichen)
+	  {
+	    printf("%c",zeichen);
+	    fflush(0);
+	  }
+      }
+    //PrintKeyInfo( key );
   }
 
-  Label::Label(const char * text,SDL_Rect PositionDimRect):Button(text,PositionDimRect)
+  /*  TextField::TextField(const char * text,				\
+		       unsigned int textLen,				\
+		       SDL_Rect PositionDimRect):Label(text,	\
+							   textLen,	\
+							   PositionDimRect.x, \
+							   PositionDimRect.y, \
+							   PositionDimRect.w, \
+							   PositionDimRect.h)
   {
 
+  }*/
+
+  TextField::TextField(const char * text,			\
+		       unsigned int textLen,			\
+		       short x,					\
+		       short y,					\
+		       unsigned short w,			\
+		       unsigned short h):Label(text,x,y,w,h)
+  {
+    SDL_Rect tmp;
+    this->setKeyboardDownEvtHandler(keyboardDownEvt);
+
+    if(textLen>TextField::MaxTextLen)
+      this->TextLen = TextField::MaxTextLen;
+    else
+      this->TextLen = textLen;
+    //this->setKeyboardUpEvtHandler(keyboardEvt);
   }
+
+  /*  Label::Label(const char * text,SDL_Rect PositionDimRect):Button(text,PositionDimRect)
+  {
+
+  }*/
   
   Label::Label(const char * text,			\
 		 short x,				\
@@ -105,7 +110,6 @@ namespace EuMax01
     this->bSelected = false;
     this->PrivateShow = Label::showLabel;
     this->bBorder = false;
-    this->setKeyboardDownEvtHandler(keyboardUp);
   }
 
 /*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
