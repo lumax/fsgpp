@@ -12,8 +12,14 @@ namespace EuMax01
   
   void LL::addLL(LL * pItem)
   {
+    LL * pLast;
     if(!pItem)return;
-    pItem->Next = this->Next;
+    pLast = pItem;
+    while(pLast->Next)
+    {
+      pLast = pLast->Next;
+    }
+    pLast->Next = this->Next;
     this->Next = pItem;
   }
 
