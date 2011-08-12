@@ -42,6 +42,7 @@ namespace EuMax01
 	      unsigned short h);
     void removeChar(void);
     void addChar(char c);
+    void setActive(bool active);
   private:
     static const unsigned int MaxTextLen = 8;
     unsigned int MaxInstanceTextLen;

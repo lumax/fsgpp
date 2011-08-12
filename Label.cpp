@@ -14,7 +14,7 @@ Bastian Ruppert
 #include "Button.h"
 #include "Label.h"
 
-#include <stdio.h>
+//#include <stdio.h>
 
 namespace EuMax01
 {
@@ -24,7 +24,7 @@ namespace EuMax01
     TextField* tf = (TextField*)src;
     SDL_KeyboardEvent * key = (SDL_KeyboardEvent *)&evt->key;
     char zeichen = 0;
-    SDLMod mod = key->keysym.mod;
+    //SDLMod mod = key->keysym.mod;
     //Tool::PrintKeyInfo( key );
     //return;
 
@@ -46,11 +46,11 @@ namespace EuMax01
 	  }
 	else if(key->keysym.sym == SDLK_ESCAPE)
 	  {
-	    printf("escape\n");
+	    //printf("escape\n");
 	  }
 	else if(key->keysym.sym == SDLK_RETURN)
 	  {
-	    printf("enter\n");
+	    //printf("enter\n");
 	  }
 	else
 	  {
@@ -60,7 +60,7 @@ namespace EuMax01
 	  {
 	    tf->addChar(zeichen);
 	    //printf("%c",zeichen);
-	    fflush(0);
+	    //fflush(0);
 	  }
       }
     //PrintKeyInfo( key );
@@ -103,6 +103,8 @@ namespace EuMax01
 	this->TextLen = 0;
       }
     this->setText(this->textBuffer);
+
+    this->setActive(false);
     //this->setKeyboardUpEvtHandler(keyboardEvt);
   }
 
@@ -124,6 +126,20 @@ namespace EuMax01
 	this->TextLen--;
 	this->textBuffer[TextLen] = '\0';
 	this->setText(this->textBuffer);
+      }
+  }
+
+  void TextField::setActive(bool active)
+  {
+    if(active)
+      {
+	this->bBorder = true;
+	this->setKeyboardDownEvtHandler(keyboardDownEvtTextField);
+      }
+    else
+      {
+	this->bBorder = false;
+	this->setKeyboardDownEvtHandler(0);
       }
   }
 

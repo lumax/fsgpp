@@ -30,10 +30,12 @@ static void evtBtn2(void * src,SDL_Event * evt){
   if(counter%2)
     {
       label1->setText("huhu");
+      //label2->setActive(true);
     }
   else
     {
       label1->setText("Tachauch");
+      //label2->setActive(false);
     }
   counter++;
   //sdlMenuActivate(pTargetSurface);
@@ -153,6 +155,7 @@ int main()
 
   label1=new Label("label",200,250,100,20);
   label2=new TextField("1234567890",5,200,200,100,20);
+  label2->setActive(true);
 
   //PollTimer pt = PollTimer(500,this);
   //pm_ts->addTimer(&pt);
