@@ -200,5 +200,10 @@ namespace EuMax01
      // SDL_Flip(target);
     return 0;
   }
+
+  void Label::setBorder(bool border)
+  {
+    this->bBorder = border;
+  }
   
 }//end namespace

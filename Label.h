@@ -25,6 +25,7 @@ namespace EuMax01
 	   unsigned short h);
     //Label(const char * text,SDL_Rect PositionDimRect);
     //static void createLabel(Label* b,const char * t,SDL_Rect posDim);
+    void setBorder(bool border);
   protected:
     bool bBorder;
     static int showLabel(void * v,SDL_Surface* target);
