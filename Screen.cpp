@@ -15,7 +15,7 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  Screen::Screen()
+  Screen::Screen():EvtTarget()
   {
     OnActivate=0;
     OnDeactivate=0;

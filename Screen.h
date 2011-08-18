@@ -8,7 +8,7 @@ namespace EuMax01
 #ifndef __FSGSCREEN_H__
 #define __FSGSCREEN_H__
 
-  class Screen
+  class Screen : public EvtTarget
 {
  public:
   Screen();
