@@ -26,6 +26,15 @@ class Tool
   static int blitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,SDL_Color * pFontColor,const char * text); 
   static void PrintKeyInfo( SDL_KeyboardEvent *key );
   static char getStdASCII_Char(SDL_KeyboardEvent * key);
+
+/*! \brief Erzeugt aus dem appname und dem /proc/self/exe link den 
+ *         Pfad der Applikation
+ *
+ *  \param appname Sollte argv[0] der main Funktion sein
+ *  \param target Der Puffer in welchen der Pfad kopiert wird
+ *  \param buflen Länge des target Puffers
+ */
+  static int getAppPath(char * appname,char * target, int buflen);
  private:
   static Uint32 getPixel(SDL_Surface *surf, int x, int y);
   static Uint32 becloudColor(SDL_PixelFormat * format,Uint8 *r,Uint8 *g, Uint8 * b, unsigned int offset);

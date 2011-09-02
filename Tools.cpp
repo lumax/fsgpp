@@ -5,6 +5,7 @@ Bastian Ruppert
 
 //#include <defs.h>
 #include <stdio.h>
+#include <unistd.h>//readlink
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
@@ -761,6 +762,50 @@ char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
 	  zeichen = '_';
     }
   return zeichen;
+}
+
+int Tool::getAppPath(char * appname,char * target, int buflen)
+{
+  /* /proc/self is a symbolic link to the process-ID subdir
+   * of /proc, e.g. /proc/4323 when the pid of the process
+   * of this program is 4323.
+   *
+   * Inside /proc/<pid> there is a symbolic link to the
+   * executable that is running as this <pid>.  This symbolic
+   * link is called "exe".
+   *
+   * So if we read the path where the symlink /proc/self/exe
+   * points to we have the full path of the executable.
+   */
+  int length = 0;
+  int tmp;
+  int ueberfluessig = 0;
+  length = readlink("/proc/self/exe", target, buflen);
+  
+  /* Catch some errors: */
+  if (length < 0)
+    {
+      return -1;
+    }
+  if (length >= buflen) 
+    {
+      return -1;
+    }
+  
+  /* I don't know why, but the string this readlink() function 
+   * returns is appended with a '@'.
+   */
+  //  buf[length] = '\0';       /* Strip '@' off the end. */
+  tmp = strlen(appname);
+
+  if(appname[0]=='.'&&appname[1]=='/')
+    ueberfluessig = 2;
+  
+  if(tmp>=buflen-1)
+     return -1;
+
+  target[length-tmp+ueberfluessig]='\0'; //strip appname
+  return 0;
 }
 
 }//end namespace

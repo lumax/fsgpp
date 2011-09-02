@@ -16,6 +16,7 @@
 #include "ImagePool.h"
 #include "Gesture.h"
 #include "Label.h"
+#include "Tools.h"
 
 using namespace std;
 using namespace EuMax01;
@@ -52,13 +53,19 @@ void GestureListener::yGestureOccured(int yGes,int tempo)
   printf("yGesture Occured : %i, %i\n",yGes,tempo);//cout << "yGestureOccured :"<< yGes << " " << tempo <<endl;
 }
 
-int main()
+int main(int argc,char* args[] )
 {
   GUI_Properties props;
   GUI* theGUI;
-
   SDL_version compile_version;
+  char buf[64];
+
   const SDL_version *link_version=IMG_Linked_Version();
+
+  printf("getAppPath returns:%i\n",Tool::getAppPath(args[0],buf, 64));
+  printf("appname:%s\n",args[0]);
+  printf("Full path is: %s\n", buf);
+
   SDL_IMAGE_VERSION(&compile_version);
   printf("compiled with SDL_image version: %d.%d.%d\n", 
 	 compile_version.major,
