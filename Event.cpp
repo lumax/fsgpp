@@ -65,7 +65,10 @@ namespace EuMax01
     this->addLL(t);
   }
 
-
+  /*  void EvtTarget::removeSingleEvtTarget(EvtTarget * t)
+  {
+    this->removeSingleLL(t);
+    }*/
 
   void EvtTarget::processTargets(SDL_Event * pSDL_Event,EvtTarget * t)
 {

@@ -13,8 +13,9 @@ namespace EuMax01
   public:
     LL();
     LL * Next;
-    int data;
+    unsigned int counter;
     void addLL(LL * pItem);
+    void removeSingleLL(LL * pItem);
     //LL* removeLL(LL * pItem2Remove);
   };
   

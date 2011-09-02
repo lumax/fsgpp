@@ -25,6 +25,7 @@ class EvtTarget:public LL
 
   EvtTarget();
   void addEvtTarget(EvtTarget * t);
+  void removeSingleEvtTarget(EvtTarget * t);
   static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
   static int paintRequested(EvtTarget * t);
   int (*PrivateShow)(void * pB,SDL_Surface * pSurface);

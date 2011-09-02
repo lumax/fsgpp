@@ -7,7 +7,6 @@ namespace EuMax01
   LL::LL()
   {
     Next=0;
-    data = 0;
   }
   
   void LL::addLL(LL * pItem)
@@ -23,6 +22,22 @@ namespace EuMax01
     this->Next = pItem;
   }
 
+  /*  void LL::removeSingleLL(LL * pItem)
+  {
+    LL * pPrev;
+    if(!pItem)return;
+    pPrev = this;
+    while(pPrev->Next)
+      {
+	if(pPrev->Next == pItem)
+	  {
+	    pPrev->Next = pItem->Next;
+	    return;
+	  }
+	pPrev = pPrev->Next;
+      }
+  }
+  */
   /*
    * returns the seperated LL Pointer or 0 if LL not found
    *
