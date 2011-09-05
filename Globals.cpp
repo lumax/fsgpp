@@ -15,9 +15,11 @@ namespace EuMax01
   SDL_Color Globals::GlobalSDL_ColorSewGelb = {R_SEW_GELB,G_SEW_GELB,B_SEW_GELB,0}; 
   SDL_Color Globals::GlobalSDL_ColorSewGruen = {R_SEW_GRUEN,G_SEW_GRUEN,B_SEW_GRUEN,0}; 
   SDL_Color Globals::GlobalSDL_ColorSewGrau = {R_SEW_GRAU,G_SEW_GRAU,B_SEW_GRAU,0}; 
-  SDL_Color Globals::GlobalSDL_ColorSewSchwarz = {R_SEW_SCHWARZ,G_SEW_SCHWARZ,B_SEW_SCHWARZ,0};   
+  SDL_Color Globals::GlobalSDL_ColorSewSchwarz = {R_SEW_SCHWARZ,G_SEW_SCHWARZ,B_SEW_SCHWARZ,0};
+  SDL_Color Globals::GlobalSDL_ColorLightGray = {R_BRIGHT_GRAY,G_BRIGHT_GRAY,B_BRIGHT_GRAY,0};  
   SDL_Color Globals::GlobalSDL_ColorBrightGray = {R_BRIGHT_GRAY,G_BRIGHT_GRAY,B_BRIGHT_GRAY,0};
   SDL_Color Globals::GlobalSDL_ColorDarkGray= {R_DARK_GRAY,G_DARK_GRAY,B_DARK_GRAY,0};
+  SDL_Color Globals::GlobalSDL_ColorNearlyBlack= {R_NEARLY_BLACK,G_NEARLY_BLACK,B_NEARLY_BLACK,0};
   SDL_Color Globals::GlobalSDL_ColorBlack= {R_BLACK,G_BLACK,B_BLACK,0};
 
   Uint32 Globals::GlobalUint32ColorSewOrange=0;
@@ -27,8 +29,10 @@ namespace EuMax01
   Uint32 Globals::GlobalUint32ColorSewGrau=0;
   Uint32 Globals::GlobalUint32ColorSewSchwarz=0;
 
+  Uint32 Globals::GlobalUint32ColorLightGray=0;
   Uint32 Globals::GlobalUint32ColorBrightGray=0;
   Uint32 Globals::GlobalUint32ColorDarkGray=0;
+  Uint32 Globals::GlobalUint32ColorNearlyBlack=0;
   Uint32 Globals::GlobalUint32ColorBlack=0;
 
   Globals* Globals::getInstance()
@@ -79,6 +83,10 @@ namespace EuMax01
 					   R_SEW_SCHWARZ,		\
 					   G_SEW_SCHWARZ,		\
 					   B_SEW_SCHWARZ);
+  GlobalUint32ColorLightGray = SDL_MapRGB(SDL_GetVideoSurface()->format, \
+					   R_LIGHT_GRAY,		\
+					   G_LIGHT_GRAY,		\
+					   B_LIGHT_GRAY);
   GlobalUint32ColorBrightGray = SDL_MapRGB(SDL_GetVideoSurface()->format, \
 					   R_BRIGHT_GRAY,		\
 					   G_BRIGHT_GRAY,		\
@@ -87,7 +95,11 @@ namespace EuMax01
 					   R_DARK_GRAY,		\
 					   G_DARK_GRAY,		\
 					   B_DARK_GRAY);
-  GlobalUint32ColorBlack = SDL_MapRGB(SDL_GetVideoSurface()->format, \
+  GlobalUint32ColorBlack = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				      R_NEARLY_BLACK,				\
+				      G_NEARLY_BLACK,				\
+				      B_NEARLY_BLACK);
+  GlobalUint32ColorBlack = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
 					   R_BLACK,		\
 					   G_BLACK,		\
 					   B_BLACK);

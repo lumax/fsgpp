@@ -40,7 +40,7 @@ namespace EuMax01
     Globals* global = Globals::getInstance();
     b->pFont = global->getDefaultFont();
     
-    b->pFontColor = &global->GlobalSDL_ColorSewGrau;
+    b->pFontColor = &global->GlobalSDL_ColorNearlyBlack;
     
     b->setText(text);          //text setzen 
     b->PrivateShow = Button::show;//EvtTarget als Button Markieren   

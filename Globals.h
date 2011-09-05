@@ -44,6 +44,10 @@ namespace EuMax01
 #define G_SEW_SCHWARZ 26 
 #define B_SEW_SCHWARZ 24
 
+#define R_LIGHT_GRAY 189
+#define G_LIGHT_GRAY 189
+#define B_LIGHT_GRAY 189
+
 #define R_BRIGHT_GRAY 130
 #define G_BRIGHT_GRAY 130
 #define B_BRIGHT_GRAY 130
@@ -51,6 +55,10 @@ namespace EuMax01
 #define R_DARK_GRAY 110
 #define G_DARK_GRAY 110
 #define B_DARK_GRAY 110
+
+#define R_NEARLY_BLACK 50
+#define G_NEARLY_BLACK 50
+#define B_NEARLY_BLACK 50
 
 #define R_BLACK 0
 #define G_BLACK 0
@@ -72,8 +80,10 @@ class Globals
    static SDL_Color GlobalSDL_ColorSewGruen;
    static SDL_Color GlobalSDL_ColorSewGrau;
    static SDL_Color GlobalSDL_ColorSewSchwarz;
+   static SDL_Color GlobalSDL_ColorLightGray;
    static SDL_Color GlobalSDL_ColorBrightGray;
    static SDL_Color GlobalSDL_ColorDarkGray;
+   static SDL_Color GlobalSDL_ColorNearlyBlack;
    static SDL_Color GlobalSDL_ColorBlack;
 
    static Uint32 GlobalUint32ColorSewOrange;
@@ -83,8 +93,10 @@ class Globals
    static Uint32 GlobalUint32ColorSewGrau;
    static Uint32 GlobalUint32ColorSewSchwarz;
 
+   static Uint32 GlobalUint32ColorLightGray;
    static Uint32 GlobalUint32ColorBrightGray;
    static Uint32 GlobalUint32ColorDarkGray;
+   static Uint32 GlobalUint32ColorNearlyBlack;
    static Uint32 GlobalUint32ColorBlack;
 
   TTF_Font * getDefaultFont(void);
@@ -99,8 +111,11 @@ class Globals
 //#define FSG_BOARDERWIDTH 2
 
 #define FSG_BACKGROUND Globals::GlobalUint32ColorBlack
-#define FSG_COLOR_NORMAL Globals::GlobalUint32ColorDarkGray
-#define FSG_COLOR_MARKED Globals::GlobalUint32ColorBrightGray
+#define FSG_COLOR_NORMAL Globals::GlobalUint32ColorSewOrange//Globals::GlobalUint32ColorDarkGray
+#define FSG_COLOR_MARKED Globals::GlobalUint32ColorLightGray
+
+//#define FSG_COLOR_NORMAL Globals::GlobalUint32ColorSewBlau
+//#define FSG_COLOR_MARKED Globals::GlobalUint32ColorSewOrange
 
 //#define FSG_LABEL_BACKGROUND Globals::GlobalUint32ColorBlack
 
