@@ -12,6 +12,7 @@ namespace EuMax01
   {
   public:
     LL();
+    ~LL();
     LL * Next;
     unsigned int counter;
     void addLL(LL * pItem);

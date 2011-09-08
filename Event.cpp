@@ -35,6 +35,11 @@ namespace EuMax01
     
   }
 
+  EvtTarget::~EvtTarget()
+  {
+    //EuMax01::LL::~LL();
+  }
+
   void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkMouseOver = pfnkEvtHandler;

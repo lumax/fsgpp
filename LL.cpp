@@ -8,6 +8,10 @@ namespace EuMax01
   {
     Next=0;
   }
+
+  LL::~LL()
+  {
+  }
   
   void LL::addLL(LL * pItem)
   {

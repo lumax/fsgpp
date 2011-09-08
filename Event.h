@@ -24,6 +24,7 @@ class EvtTarget:public LL
   SDL_Rect PosDimRect;
 
   EvtTarget();
+  ~EvtTarget();
   void addEvtTarget(EvtTarget * t);
   void removeSingleEvtTarget(EvtTarget * t);
   static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);

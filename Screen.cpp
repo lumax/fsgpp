@@ -28,6 +28,11 @@ namespace EuMax01
       }
   }
   
+  Screen::~Screen()
+  {
+
+  }
+  
   void Screen::addEvtTarget(EvtTarget * theTarget)
   {
     this->EvtTargets.addLL(theTarget);
