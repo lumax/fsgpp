@@ -26,10 +26,9 @@ namespace EuMax01
     //Label(const char * text,SDL_Rect PositionDimRect);
     //static void createLabel(Label* b,const char * t,SDL_Rect posDim);
     void setBorder(bool border);
+    static int showLabel(void * v,SDL_Surface* target);
   protected:
     bool bBorder;
-    static int showLabel(void * v,SDL_Surface* target);
-    
   };
 
   class TextField : public Label
