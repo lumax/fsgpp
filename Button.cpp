@@ -117,6 +117,12 @@ namespace EuMax01
     this->PrivateShow = Button::showImages;
   }
 
+  void Button::setFont(TTF_Font* font)
+  {
+    if(font)
+      this->pFont = font; 
+  }
+
 /*void sdlBtn_destructor(_pTsdlButton b)
 {
   if(b==NULL)

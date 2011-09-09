@@ -17,6 +17,7 @@ namespace EuMax01
 
 #define DEFAULTFONT "aispec.ttf"
   //#define DEFAULTFONT "sfd/FreeSerif.ttf"
+#define FONTBUTTONBIGSIZE 18
 #define FONTBUTTONDEFAULTSIZE 12
 #define FSGDEFAULTCOLORDEPTH 24
 
@@ -70,6 +71,7 @@ class Globals
  private:
   static Globals * global;
   static TTF_Font * FontButtonDefault;
+  static TTF_Font * FontButtonBig;
   Globals();
 
  public:
@@ -98,6 +100,9 @@ class Globals
    static Uint32 GlobalUint32ColorDarkGray;
    static Uint32 GlobalUint32ColorNearlyBlack;
    static Uint32 GlobalUint32ColorBlack;
+
+
+   static TTF_Font * getFontButtonBig();
 
   TTF_Font * getDefaultFont(void);
   ~Globals()

@@ -9,6 +9,7 @@ namespace EuMax01
 {
   Globals* Globals::global = NULL;
   TTF_Font* Globals::FontButtonDefault = NULL;
+  TTF_Font* Globals::FontButtonBig = 0;
 
   SDL_Color Globals::GlobalSDL_ColorSewOrange = {R_SEW_ORANGE,G_SEW_ORANGE,B_SEW_ORANGE,0}; 
   SDL_Color Globals::GlobalSDL_ColorSewBlau = {R_SEW_BLAU,G_SEW_BLAU,B_SEW_BLAU,0}; 
@@ -43,6 +44,11 @@ namespace EuMax01
       }
     else
       {
+	FontButtonBig = TTF_OpenFont(DEFAULTFONT,FONTBUTTONBIGSIZE);
+	if(!FontButtonBig)
+	  {
+	    return 0;
+	  }
 	FontButtonDefault = TTF_OpenFont(DEFAULTFONT,FONTBUTTONDEFAULTSIZE);
 	if(FontButtonDefault)
 	  {
@@ -55,8 +61,6 @@ namespace EuMax01
   Globals::Globals()
   {
    
- 
-
 
   GlobalUint32ColorSewOrange = SDL_MapRGB(SDL_GetVideoSurface()->format, \
 					  R_SEW_ORANGE,			\
@@ -109,4 +113,8 @@ namespace EuMax01
     return this->FontButtonDefault;
   }
 
+  TTF_Font * Globals::getFontButtonBig()
+  {
+    return Globals::FontButtonBig;
+  }
 }//end namespace
