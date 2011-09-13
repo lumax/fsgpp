@@ -36,6 +36,13 @@ namespace EuMax01
   Uint32 Globals::GlobalUint32ColorNearlyBlack=0;
   Uint32 Globals::GlobalUint32ColorBlack=0;
 
+  Uint32 Globals::GlobalUint32Color1=0;
+  Uint32 Globals::GlobalUint32Color2=0;
+  Uint32 Globals::GlobalUint32Color3=0;
+  Uint32 Globals::GlobalUint32Color4=0;
+  Uint32 Globals::GlobalUint32Color5=0;
+  Uint32 Globals::GlobalUint32Color6=0;
+
   Globals* Globals::getInstance()
   {
     if(FontButtonDefault)
@@ -107,6 +114,30 @@ namespace EuMax01
 					   R_BLACK,		\
 					   G_BLACK,		\
 					   B_BLACK);
+  GlobalUint32Color1 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_1,				\
+				  Globals::G_1,				\
+				  Globals::B_1);
+  GlobalUint32Color2 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_2,				\
+				  Globals::G_2,				\
+				  Globals::B_2);
+  GlobalUint32Color3 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_3,				\
+				  Globals::G_3,				\
+				  Globals::B_3);
+  GlobalUint32Color4 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_4,				\
+				  Globals::G_4,				\
+				  Globals::B_4);
+  GlobalUint32Color5 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_5,				\
+				  Globals::G_5,				\
+				  Globals::B_5);
+  GlobalUint32Color6 = SDL_MapRGB(SDL_GetVideoSurface()->format,	\
+				  Globals::R_6,				\
+				  Globals::G_6,				\
+				  Globals::B_6);
   }
 
   TTF_Font * Globals::getDefaultFont(void){

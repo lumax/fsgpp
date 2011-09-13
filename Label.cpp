@@ -175,7 +175,7 @@ namespace EuMax01
     tmpRect.h = b->PosDimRect.h;
 
     //Background
-    if(SDL_FillRect(target,&tmpRect,FSG_COLOR_MARKED)){
+    if(SDL_FillRect(target,&tmpRect,b->uiMarkedColor)){
 	return -1;
       }
     //Text
@@ -190,7 +190,7 @@ namespace EuMax01
     //Border
     if(b->bBorder)
       {
-	if( Tool::renderBorderDown(target,&tmpRect,FSG_COLOR_NORMAL)){
+	if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
 	  return -1;
 	}
       }

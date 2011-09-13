@@ -87,6 +87,12 @@ class Globals
    static SDL_Color GlobalSDL_ColorDarkGray;
    static SDL_Color GlobalSDL_ColorNearlyBlack;
    static SDL_Color GlobalSDL_ColorBlack;
+   static SDL_Color GlobalSDL_Color1;
+   static SDL_Color GlobalSDL_Color2;
+   static SDL_Color GlobalSDL_Color3;
+   static SDL_Color GlobalSDL_Color4;
+   static SDL_Color GlobalSDL_Color5;
+   static SDL_Color GlobalSDL_Color6;
 
    static Uint32 GlobalUint32ColorSewOrange;
    static Uint32 GlobalUint32ColorSewBlau;
@@ -101,6 +107,31 @@ class Globals
    static Uint32 GlobalUint32ColorNearlyBlack;
    static Uint32 GlobalUint32ColorBlack;
 
+   static Uint32 GlobalUint32Color1;
+   static Uint32 GlobalUint32Color2;
+   static Uint32 GlobalUint32Color3;
+   static Uint32 GlobalUint32Color4;
+   static Uint32 GlobalUint32Color5;
+   static Uint32 GlobalUint32Color6;
+   
+   static const Uint32 R_1 = 255;
+   static const Uint32 G_1 = 0;
+   static const Uint32 B_1 = 255;
+   static const Uint32 R_2 = 0;
+   static const Uint32 G_2 = 0;
+   static const Uint32 B_2 = 0;
+   static const Uint32 R_3 = 0;
+   static const Uint32 G_3 = 0;
+   static const Uint32 B_3 = 0;
+   static const Uint32 R_4 = 0;
+   static const Uint32 G_4 = 0;
+   static const Uint32 B_4 = 0;
+   static const Uint32 R_5 = 0;
+   static const Uint32 G_5 = 0;
+   static const Uint32 B_5 = 0;
+   static const Uint32 R_6 = 0;
+   static const Uint32 G_6 = 0;
+   static const Uint32 B_6 = 0;
 
    static TTF_Font * getFontButtonBig();
 

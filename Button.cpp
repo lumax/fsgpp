@@ -52,6 +52,8 @@ namespace EuMax01
     b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
+    b->setMarkedColor(FSG_COLOR_MARKED);
+    b->setNormalColor(FSG_COLOR_NORMAL);
     //this->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten   
   }
 
@@ -199,11 +201,11 @@ void Button::setText(const char* text)
     //Background
     if(b->bSelected){
     //if button has Background SDL_Surface, then render Background SDL_Surface, else :
-      if(SDL_FillRect(target,&tmpRect,FSG_COLOR_NORMAL)){
+      if(SDL_FillRect(target,&tmpRect,b->uiNormalColor)){
 	return -1;
     }
   }else{
-      if(SDL_FillRect(target,&tmpRect,FSG_COLOR_MARKED)){
+      if(SDL_FillRect(target,&tmpRect,b->uiMarkedColor)){
 	return -1;
       }
     }
@@ -233,14 +235,14 @@ void Button::setText(const char* text)
 
     //Border
     if(b->bSelected){
-      if( Tool::renderBorderDown(target,&tmpRect,FSG_COLOR_NORMAL)){
+      if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
 	return -1;
       }
       //if(fsgToolRenderBorder(target,&tmpRect,FSG_BOARDERWIDTH,FSG_BOARDERCOLOR_MARKED)){
       //  return -1;
       //}
     }else{
-      if( Tool::renderBorderUp(target,&tmpRect,FSG_COLOR_MARKED)){
+      if( Tool::renderBorderUp(target,&tmpRect,b->uiMarkedColor)){
 	return -1;
       }
     }
@@ -271,7 +273,17 @@ void Button::setText(const char* text)
       }
     }
     b->bPaintRequest = true;
-} 
+  }
+
+  void Button::setNormalColor(unsigned int c)
+  {
+    uiNormalColor = c;
+  }
+
+  void Button::setMarkedColor(unsigned int c)
+  {
+    uiMarkedColor = c;
+  }
 
  /* //SDL_Surface Konstruktion
   r.x = 0;

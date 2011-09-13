@@ -31,6 +31,9 @@ namespace EuMax01
     void setImages(SDL_Surface* normal,		\
 		  SDL_Surface* down);
     void setFont(TTF_Font* font); 
+    void setNormalColor(unsigned int c);
+    void setMarkedColor(unsigned int c);
+
   private:
     SDL_Surface * pNormalSurface;
     SDL_Surface * pMarkedSurface;
@@ -42,6 +45,8 @@ namespace EuMax01
     const char * pButtonText;
     TTF_Font * pFont;
     SDL_Color * pFontColor;
+    unsigned int uiNormalColor;
+    unsigned int uiMarkedColor;
     static int show(void * pB,SDL_Surface * pSurface);
   };
 
