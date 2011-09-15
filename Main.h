@@ -51,8 +51,9 @@ namespace EuMax01
       void (*fnkSecondaryEvtHandler)(SDL_Event * theEvent);
       SDL_Surface * pMainSurface;
       SDL_Event theSDL_Event;
-
+#ifdef TARGET_ARM
       struct tsdev *ts_dev;
+#endif
       PollManager*  pm_ts;
       PollReader* pr_ts;
       

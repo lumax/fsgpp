@@ -13,7 +13,8 @@ endif
 
 CPPFLAGS+=-g -Wall
 #`sdl-config --cflags`
-LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image -lts
+LDFLAGS+=-lSDL -lSDL_ttf -lSDL_image
+# -lts
 
 OBJS = LL.o Screen.o Main.o Tools.o Globals.o Event.o Button.o Poll.o\
 	ImagePool.o Gesture.o Label.o

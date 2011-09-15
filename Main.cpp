@@ -8,7 +8,9 @@ Bastian Ruppert
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL.h>
 #include <signal.h>
+#ifdef TARGET_ARM
 #include <tslib.h>
+#endif
 #include "LL.h"
 #include "Globals.h"
 #include "Event.h"
@@ -124,9 +126,10 @@ namespace EuMax01
     s->show(pGUI->pMainSurface);
     SDL_Flip(pGUI->pMainSurface);
   }
-
   void GUI::pollReadEvent(PollSource * ps)
   {
+#ifdef TARGET_ARM
+
     struct ts_sample sample;
     static bool buttonup=true;
     //SDL_Event * tmpEvent = &this->theSDL_Event;
@@ -173,6 +176,7 @@ namespace EuMax01
       }
       }//end for
     return;
+    #endif
   }
 
   int GUI::processEvent(SDL_Event * theEvent)
