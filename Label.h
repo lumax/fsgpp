@@ -40,11 +40,18 @@ namespace EuMax01
 	      short y,					\
 	      unsigned short w,				\
 	      unsigned short h);
-    void removeChar(void);
+    int removeChar(void);
     void addChar(char c);
     void setActive(bool active);
+    char * getText();
+
+    /*! brief füllt text in das Textfeld ein und beachtet die
+     * Textlänge
+     */ 
+    void setText(char * text);
+    unsigned int getTextLen();
   private:
-    static const unsigned int MaxTextLen = 8;
+    static const unsigned int MaxTextLen = 256;
     unsigned int MaxInstanceTextLen;
     char textBuffer[MaxTextLen];
     unsigned int TextLen;

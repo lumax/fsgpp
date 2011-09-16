@@ -102,10 +102,20 @@ namespace EuMax01
       {
 	this->TextLen = 0;
       }
-    this->setText(this->textBuffer);
+    Label::setText(this->textBuffer);
 
     this->setActive(false);
     //this->setKeyboardUpEvtHandler(keyboardEvt);
+  }
+
+  char * TextField::getText()
+  {
+    return textBuffer;
+  }
+
+  unsigned int TextField::getTextLen()
+  {
+    return TextLen;
   }
 
   void TextField::addChar(char c)
@@ -115,18 +125,31 @@ namespace EuMax01
 	this->textBuffer[this->TextLen]=c;
 	this->TextLen++;
 	this->textBuffer[this->TextLen]='\0';
-	this->setText(this->textBuffer);
+	Label::setText(this->textBuffer);
       }
   }
 
-  void TextField::removeChar()
+  void TextField::setText(char * text)
+  {
+    unsigned int textlen = strlen(text);
+    this->textBuffer[0]='\0';
+    this->TextLen = 0;
+
+    for(unsigned int i=0;i<textlen&&i<TextField::MaxTextLen;i++)
+      {
+	addChar(text[i]);
+      }
+  }
+
+  int TextField::removeChar()
   {
     if(this->TextLen)
       {
 	this->TextLen--;
 	this->textBuffer[TextLen] = '\0';
-	this->setText(this->textBuffer);
+	Label::setText(this->textBuffer);
       }
+    return this->TextLen;
   }
 
   void TextField::setActive(bool active)
