@@ -125,6 +125,12 @@ namespace EuMax01
       this->pFont = font; 
   }
 
+  void Button::setFontColor(SDL_Color * pColor)
+  {
+    if(pColor)
+      this->pFontColor = pColor;
+  }
+
 /*void sdlBtn_destructor(_pTsdlButton b)
 {
   if(b==NULL)

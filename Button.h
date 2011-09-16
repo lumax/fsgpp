@@ -30,7 +30,8 @@ namespace EuMax01
     int setImages(const char* normal,const char* down);
     void setImages(SDL_Surface* normal,		\
 		  SDL_Surface* down);
-    void setFont(TTF_Font* font); 
+    void setFont(TTF_Font* font);
+    void setFontColor(SDL_Color * pColor);
     void setNormalColor(unsigned int c);
     void setMarkedColor(unsigned int c);
 
