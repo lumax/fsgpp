@@ -87,12 +87,30 @@ class Globals
    static SDL_Color GlobalSDL_ColorDarkGray;
    static SDL_Color GlobalSDL_ColorNearlyBlack;
    static SDL_Color GlobalSDL_ColorBlack;
+
    static SDL_Color GlobalSDL_Color1;
    static SDL_Color GlobalSDL_Color2;
    static SDL_Color GlobalSDL_Color3;
    static SDL_Color GlobalSDL_Color4;
    static SDL_Color GlobalSDL_Color5;
    static SDL_Color GlobalSDL_Color6;
+
+   static SDL_Color GlobalSDL_ColorE1;
+   static SDL_Color GlobalSDL_ColorE2;
+   static SDL_Color GlobalSDL_ColorE3;
+   static SDL_Color GlobalSDL_ColorE4;
+   static SDL_Color GlobalSDL_ColorE5;
+   static SDL_Color GlobalSDL_ColorE6;
+   static SDL_Color GlobalSDL_ColorE7;
+   static SDL_Color GlobalSDL_ColorE8;
+   static SDL_Color GlobalSDL_ColorE9;
+   static SDL_Color GlobalSDL_ColorE10;
+   static SDL_Color GlobalSDL_ColorE11;
+   static SDL_Color GlobalSDL_ColorE12;
+   static SDL_Color GlobalSDL_ColorE13;
+   static SDL_Color GlobalSDL_ColorE14;
+   static SDL_Color GlobalSDL_ColorE15;
+   static SDL_Color GlobalSDL_ColorE16;
 
    static Uint32 GlobalUint32ColorSewOrange;
    static Uint32 GlobalUint32ColorSewBlau;
@@ -113,13 +131,30 @@ class Globals
    static Uint32 GlobalUint32Color4;
    static Uint32 GlobalUint32Color5;
    static Uint32 GlobalUint32Color6;
-   
+
+   static Uint32 GlobalUint32ColorE1;
+   static Uint32 GlobalUint32ColorE2;
+   static Uint32 GlobalUint32ColorE3;
+   static Uint32 GlobalUint32ColorE4;
+   static Uint32 GlobalUint32ColorE5;
+   static Uint32 GlobalUint32ColorE6;
+   static Uint32 GlobalUint32ColorE7;
+   static Uint32 GlobalUint32ColorE8;
+   static Uint32 GlobalUint32ColorE9;
+   static Uint32 GlobalUint32ColorE10;
+   static Uint32 GlobalUint32ColorE11;
+   static Uint32 GlobalUint32ColorE12;
+   static Uint32 GlobalUint32ColorE13;
+   static Uint32 GlobalUint32ColorE14;
+   static Uint32 GlobalUint32ColorE15;
+   static Uint32 GlobalUint32ColorE16;
+
    static const Uint32 R_1 = 255;
    static const Uint32 G_1 = 0;
    static const Uint32 B_1 = 255;
-   static const Uint32 R_2 = 0;
-   static const Uint32 G_2 = 0;
-   static const Uint32 B_2 = 0;
+   static const Uint32 R_2 = 255;//weiss
+   static const Uint32 G_2 = 255;
+   static const Uint32 B_2 = 255;
    static const Uint32 R_3 = 0;
    static const Uint32 G_3 = 0;
    static const Uint32 B_3 = 0;
@@ -132,6 +167,55 @@ class Globals
    static const Uint32 R_6 = 0;
    static const Uint32 G_6 = 0;
    static const Uint32 B_6 = 0;
+
+   static const Uint32 R_E1 = 0x01;
+   static const Uint32 G_E1 = 0xdf;
+   static const Uint32 B_E1 = 0x01;
+   static const Uint32 R_E2 = 0x04;
+   static const Uint32 G_E2 = 0xb4;
+   static const Uint32 B_E2 = 0x31;
+   static const Uint32 R_E3 = 0x5f;
+   static const Uint32 G_E3 = 0xb4;
+   static const Uint32 B_E3 = 0x04;
+   static const Uint32 R_E4 = 0x68;
+   static const Uint32 G_E4 = 0x8a;
+   static const Uint32 B_E4 = 0x08;
+   static const Uint32 R_E5 = 0x86;
+   static const Uint32 G_E5 = 0x8a;
+   static const Uint32 B_E5 = 0x08;
+   static const Uint32 R_E6 = 0x88;
+   static const Uint32 G_E6 = 0x6a;
+   static const Uint32 B_E6 = 0x08;
+   static const Uint32 R_E7 = 0x54;
+   static const Uint32 G_E7 = 0x5f;
+   static const Uint32 B_E7 = 0x04;
+   static const Uint32 R_E8 = 0xdf;
+   static const Uint32 G_E8 = 0x74;
+   static const Uint32 B_E8 = 0x01;
+   static const Uint32 R_E9 = 0xff;
+   static const Uint32 G_E9 = 0x40;
+   static const Uint32 B_E9 = 0x00;
+   static const Uint32 R_E10 =0xfe;
+   static const Uint32 G_E10 =0x2e;
+   static const Uint32 B_E10 =0x2e;
+   static const Uint32 R_E11 =0xff;
+   static const Uint32 G_E11 =0x00;
+   static const Uint32 B_E11 =0x00;
+   static const Uint32 R_E12 =0xdf;
+   static const Uint32 G_E12 =0x01;
+   static const Uint32 B_E12 =0x01;
+   static const Uint32 R_E13 =0xb4;
+   static const Uint32 G_E13 =0x04;
+   static const Uint32 B_E13 =0x04;
+   static const Uint32 R_E14 =0x8a;
+   static const Uint32 G_E14 =0x08;
+   static const Uint32 B_E14 =0x08;
+   static const Uint32 R_E15 =0x61;
+   static const Uint32 G_E15 =0x0b;
+   static const Uint32 B_E15 =0x0b;
+   static const Uint32 R_E16 =0x61;
+   static const Uint32 G_E16 =0x0b;
+   static const Uint32 B_E16 =0x0b;
 
    static TTF_Font * getFontButtonBig();
 
