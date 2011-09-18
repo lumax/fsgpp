@@ -72,6 +72,7 @@ class Globals
   static Globals * global;
   static TTF_Font * FontButtonDefault;
   static TTF_Font * FontButtonBig;
+  static TTF_Font * FontButton10;
   Globals();
 
  public:
@@ -155,12 +156,12 @@ class Globals
    static const Uint32 R_2 = 255;//weiss
    static const Uint32 G_2 = 255;
    static const Uint32 B_2 = 255;
-   static const Uint32 R_3 = 0;
+   static const Uint32 R_3 = 0xff;//ein rot
    static const Uint32 G_3 = 0;
    static const Uint32 B_3 = 0;
-   static const Uint32 R_4 = 0;
-   static const Uint32 G_4 = 0;
-   static const Uint32 B_4 = 0;
+   static const Uint32 R_4 = 0xf7;//orange
+   static const Uint32 G_4 = 0xbe;
+   static const Uint32 B_4 = 0x81;
    static const Uint32 R_5 = 0;
    static const Uint32 G_5 = 0;
    static const Uint32 B_5 = 0;
@@ -218,6 +219,7 @@ class Globals
    static const Uint32 B_E16 =0x0b;
 
    static TTF_Font * getFontButtonBig();
+   static TTF_Font * getFontButton10();
 
   TTF_Font * getDefaultFont(void);
   ~Globals()
