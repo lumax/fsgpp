@@ -138,19 +138,22 @@ namespace EuMax01
   Uint8 gruen;
   Uint8 blau;
   int ret;
+  int dicke,ddicke;
+  ddicke = 2;
+  dicke = 1;
  
   ret=Tool::getRGB(Color,&rot,&gruen,&blau);
   if(ret)
     return ret;
   
-    Uint32 bright = Tool::becloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,30);//hell
+  Uint32 bright = Tool::becloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,30);//hell
   Uint32 brighter = Tool::becloudColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,60);//heller
   Uint32 dark = Tool::brightenColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,30);//dunkel
   Uint32 darker = Tool::brightenColor(SDL_GetVideoSurface()->format,&rot,&gruen,&blau,60);//dunkler
-  
+
   r.x = PosDim->x;
   r.y = PosDim->y;
-  r.w = 2;
+  r.w = ddicke;
   r.h = PosDim->h;
   if(boolUp)
     {
@@ -166,7 +169,7 @@ namespace EuMax01
   r.x = PosDim->x;
   r.y = PosDim->y;
   r.w = PosDim->w;
-  r.h = 2;
+  r.h = ddicke;
   if(boolUp)
     {
       if(SDL_FillRect(target,&r,bright) )//Border Innen Oben
@@ -180,7 +183,7 @@ namespace EuMax01
   
   r.x = PosDim->w-2+PosDim->x;
   r.y = PosDim->y;
-  r.w = 2;
+  r.w = ddicke;
   r.h = PosDim->h;
   if(boolUp)
     {        
@@ -196,7 +199,7 @@ namespace EuMax01
   r.x = PosDim->x;
   r.y = PosDim->h-2+PosDim->y;
   r.w = PosDim->w;
-  r.h = 2; 
+  r.h = ddicke;
   if(boolUp)
     {
      if(SDL_FillRect(target,&r,dark))//Border Innen Unten
@@ -210,7 +213,7 @@ namespace EuMax01
 
   r.x = PosDim->x;
   r.y = PosDim->y;
-  r.w = 1;
+  r.w = dicke;
   r.h = PosDim->h;
   if(boolUp)
     {
@@ -226,7 +229,7 @@ namespace EuMax01
   r.x = PosDim->x;
   r.y = PosDim->y;
   r.w = PosDim->w;
-  r.h = 1;
+  r.h = dicke;
   if(boolUp){
     if(SDL_FillRect(target,&r,brighter))//Border Außen Oben
       return -1;
@@ -237,7 +240,7 @@ namespace EuMax01
   
   r.x = PosDim->w-1+PosDim->x;
   r.y = PosDim->y;
-  r.w = 1;
+  r.w = dicke;
   r.h = PosDim->h;
   if(boolUp)
     {        
@@ -253,7 +256,7 @@ namespace EuMax01
   r.x = PosDim->x;
   r.y = PosDim->h-1+PosDim->y;
   r.w = PosDim->w;
-  r.h = 1; 
+  r.h = dicke;
   if(boolUp)
     {
      if(SDL_FillRect(target,&r,darker))//Border Außen Unten
