@@ -52,9 +52,8 @@ namespace EuMax01
     b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
-    b->setMarkedColor(FSG_COLOR_MARKED);
-    b->setNormalColor(FSG_COLOR_NORMAL);
-    //this->EvtTarget.pTargetSurface = 0;             //pTargetSurface resetten   
+    b->setMarkedColor(Globals::GlobalUint32ColorLightGray);
+    b->setNormalColor(Globals::GlobalUint32Color2);
   }
 
   /* \brief Button is decorated by images and
