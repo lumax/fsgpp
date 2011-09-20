@@ -16,6 +16,7 @@ namespace EuMax01
  */
 
 #define DEFAULTFONT "aispec.ttf"
+#define DEFAULTFONTMONO "LiberationMono-Regular.ttf"
   //#define DEFAULTFONT "sfd/FreeSerif.ttf"
 #define FONTBUTTONBIGSIZE 18
 #define FONTBUTTONDEFAULTSIZE 12
@@ -73,6 +74,8 @@ class Globals
   static TTF_Font * FontButtonDefault;
   static TTF_Font * FontButtonBig;
   static TTF_Font * FontButton10;
+  static TTF_Font * FontMono12;
+  static TTF_Font * FontMono18;
   Globals();
 
  public:
@@ -220,6 +223,8 @@ class Globals
 
    static TTF_Font * getFontButtonBig();
    static TTF_Font * getFontButton10();
+   static TTF_Font * getFontMono12();
+   static TTF_Font * getFontMono18();
 
   TTF_Font * getDefaultFont(void);
   ~Globals()
