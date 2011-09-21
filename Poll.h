@@ -24,7 +24,6 @@ namespace EuMax01
     struct timeval nextTimeout;
     IPollTimerListener * lis;
   private:
-    
   };
 
   class IPollReadListener;
@@ -35,6 +34,9 @@ namespace EuMax01
     PollSource(IPollReadListener * lis);
     struct pollfd thePollfd;
     IPollReadListener * lis;
+    void setPollSourceID(char * id);
+  private:
+    char * PollSourceID;
   };
   
   class IPollReadListener

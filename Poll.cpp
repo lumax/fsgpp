@@ -42,6 +42,12 @@ namespace EuMax01
 	pv++;
       }
     this->lis = lis;
+    this->PollSourceID = 0;
+  }
+
+  void PollSource::setPollSourceID(char* id)
+  {
+    this->PollSourceID = id;
   }
 
   PollReader::PollReader(IPollReadListener * lis):PollSource(lis)
