@@ -177,7 +177,26 @@ namespace EuMax01
     tmp.y = y;
     tmp.w = w;
     tmp.h = h;
-    Button::createButton(this,text,tmp);
+    Button::createButton(this,text,tmp,0);
+    this->PrivateSelectable = 0;
+    this->bSelected = false;
+    this->PrivateShow = Label::showLabel;
+    this->bBorder = false;
+  }
+  
+  Label::Label(const char * text,				\
+	       short x,						\
+	       short y,						\
+	       unsigned short w,				\
+	       unsigned short h,				\
+	       ButtonSettings * settings):Button(text,x,y,w,h,settings)
+  {
+    SDL_Rect tmp;
+    tmp.x = x;
+    tmp.y = y;
+    tmp.w = w;
+    tmp.h = h;
+    Button::createButton(this,text,tmp,settings);
     this->PrivateSelectable = 0;
     this->bSelected = false;
     this->PrivateShow = Label::showLabel;

@@ -23,6 +23,13 @@ namespace EuMax01
 	   short y,				\
 	   unsigned short w,			\
 	   unsigned short h);
+
+    Label(const char * text,			\
+	   short x,				\
+	   short y,				\
+	   unsigned short w,			\
+	  unsigned short h,			\
+	  ButtonSettings * settings);
     //Label(const char * text,SDL_Rect PositionDimRect);
     //static void createLabel(Label* b,const char * t,SDL_Rect posDim);
     void setBorder(bool border);

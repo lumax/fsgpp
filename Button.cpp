@@ -16,9 +16,43 @@ Bastian Ruppert
 namespace EuMax01
 {
 
+  ButtonSettings::ButtonSettings(TTF_Font* Font,		\
+				 SDL_Color * FontColor,		\
+				 unsigned int NormalColor,	\
+				 unsigned int MarkedColor)
+  {
+    this->Font = Font;
+    this->Color = FontColor;
+    this->NormalColor = NormalColor;
+    this->MarkedColor = MarkedColor;
+  }
+
+  ButtonSettings::~ButtonSettings()
+  {}
+
+  TTF_Font * ButtonSettings::getFont()
+  {
+    return this->Font;
+  }
+
+  SDL_Color * ButtonSettings::getFontColor()
+  {
+    return this->Color;
+  }
+
+  unsigned int ButtonSettings::getNormalColor()
+  {
+    return this->NormalColor;
+  }
+
+  unsigned int ButtonSettings::getMarkedColor()
+  {
+    return this->MarkedColor;
+  }
+
   Button::Button(const char * text,SDL_Rect PositionDimRect)
   {
-    Button::createButton(this,text,PositionDimRect);
+    Button::createButton(this,text,PositionDimRect,0);
   }
   
   Button::Button(const char * text,			\
@@ -32,16 +66,45 @@ namespace EuMax01
     tmp.y = y;
     tmp.w = w;
     tmp.h = h;
-    Button::createButton(this,text,tmp);
+    Button::createButton(this,text,tmp,0);
+  }
+
+  Button::Button(const char * text,			\
+		 short x,				\
+		 short y,				\
+		 unsigned short w,			\
+		 unsigned short h,			\
+		 ButtonSettings * settings)
+  {
+    SDL_Rect tmp;
+    tmp.x = x;
+    tmp.y = y;
+    tmp.w = w;
+    tmp.h = h;
+    Button::createButton(this,text,tmp,settings);
   }
   
-  void Button::createButton(Button* b,const char * text,SDL_Rect PositionDimRect)
+  void Button::createButton(Button* b,			\
+			    const char * text,		\
+			    SDL_Rect PositionDimRect,	\
+			    ButtonSettings * settings)
   {
-    Globals* global = Globals::getInstance();
-    b->pFont = global->getDefaultFont();
-    
-    b->pFontColor = &global->GlobalSDL_ColorNearlyBlack;
-    
+    if(settings)
+      {
+	b->setFont(settings->getFont());
+	b->setFontColor(settings->getFontColor());
+	b->setNormalColor(settings->getNormalColor());
+	b->setMarkedColor(settings->getMarkedColor());
+      }
+    else
+      {
+	Globals* global = Globals::getInstance();
+	b->pFont = global->getDefaultFont();
+	b->pFontColor = &global->GlobalSDL_ColorNearlyBlack;
+	b->setMarkedColor(Globals::GlobalUint32ColorLightGray);
+	b->setNormalColor(Globals::GlobalUint32Color2);
+      }
+
     b->setText(text);          //text setzen 
     b->PrivateShow = Button::show;//EvtTarget als Button Markieren   
     b->pTSource = b;//Quelle setzen
@@ -52,8 +115,6 @@ namespace EuMax01
     b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
-    b->setMarkedColor(Globals::GlobalUint32ColorLightGray);
-    b->setNormalColor(Globals::GlobalUint32Color2);
   }
 
   /* \brief Button is decorated by images and

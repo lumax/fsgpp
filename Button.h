@@ -15,6 +15,27 @@ namespace EuMax01
 #ifndef __FSGBUTTON_H__
 #define __FSGBUTTON_H__
 
+  class ButtonSettings
+  {
+  public:
+    ButtonSettings(TTF_Font* Font,		\
+		   SDL_Color * FontColor,		\
+		   unsigned int NormalColor,	\
+		   unsigned int MarkedColor);
+    ~ButtonSettings();
+
+    TTF_Font* getFont();
+    SDL_Color * getFontColor();
+    unsigned int getNormalColor();
+    unsigned int getMarkedColor();
+
+  private:
+    TTF_Font* Font;
+    SDL_Color * Color;
+    unsigned int NormalColor;
+    unsigned int MarkedColor;
+  };
+
   class Button : public EvtTarget
   {
   public:
@@ -23,8 +44,19 @@ namespace EuMax01
 	   short y,				\
 	   unsigned short w,			\
 	   unsigned short h);
+
+    Button(const char * text,			\
+	   short x,				\
+	   short y,				\
+	   unsigned short w,			\
+	   unsigned short h,			\
+	   ButtonSettings * settings);
+
     Button(const char * text,SDL_Rect PositionDimRect);
-    static void createButton(Button* b,const char * t,SDL_Rect posDim);
+    static void createButton(Button* b,\
+			     const char * t,\
+			     SDL_Rect posDim,\
+			     ButtonSettings * settings);
     //~Button();
     void setText(const char* text);
     int setImages(const char* normal,const char* down);
