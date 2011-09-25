@@ -71,7 +71,8 @@ namespace EuMax01
 		       short x,					\
 		       short y,					\
 		       unsigned short w,			\
-		       unsigned short h):Label(text,x,y,w,h)
+		       unsigned short h,\
+		       ButtonSettings * set):Label(text,x,y,w,h,set)
   {
     //SDL_Rect tmp;
     unsigned int len = 0;
@@ -106,6 +107,16 @@ namespace EuMax01
 
     this->setActive(false);
     //this->setKeyboardUpEvtHandler(keyboardEvt);
+  }
+
+  TextField::TextField(const char * text,			\
+		       unsigned int maxTextLen,			\
+		       short x,					\
+		       short y,					\
+		       unsigned short w,			\
+		       unsigned short h):Label(text,x,y,w,h,0)
+  {
+    TextField(text,maxTextLen,x,y,w,h,0);
   }
 
   char * TextField::getText()

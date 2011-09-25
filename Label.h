@@ -47,6 +47,13 @@ namespace EuMax01
 	      short y,					\
 	      unsigned short w,				\
 	      unsigned short h);
+    TextField(const char * text,			\
+	      unsigned int maxTextLen,			\
+	      short x,					\
+	      short y,					\
+	      unsigned short w,				\
+	      unsigned short h,				\
+	      ButtonSettings * set);
     int removeChar(void);
     void addChar(char c);
     void setActive(bool active);
