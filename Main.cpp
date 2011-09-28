@@ -124,7 +124,9 @@ namespace EuMax01
   {
     this->setActiveScreen(s); //die EventListener umschalten
     s->show(pGUI->pMainSurface);
+#ifndef FSGPP_SHOW_IMMEDIATELY
     SDL_Flip(pGUI->pMainSurface);
+#endif
   }
   void GUI::pollReadEvent(PollSource * ps)
   {

@@ -26,7 +26,6 @@ namespace EuMax01
 
     static GUI* getInstance(GUI_Properties * p_properties,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent));
     LL * getActiveEvtTargets(void);
-    void setActiveScreen(Screen * s);
     void activateScreen(Screen * s);
     int eventLoop(void);
     void stopEventLoop();
@@ -37,6 +36,7 @@ namespace EuMax01
     void addPollTimer(PollTimer * p_pt);
     int addPollReader(PollReader * p_pr);
   private:
+    void setActiveScreen(Screen * s);
     static GUI * pGUI;
       GUI();
       ~GUI()
