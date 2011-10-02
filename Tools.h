@@ -26,6 +26,8 @@ class Tool
   static int blitText(SDL_Surface * tarSurface,SDL_Rect * posdim,TTF_Font * pFont,SDL_Color * pFontColor,const char * text); 
   static void PrintKeyInfo( SDL_KeyboardEvent *key );
   static char getStdASCII_Char(SDL_KeyboardEvent * key);
+  static char getFloatNumeric_Char(SDL_KeyboardEvent * key);
+  static char getIntegerNumeric_Char(SDL_KeyboardEvent * key);
 
 /*! \brief Erzeugt aus dem appname und dem /proc/self/exe link den 
  *         Pfad der Applikation

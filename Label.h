@@ -58,13 +58,19 @@ namespace EuMax01
     void addChar(char c);
     void setActive(bool active);
     char * getText();
+    static const int StdASCIIChar = 0;
+    static const int FloatNumericChar = 1;
+    static const int IntegerNumericChar = 2;
+    void activateKeyListener(int listener);
 
     /*! brief füllt text in das Textfeld ein und beachtet die
      * Textlänge
      */ 
     void setText(char * text);
     unsigned int getTextLen();
+    static void keyboardDownEvtTextField(void * src,SDL_Event * evt);
   private:
+    char (*keyLis)(SDL_KeyboardEvent * key);
     static const unsigned int MaxTextLen = 256;
     unsigned int MaxInstanceTextLen;
     char textBuffer[MaxTextLen];

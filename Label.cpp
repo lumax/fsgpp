@@ -19,7 +19,7 @@ Bastian Ruppert
 namespace EuMax01
 {
 
-  static void keyboardDownEvtTextField(void * src,SDL_Event * evt)
+  void TextField::keyboardDownEvtTextField(void * src,SDL_Event * evt)
   {
     TextField* tf = (TextField*)src;
     SDL_KeyboardEvent * key = (SDL_KeyboardEvent *)&evt->key;
@@ -54,7 +54,7 @@ namespace EuMax01
 	  }
 	else
 	  {
-	    zeichen = Tool::getStdASCII_Char(key);
+	    zeichen = tf->keyLis(key);
 	  }
 	if(zeichen)
 	  {
@@ -77,6 +77,7 @@ namespace EuMax01
     //SDL_Rect tmp;
     unsigned int len = 0;
     this->setKeyboardDownEvtHandler(keyboardDownEvtTextField);
+    this->activateKeyListener(TextField::StdASCIIChar);
     textBuffer[MaxTextLen-1]='\0';
     textBuffer[0]='\0';
     
@@ -119,6 +120,28 @@ namespace EuMax01
     TextField(text,maxTextLen,x,y,w,h,0);
   }
 
+  void TextField::activateKeyListener(int listener)
+  {
+    switch(listener)
+      {
+      case TextField::FloatNumericChar:
+	{ 
+	  this->keyLis = Tool::getFloatNumeric_Char;
+	  break;
+	}
+      case TextField::IntegerNumericChar:
+	{ 
+	  this->keyLis = Tool::getIntegerNumeric_Char;
+	  break;
+	}
+      default ://TextField::StdASCIIChar
+	{
+	  this->keyLis = Tool::getStdASCII_Char;
+	  break;
+	}
+      }
+  }
+  
   char * TextField::getText()
   {
     return textBuffer;
