@@ -40,6 +40,14 @@ namespace EuMax01
     //EuMax01::LL::~LL();
   }
 
+  void EvtTarget::hide(bool hide)
+  {
+    if(hide)
+      this->bHide = true;
+    else
+      this->bHide = false;
+  }
+
   void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkMouseOver = pfnkEvtHandler;
