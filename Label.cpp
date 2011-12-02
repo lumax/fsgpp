@@ -58,7 +58,15 @@ namespace EuMax01
 	  }
 	if(zeichen)
 	  {
-	    tf->addChar(zeichen);
+	    if('-'==zeichen)
+	      {
+		if(0==tf->getTextLen())
+		  tf->addChar(zeichen);
+	      }
+	    else
+	      {
+		tf->addChar(zeichen);
+	      }
 	    //printf("%c",zeichen);
 	    //fflush(0);
 	  }

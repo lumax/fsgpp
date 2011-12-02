@@ -866,6 +866,10 @@ char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
     {
 	zeichen = '9';
     }
+  else if(key->keysym.sym == SDLK_MINUS)
+    {
+	zeichen = '-';
+    }
   return zeichen;
 }
 
