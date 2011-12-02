@@ -48,6 +48,11 @@ namespace EuMax01
       this->bHide = false;
   }
 
+  void EvtTarget::setPrivateSelectable(void (*fnk)(void * b,bool selected))
+  {
+    this->PrivateSelectable = fnk;
+  }
+
   void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkMouseOver = pfnkEvtHandler;

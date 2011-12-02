@@ -36,6 +36,7 @@ class EvtTarget:public LL
   void setKeyboardDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setKeyboardUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void hide(bool hide);
+  void setPrivateSelectable(void (*fnk)(void * b,bool selected));
  protected:
   void (*fnkSelect)(void * source);
   void (*fnkUnSelect)(void * source);
