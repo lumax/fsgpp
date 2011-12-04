@@ -22,8 +22,8 @@ namespace EuMax01
     PosDimRect.y = 0;
     PosDimRect.w = 0;
     PosDimRect.h = 0;
-    fnkSelect=NULL;
-    fnkUnSelect=NULL;
+    fnkMouseOverEvt=NULL;
+    fnkMouseNotOverEvt=NULL;
     PrivateMouseOver=NULL;
     
     fnkKeyboardUp=NULL;

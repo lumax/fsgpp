@@ -112,7 +112,7 @@ namespace EuMax01
     b->PosDimRect.y = PositionDimRect.y;
     b->PosDimRect.w = PositionDimRect.w;
     b->PosDimRect.h = PositionDimRect.h;
-    b->PrivateMouseOver = Button::select; //Der Button macht Aktion mit dem Selected Bit!
+    b->PrivateMouseOver = Button::mouseOverEvent;//Der Button macht Aktion mit dem MouseOverBit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
   }
@@ -322,20 +322,20 @@ void Button::setText(const char* text)
   /*! \brief private Funktion zum setzen des Selected-Bits
    *
    */
-  void Button::select(void * v,bool selected)
+  void Button::mouseOverEvent(void * v,bool MouseOver)
   {
     // EvtTarget* t = (EvtTarget)v;
     Button* b =(Button*)v;
-    if(selected)
+    if(MouseOver)
       {
-	if(b->fnkSelect){
-	  (*b->fnkSelect)(b->pTSource);//execFnk 
+	if(b->fnkMouseOverEvt){
+	  (*b->fnkMouseOverEvt)(b->pTSource);//execFnk 
 	}
       }
   else
     {
-      if(b->fnkUnSelect){
-	(*b->fnkUnSelect)(b->pTSource);//execFnk 
+      if(b->fnkMouseNotOverEvt){
+	(*b->fnkMouseNotOverEvt)(b->pTSource);//execFnk 
       }
     }
     b->bPaintRequest = true;

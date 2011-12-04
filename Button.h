@@ -72,7 +72,7 @@ namespace EuMax01
     SDL_Surface * pMarkedSurface;
 
     static int showImages(void * v,SDL_Surface* target);
-    static void select(void * b,bool seleced);
+    static void mouseOverEvent(void * b,bool MouseOver);
 
   protected:
     const char * pButtonText;

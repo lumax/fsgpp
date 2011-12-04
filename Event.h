@@ -38,8 +38,8 @@ class EvtTarget:public LL
   void hide(bool hide);
   void setPrivateMouseOver(void (*fnk)(void * b,bool selected));
  protected:
-  void (*fnkSelect)(void * source);
-  void (*fnkUnSelect)(void * source);
+  void (*fnkMouseOverEvt)(void * source);
+  void (*fnkMouseNotOverEvt)(void * source);
   void (*PrivateMouseOver)(void * b,bool selected);
   void (*fnkKeyboardUp)(void * src,SDL_Event * theEvent);
   void (*fnkKeyboardDown)(void * src,SDL_Event * theEvent);
