@@ -220,8 +220,8 @@ namespace EuMax01
     tmp.w = w;
     tmp.h = h;
     Button::createButton(this,text,tmp,0);
-    this->PrivateSelectable = 0;
-    this->bSelected = false;
+    this->PrivateMouseOver = 0;
+    this->bMouseOver = false;
     this->PrivateShow = Label::showLabel;
     this->bBorder = false;
   }
@@ -239,8 +239,8 @@ namespace EuMax01
     tmp.w = w;
     tmp.h = h;
     Button::createButton(this,text,tmp,settings);
-    this->PrivateSelectable = 0;
-    this->bSelected = false;
+    this->PrivateMouseOver = 0;
+    this->bMouseOver = false;
     this->PrivateShow = Label::showLabel;
     this->bBorder = false;
   }

@@ -112,7 +112,7 @@ namespace EuMax01
     b->PosDimRect.y = PositionDimRect.y;
     b->PosDimRect.w = PositionDimRect.w;
     b->PosDimRect.h = PositionDimRect.h;
-    b->PrivateSelectable = Button::select; //Der Button macht Aktion mit dem Selected Bit!
+    b->PrivateMouseOver = Button::select; //Der Button macht Aktion mit dem Selected Bit!
     b->pNormalSurface = 0;
     b->pMarkedSurface = 0;
   }
@@ -225,7 +225,7 @@ void Button::setText(const char* text)
     tmpRect.h = b->PosDimRect.h;
 
     //Background
-    if(b->bSelected)
+    if(b->bMouseOver)
       {
 	tmpSurface = b->pMarkedSurface;
       }
@@ -265,7 +265,7 @@ void Button::setText(const char* text)
     tmpRect.h = b->PosDimRect.h;
 
     //Background
-    if(b->bSelected){
+    if(b->bMouseOver){
     //if button has Background SDL_Surface, then render Background SDL_Surface, else :
       if(SDL_FillRect(target,&tmpRect,b->uiNormalColor)){
 	return -1;
@@ -276,7 +276,7 @@ void Button::setText(const char* text)
       }
     }
     //Text
-    if(b->bSelected)
+    if(b->bMouseOver)
       {
 	tmpRect.x +=2;
 	tmpRect.y +=2;
@@ -300,7 +300,7 @@ void Button::setText(const char* text)
       }
 
     //Border
-    if(b->bSelected){
+    if(b->bMouseOver){
       if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
 	return -1;
       }

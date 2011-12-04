@@ -99,8 +99,8 @@ namespace EuMax01
     
     EvtTarget *pTmpEvtTarget = (EvtTarget*)s->EvtTargets.Next;
     while(pTmpEvtTarget)
-      {     //alle EventTargets durchlaufen und Selected = false setzen
-	pTmpEvtTarget->bSelected = false;
+      {     //alle EventTargets durchlaufen und MouseOver = false setzen
+	pTmpEvtTarget->bMouseOver = false;
 	pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->Next;
       }
     

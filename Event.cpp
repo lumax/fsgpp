@@ -14,7 +14,7 @@ namespace EuMax01
   {
     PrivateShow = NULL;
     bHide = false;
-    bSelected = false;
+    bMouseOver = false;
     bPaintRequest = false;
 
     pTSource = NULL;
@@ -24,7 +24,7 @@ namespace EuMax01
     PosDimRect.h = 0;
     fnkSelect=NULL;
     fnkUnSelect=NULL;
-    PrivateSelectable=NULL;
+    PrivateMouseOver=NULL;
     
     fnkKeyboardUp=NULL;
     fnkKeyboardDown=NULL;
@@ -48,9 +48,9 @@ namespace EuMax01
       this->bHide = false;
   }
 
-  void EvtTarget::setPrivateSelectable(void (*fnk)(void * b,bool selected))
+  void EvtTarget::setPrivateMouseOver(void (*fnk)(void * b,bool selected))
   {
-    this->PrivateSelectable = fnk;
+    this->PrivateMouseOver = fnk;
   }
 
   void EvtTarget::setMouseOverEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
@@ -134,10 +134,10 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    if(this->fnkMouseMotion!=0){
 	      (*this->fnkMouseMotion)(this->pTSource,evt);//execFnk
 	    }
-	    if(!this->bSelected){//Selected in not set
-	      this->bSelected = true;                    //set bSelected bit
-	      if(this->PrivateSelectable){//there is a funktion to call
-		(*this->PrivateSelectable)((void*)this,true);
+	    if(!this->bMouseOver){
+	      this->bMouseOver = true;                    //set bSelected bit
+	      if(this->PrivateMouseOver){//there is a funktion to call
+		(*this->PrivateMouseOver)((void*)this,true);
 	      }
 	      
 	      if(this->fnkMouseOver!=0){//there is a funktion to call
@@ -148,11 +148,11 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	  }
 	else//Mouse is not over
 	  {
-	    if(this->bSelected)// Selected is set
+	    if(this->bMouseOver)// Selected is set
 	      {
-		this->bSelected = false;          //unset Selected
-		if(this->PrivateSelectable){//there is a funktion to call
-		  (*this->PrivateSelectable)((void*)this,false);
+		this->bMouseOver = false;          //unset Selected
+		if(this->PrivateMouseOver){//there is a funktion to call
+		  (*this->PrivateMouseOver)((void*)this,false);
 		}
 	      }
 	  }    
@@ -190,15 +190,15 @@ int EvtTarget::paintRequested(EvtTarget * t)
 		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
 		}
 	    }
-	  if(this->bSelected)
+	  if(this->bMouseOver)
 	    {
-	      this->bSelected=false;
-	      if(this->PrivateSelectable){//there is a fnk to call
-		(*this->PrivateSelectable)((void*)this,false);
+	      this->bMouseOver=false;
+	      if(this->PrivateMouseOver){//there is a fnk to call
+		(*this->PrivateMouseOver)((void*)this,false);
 	      }
 	    }
 #else
-	  if(this->bSelected)
+	  if(this->bMouseOver)
 	    {
 	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
 		{

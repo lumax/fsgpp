@@ -18,7 +18,7 @@ class EvtTarget:public LL
  public:
   
   bool bHide;
-  bool bSelected;
+  bool bMouseOver;
   bool bPaintRequest;
   void * pTSource;
   SDL_Rect PosDimRect;
@@ -36,11 +36,11 @@ class EvtTarget:public LL
   void setKeyboardDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setKeyboardUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void hide(bool hide);
-  void setPrivateSelectable(void (*fnk)(void * b,bool selected));
+  void setPrivateMouseOver(void (*fnk)(void * b,bool selected));
  protected:
   void (*fnkSelect)(void * source);
   void (*fnkUnSelect)(void * source);
-  void (*PrivateSelectable)(void * b,bool selected);
+  void (*PrivateMouseOver)(void * b,bool selected);
   void (*fnkKeyboardUp)(void * src,SDL_Event * theEvent);
   void (*fnkKeyboardDown)(void * src,SDL_Event * theEvent);
   void (*fnkMouseMotion)(void * src,SDL_Event * theEvent);
