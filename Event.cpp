@@ -15,6 +15,7 @@ namespace EuMax01
     PrivateShow = NULL;
     bHide = false;
     bMouseOver = false;
+    bSelectedByMouseDown = false;
     bPaintRequest = false;
 
     pTSource = NULL;
@@ -66,6 +67,13 @@ namespace EuMax01
   void EvtTarget::setLMButtonUpEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *))
   {
     this->fnkLeftMouseButtonUp = pfnkEvtHandler;
+  }
+
+  void EvtTarget::setLMButtonUpEvtHandler(void (*pfnkEvtHandler)(void * src,SDL_Event *), \
+					  void * source)
+  {
+    this->setLMButtonUpEvtHandler(pfnkEvtHandler);
+    this->pTSource = source;
   }
 
   void EvtTarget::setKeyboardDownEvtHandler(void (*pfnk)(void * src,SDL_Event *))
@@ -166,6 +174,8 @@ int EvtTarget::paintRequested(EvtTarget * t)
 		(tmpx<pRect.x+pRect.w) &&				\
 		(tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	      {
+		this->bSelectedByMouseDown = true;
+		this->bPaintRequest = true;
 		if(this->fnkLeftMouseButtonDown/*&&this->bSelected*/)
 		  {
 		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
@@ -179,7 +189,6 @@ int EvtTarget::paintRequested(EvtTarget * t)
       {
       if(evt->button.button==SDL_BUTTON_LEFT)
 	{
-	  
 #ifdef TARGET_ARM
 	  if( (tmpx>=pRect.x)&&						\
 	      (tmpx<pRect.x+pRect.w) &&					\
@@ -198,12 +207,19 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	      }
 	    }
 #else
-	  if(this->bMouseOver)
+	  if( (tmpx>=pRect.x)&&						\
+	      (tmpx<pRect.x+pRect.w) &&					\
+	      (tmpy>=pRect.y)&&(tmpy<pRect.y+pRect.h) )// Mouse is over !
 	    {
 	      if(this->fnkLeftMouseButtonUp)//&&pBtn->bSelected)
 		{
 		  (*this->fnkLeftMouseButtonUp)(this->pTSource,evt);
 		}
+	    }
+	  if(this->bSelectedByMouseDown)
+	    {
+	      this->bSelectedByMouseDown = false;
+	      this->bPaintRequest = true;
 	    }
 #endif
 	}

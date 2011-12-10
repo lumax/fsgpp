@@ -225,7 +225,7 @@ void Button::setText(const char* text)
     tmpRect.h = b->PosDimRect.h;
 
     //Background
-    if(b->bMouseOver)
+    if(b->bSelectedByMouseDown)
       {
 	tmpSurface = b->pMarkedSurface;
       }
@@ -265,7 +265,7 @@ void Button::setText(const char* text)
     tmpRect.h = b->PosDimRect.h;
 
     //Background
-    if(b->bMouseOver){
+    if(b->bSelectedByMouseDown){
     //if button has Background SDL_Surface, then render Background SDL_Surface, else :
       if(SDL_FillRect(target,&tmpRect,b->uiNormalColor)){
 	return -1;
@@ -276,7 +276,7 @@ void Button::setText(const char* text)
       }
     }
     //Text
-    if(b->bMouseOver)
+    if(b->bSelectedByMouseDown)
       {
 	tmpRect.x +=2;
 	tmpRect.y +=2;
@@ -300,7 +300,7 @@ void Button::setText(const char* text)
       }
 
     //Border
-    if(b->bMouseOver){
+    if(b->bSelectedByMouseDown){
       if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
 	return -1;
       }
