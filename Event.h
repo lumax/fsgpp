@@ -17,7 +17,7 @@ class EvtTarget:public LL
 
  public:
   
-  bool bHide;
+  bool isVisible;
   bool bMouseOver;
   bool bSelectedByMouseDown;
   bool bPaintRequest;

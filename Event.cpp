@@ -12,7 +12,7 @@ namespace EuMax01
  
   EvtTarget::EvtTarget():LL()
   {
-    bHide = true;
+    isVisible = false;
     bMouseOver = false;
     bSelectedByMouseDown = false;
     bPaintRequest = false;
@@ -44,9 +44,9 @@ namespace EuMax01
   void EvtTarget::hide(bool hide)
   {
     if(hide)
-      this->bHide = true;
+      this->isVisible = false;
     else
-      this->bHide = false;
+      this->isVisible = true;
   }
 
   int EvtTarget::show(SDL_Surface * pSurface)
@@ -151,7 +151,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    if(!this->bMouseOver){
 	      this->bMouseOver = true;                    //set bSelected bit
 	      if(this->PrivateMouseOver){//there is a funktion to call
-		(*this->PrivateMouseOver)((void*)this,true);
+		(*this->PrivateMouseOver)(this->pTSource,true);
 	      }
 	      
 	      if(this->fnkMouseOver!=0){//there is a funktion to call
@@ -166,7 +166,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	      {
 		this->bMouseOver = false;          //unset Selected
 		if(this->PrivateMouseOver){//there is a funktion to call
-		  (*this->PrivateMouseOver)((void*)this,false);
+		  (*this->PrivateMouseOver)(this->pTSource,false);
 		}
 	      }
 	  }    
@@ -209,7 +209,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	    {
 	      this->bMouseOver=false;
 	      if(this->PrivateMouseOver){//there is a fnk to call
-		(*this->PrivateMouseOver)((void*)this,false);
+		(*this->PrivateMouseOver)(this->pTSource,false);
 	      }
 	    }
 #else

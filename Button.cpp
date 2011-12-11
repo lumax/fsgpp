@@ -106,9 +106,9 @@ namespace EuMax01
 	b->setMarkedColor(Globals::GlobalUint32ColorLightGray);
 	b->setNormalColor(Globals::GlobalUint32Color2);
       }
-
+    b->EvtTargetID = (char *)"button";
     b->setText(text);          //text setzen
-    b->bHide = false;
+    b->isVisible = true;
     b->hasImages = false;
     b->pTSource = b;//Quelle setzen
     b->PosDimRect.x = PositionDimRect.x;

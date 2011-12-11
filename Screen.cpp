@@ -49,7 +49,7 @@ namespace EuMax01
     
     while(pTmpEvtTarget)
     {     //alle EventTargets durchlaufen und Anzeigen
-      if(!pTmpEvtTarget->bHide)
+      if(pTmpEvtTarget->isVisible)
 	{
 	  if(pTmpEvtTarget->show(pSurface) )
 	return -1;
