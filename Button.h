@@ -57,7 +57,7 @@ namespace EuMax01
 			     const char * t,\
 			     SDL_Rect posDim,\
 			     ButtonSettings * settings);
-    //~Button();
+    ~Button();
     void setText(const char* text);
     int setImages(const char* normal,const char* down);
     void setImages(SDL_Surface* normal,		\
@@ -70,8 +70,9 @@ namespace EuMax01
   private:
     SDL_Surface * pNormalSurface;
     SDL_Surface * pMarkedSurface;
+    bool hasImages;
 
-    static int showImages(void * v,SDL_Surface* target);
+    int showImages(SDL_Surface* target);
     static void mouseOverEvent(void * b,bool MouseOver);
 
   protected:
@@ -80,7 +81,7 @@ namespace EuMax01
     SDL_Color * pFontColor;
     unsigned int uiNormalColor;
     unsigned int uiMarkedColor;
-    static int show(void * pB,SDL_Surface * pSurface);
+    int show(SDL_Surface * pSurface);
   };
 
 #endif /* __FSGBUTTON_H__*/

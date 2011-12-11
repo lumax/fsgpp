@@ -12,8 +12,7 @@ namespace EuMax01
  
   EvtTarget::EvtTarget():LL()
   {
-    PrivateShow = NULL;
-    bHide = false;
+    bHide = true;
     bMouseOver = false;
     bSelectedByMouseDown = false;
     bPaintRequest = false;
@@ -48,6 +47,12 @@ namespace EuMax01
     else
       this->bHide = false;
   }
+
+  int EvtTarget::show(SDL_Surface * pSurface)
+  {
+    return 0;
+  }
+  
 
   void EvtTarget::setPrivateMouseOver(void (*fnk)(void * b,bool selected))
   {

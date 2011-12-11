@@ -16,15 +16,16 @@ using namespace std;
 namespace EuMax01
 {
 
+  Gesture::~Gesture(){}
   Gesture::Gesture(SDL_Rect ActiveArea,IGestureListener * lis)
   {
     //clear memory
-    char * pv = (char*)this;
+    /*    char * pv = (char*)this;
     for(unsigned int i=0; i<sizeof(Gesture);i++)
       {
 	*pv = 0;
 	pv++;
-      }
+	}*/
     this->GESTUREACTION = 10;
     this->listener = lis;
     this->pTSource = this;//Quelle setzen
@@ -35,6 +36,8 @@ namespace EuMax01
     this->fnkLeftMouseButtonDown = Gesture::mouseButtonDown;
     this->fnkLeftMouseButtonUp = Gesture::mouseButtonUp;
   }
+
+  //int Gesture::show(SDL_Surface * target){return 0;}
 
   void Gesture::mouseMotion(void * src,SDL_Event * theEvent)
   {

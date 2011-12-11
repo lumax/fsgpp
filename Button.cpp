@@ -54,7 +54,9 @@ namespace EuMax01
   {
     Button::createButton(this,text,PositionDimRect,0);
   }
-  
+
+  Button::~Button(){}  
+
   Button::Button(const char * text,			\
 		 short x,				\
 		 short y,				\
@@ -105,8 +107,9 @@ namespace EuMax01
 	b->setNormalColor(Globals::GlobalUint32Color2);
       }
 
-    b->setText(text);          //text setzen 
-    b->PrivateShow = Button::show;//EvtTarget als Button Markieren   
+    b->setText(text);          //text setzen
+    b->bHide = false;
+    b->hasImages = false;
     b->pTSource = b;//Quelle setzen
     b->PosDimRect.x = PositionDimRect.x;
     b->PosDimRect.y = PositionDimRect.y;
@@ -154,7 +157,7 @@ namespace EuMax01
 	goto NormalSurfaceOK;
       }
     SDL_FreeSurface(tmp);
-    this->PrivateShow = Button::showImages;
+    this->hasImages = true;
     return 0;
   NormalSurfaceOK:
     SDL_FreeSurface(this->pNormalSurface);
@@ -176,7 +179,7 @@ namespace EuMax01
     //this->pMarkedSurface = SDL_DisplayFormatAlpha(down);
     this->pMarkedSurface = down;
 
-    this->PrivateShow = Button::showImages;
+    this->hasImages = true;
   }
 
   void Button::setFont(TTF_Font* font)
@@ -213,25 +216,24 @@ void Button::setText(const char* text)
   this->bPaintRequest = true;
 }
   
-  int Button::showImages(void * v,SDL_Surface* target)
+  int Button::showImages(SDL_Surface* target)
   {
     SDL_Rect tmpRect;
-    Button* b =(Button*)v;
     SDL_Surface* tmpSurface;
     
-    tmpRect.x = b->PosDimRect.x;
-    tmpRect.y = b->PosDimRect.y;
-    tmpRect.w = b->PosDimRect.w;
-    tmpRect.h = b->PosDimRect.h;
+    tmpRect.x = this->PosDimRect.x;
+    tmpRect.y = this->PosDimRect.y;
+    tmpRect.w = this->PosDimRect.w;
+    tmpRect.h = this->PosDimRect.h;
 
     //Background
-    if(b->bSelectedByMouseDown)
+    if(this->bSelectedByMouseDown)
       {
-	tmpSurface = b->pMarkedSurface;
+	tmpSurface = this->pMarkedSurface;
       }
     else
       {
-	tmpSurface = b->pNormalSurface;
+	tmpSurface = this->pNormalSurface;
       }
 
     if(SDL_BlitSurface(tmpSurface,0,target,&tmpRect))
@@ -240,8 +242,8 @@ void Button::setText(const char* text)
       }
 
     //Text
-    if(b->pButtonText){                                        
-      if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+    if(this->pButtonText){                                        
+      if(Tool::blitText(target,&tmpRect,this->pFont,this->pFontColor,this->pButtonText)){
 	return -1;
       }
     }
@@ -254,35 +256,39 @@ void Button::setText(const char* text)
 /*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
  *         
  */
-  int Button::show(void * v,SDL_Surface* target)
+  int Button::show(SDL_Surface* target)
   {
     SDL_Rect tmpRect;
-    Button* b =(Button*)v;
-    
-    tmpRect.x = b->PosDimRect.x;
-    tmpRect.y = b->PosDimRect.y;
-    tmpRect.w = b->PosDimRect.w;
-    tmpRect.h = b->PosDimRect.h;
+
+    if(this->hasImages)
+      {
+	return showImages(target);
+      }
+
+    tmpRect.x = this->PosDimRect.x;
+    tmpRect.y = this->PosDimRect.y;
+    tmpRect.w = this->PosDimRect.w;
+    tmpRect.h = this->PosDimRect.h;
 
     //Background
-    if(b->bSelectedByMouseDown){
+    if(this->bSelectedByMouseDown){
     //if button has Background SDL_Surface, then render Background SDL_Surface, else :
-      if(SDL_FillRect(target,&tmpRect,b->uiNormalColor)){
+      if(SDL_FillRect(target,&tmpRect,this->uiNormalColor)){
 	return -1;
     }
   }else{
-      if(SDL_FillRect(target,&tmpRect,b->uiMarkedColor)){
+      if(SDL_FillRect(target,&tmpRect,this->uiMarkedColor)){
 	return -1;
       }
     }
     //Text
-    if(b->bSelectedByMouseDown)
+    if(this->bSelectedByMouseDown)
       {
 	tmpRect.x +=2;
 	tmpRect.y +=2;
-	if(b->pButtonText)
+	if(this->pButtonText)
 	  {
-	    if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+	    if(Tool::blitText(target,&tmpRect,this->pFont,this->pFontColor,this->pButtonText)){
 	      return -1;
 	    }
 	  }
@@ -291,24 +297,24 @@ void Button::setText(const char* text)
       }
     else
       {
-	if(b->pButtonText)
+	if(this->pButtonText)
 	  {
-	    if(Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText)){
+	    if(Tool::blitText(target,&tmpRect,this->pFont,this->pFontColor,this->pButtonText)){
 	      return -1;
 	    }
 	  }
       }
 
     //Border
-    if(b->bSelectedByMouseDown){
-      if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
+    if(this->bSelectedByMouseDown){
+      if( Tool::renderBorderDown(target,&tmpRect,this->uiNormalColor)){
 	return -1;
       }
       //if(fsgToolRenderBorder(target,&tmpRect,FSG_BOARDERWIDTH,FSG_BOARDERCOLOR_MARKED)){
       //  return -1;
       //}
     }else{
-      if( Tool::renderBorderUp(target,&tmpRect,b->uiMarkedColor)){
+      if( Tool::renderBorderUp(target,&tmpRect,this->uiMarkedColor)){
 	return -1;
       }
     }

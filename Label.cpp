@@ -222,7 +222,6 @@ namespace EuMax01
     Button::createButton(this,text,tmp,0);
     this->PrivateMouseOver = 0;
     this->bMouseOver = false;
-    this->PrivateShow = Label::showLabel;
     this->bBorder = false;
   }
   
@@ -241,40 +240,38 @@ namespace EuMax01
     Button::createButton(this,text,tmp,settings);
     this->PrivateMouseOver = 0;
     this->bMouseOver = false;
-    this->PrivateShow = Label::showLabel;
     this->bBorder = false;
   }
 
 /*! \brief show fsgButton on SDL_Surface. Zeichnet den Normalbereich eines Buttons.
  *         
  */
-  int Label::showLabel(void * v,SDL_Surface* target)
+  int Label::show(SDL_Surface* target)
   {
     SDL_Rect tmpRect;
-    Label* b =(Label*)v;
     
-    tmpRect.x = b->PosDimRect.x;
-    tmpRect.y = b->PosDimRect.y;
-    tmpRect.w = b->PosDimRect.w;
-    tmpRect.h = b->PosDimRect.h;
+    tmpRect.x = this->PosDimRect.x;
+    tmpRect.y = this->PosDimRect.y;
+    tmpRect.w = this->PosDimRect.w;
+    tmpRect.h = this->PosDimRect.h;
 
     //Background
-    if(SDL_FillRect(target,&tmpRect,b->uiMarkedColor)){
+    if(SDL_FillRect(target,&tmpRect,this->uiMarkedColor)){
 	return -1;
       }
     //Text
     tmpRect.x +=2;
     tmpRect.y +=2;
-    if(b->pButtonText)
+    if(this->pButtonText)
       {
-	Tool::blitText(target,&tmpRect,b->pFont,b->pFontColor,b->pButtonText);
+	Tool::blitText(target,&tmpRect,this->pFont,this->pFontColor,this->pButtonText);
       }
     tmpRect.x -=2;
     tmpRect.y -=2;
     //Border
-    if(b->bBorder)
+    if(this->bBorder)
       {
-	if( Tool::renderBorderDown(target,&tmpRect,b->uiNormalColor)){
+	if( Tool::renderBorderDown(target,&tmpRect,this->uiNormalColor)){
 	  return -1;
 	}
       }

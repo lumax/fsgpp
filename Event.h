@@ -26,11 +26,11 @@ class EvtTarget:public LL
 
   EvtTarget();
   ~EvtTarget();
+  virtual int show(SDL_Surface * pSurface);
   void addEvtTarget(EvtTarget * t);
   void removeSingleEvtTarget(EvtTarget * t);
   static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
   static int paintRequested(EvtTarget * t);
-  int (*PrivateShow)(void * pB,SDL_Surface * pSurface);
   void setMouseOverEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));

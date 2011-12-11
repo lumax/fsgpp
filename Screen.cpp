@@ -48,9 +48,9 @@ namespace EuMax01
     
     while(pTmpEvtTarget)
     {     //alle EventTargets durchlaufen und Anzeigen
-      if(pTmpEvtTarget->PrivateShow&&!pTmpEvtTarget->bHide)
+      if(!pTmpEvtTarget->bHide)
 	{
-	  if(pTmpEvtTarget->PrivateShow(pTmpEvtTarget->pTSource,pSurface) )
+	  if(pTmpEvtTarget->show(pSurface) )
 	return -1;
     }
     pTmpEvtTarget = (EvtTarget*)pTmpEvtTarget->Next;

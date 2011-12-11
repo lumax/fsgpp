@@ -22,7 +22,7 @@ namespace EuMax01
   {
   public:
     Gesture(SDL_Rect ActiveArea,IGestureListener * lis);
-
+    ~Gesture();
   private:
     IGestureListener * listener;
     int EvtCounter;
