@@ -23,6 +23,7 @@ class EvtTarget:public LL
   bool bPaintRequest;
   void * pTSource;
   SDL_Rect PosDimRect;
+  char * EvtTargetID;
 
   EvtTarget();
   ~EvtTarget();

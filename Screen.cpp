@@ -19,13 +19,14 @@ namespace EuMax01
   {
     OnActivate=0;
     OnDeactivate=0;
+    EvtTargetID = (char*)"screen";
     //EvtTargets nullen!
-    char * pcTmp = (char *)&this->EvtTargets;
+    /*    char * pcTmp = (char *)&this->EvtTargets;
     for(unsigned int i=0;i<sizeof(EvtTarget);i++)
       {
 	*pcTmp=0;
 	pcTmp++;
-      }
+	}*/
   }
   
   Screen::~Screen()
@@ -38,7 +39,7 @@ namespace EuMax01
     this->EvtTargets.addLL(theTarget);
   }
   
-  int Screen::show(SDL_Surface * pSurface)
+  int Screen::showScreen(SDL_Surface * pSurface)
   {
     int i;
     EvtTarget * pTmpEvtTarget;

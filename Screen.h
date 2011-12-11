@@ -13,7 +13,7 @@ namespace EuMax01
  public:
   Screen();
   ~Screen();
-  int show(SDL_Surface * pSurface);
+  int showScreen(SDL_Surface * pSurface);
   void addEvtTarget(EvtTarget * theTarget);
   EvtTarget EvtTargets;
   int addButton(Button * btn);

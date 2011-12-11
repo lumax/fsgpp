@@ -16,6 +16,7 @@ namespace EuMax01
     bMouseOver = false;
     bSelectedByMouseDown = false;
     bPaintRequest = false;
+    EvtTargetID=0;
 
     pTSource = NULL;
     PosDimRect.x = 0;

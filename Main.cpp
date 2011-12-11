@@ -123,7 +123,7 @@ namespace EuMax01
   void GUI::activateScreen(Screen * s)
   {
     this->setActiveScreen(s); //die EventListener umschalten
-    s->show(pGUI->pMainSurface);
+    s->showScreen(pGUI->pMainSurface);
 #ifndef FSGPP_SHOW_IMMEDIATELY
     SDL_Flip(pGUI->pMainSurface);
 #endif
@@ -191,7 +191,7 @@ namespace EuMax01
 	  }
 	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets))
 	  {     //alle EventTargets auf bPaintRequest untersuchen
-	    pGUI->pActiveScreen->show(pGUI->pMainSurface);
+	    pGUI->pActiveScreen->showScreen(pGUI->pMainSurface);
 #ifndef FSGPP_SHOW_IMMEDIATELY
 	    SDL_Flip(pGUI->pMainSurface);                                   //show buffer
 #endif
