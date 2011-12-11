@@ -127,6 +127,11 @@ int EvtTarget::paintRequested(EvtTarget * t)
   return ret;
 }
 
+  void EvtTarget::repaint()
+  {
+    this->bPaintRequest = true;
+  }
+
   void EvtTarget::processEvtTarget(SDL_Event * evt)
   {
     int tmpx,tmpy;

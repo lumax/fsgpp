@@ -40,6 +40,7 @@ class EvtTarget:public LL
   void setKeyboardUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void hide(bool hide);
   void setPrivateMouseOver(void (*fnk)(void * b,bool selected));
+  void repaint();
  protected:
   void (*fnkMouseOverEvt)(void * source);
   void (*fnkMouseNotOverEvt)(void * source);
