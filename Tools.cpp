@@ -562,43 +562,43 @@ char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
 {
   SDLMod mod = key->keysym.mod;
   char zeichen = 0;
-  if(key->keysym.sym == SDLK_0)
+  if(key->keysym.sym == SDLK_0 || key->keysym.sym == SDLK_KP0)
     {
       zeichen = '0';
     }
-  else if(key->keysym.sym == SDLK_1)
+  else if(key->keysym.sym == SDLK_1 || key->keysym.sym == SDLK_KP1)
     {
       zeichen = '1';
     }
-  else if(key->keysym.sym == SDLK_2)
+  else if(key->keysym.sym == SDLK_2 || key->keysym.sym == SDLK_KP2)
     {
       zeichen = '2';
     }
-  else if(key->keysym.sym == SDLK_3)
+  else if(key->keysym.sym == SDLK_3 || key->keysym.sym == SDLK_KP3)
     {
       zeichen = '3';
     }
-  else if(key->keysym.sym == SDLK_4)
+  else if(key->keysym.sym == SDLK_4 || key->keysym.sym == SDLK_KP4)
     {
       zeichen = '4';
     }
-  else if(key->keysym.sym == SDLK_5)
+  else if(key->keysym.sym == SDLK_5 || key->keysym.sym == SDLK_KP5)
     {
       zeichen = '5';
     }
-  else if(key->keysym.sym == SDLK_6)
+  else if(key->keysym.sym == SDLK_6 || key->keysym.sym == SDLK_KP6)
     {
       zeichen = '6';
     }
-  else if(key->keysym.sym == SDLK_7)
+  else if(key->keysym.sym == SDLK_7 || key->keysym.sym == SDLK_KP7)
     {
       zeichen = '7';
     }
-  else if(key->keysym.sym == SDLK_8)
+  else if(key->keysym.sym == SDLK_8 || key->keysym.sym == SDLK_KP8)
     {
       zeichen = '8';
     }
-  else if(key->keysym.sym == SDLK_9)
+  else if(key->keysym.sym == SDLK_9 || key->keysym.sym == SDLK_KP9)
     {
 	zeichen = '9';
     }
@@ -771,43 +771,43 @@ char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
   {
     //SDLMod mod = key->keysym.mod;
     char zeichen = 0;
-    if(key->keysym.sym == SDLK_0)
+    if(key->keysym.sym == SDLK_0 || key->keysym.sym == SDLK_KP0)
       {
 	zeichen = '0';
     }
-  else if(key->keysym.sym == SDLK_1)
+  else if(key->keysym.sym == SDLK_1 || key->keysym.sym == SDLK_KP1)
     {
       zeichen = '1';
     }
-  else if(key->keysym.sym == SDLK_2)
+  else if(key->keysym.sym == SDLK_2 || key->keysym.sym == SDLK_KP2)
     {
       zeichen = '2';
     }
-  else if(key->keysym.sym == SDLK_3)
+  else if(key->keysym.sym == SDLK_3 || key->keysym.sym == SDLK_KP3)
     {
       zeichen = '3';
     }
-  else if(key->keysym.sym == SDLK_4)
+  else if(key->keysym.sym == SDLK_4 || key->keysym.sym == SDLK_KP4)
     {
       zeichen = '4';
     }
-  else if(key->keysym.sym == SDLK_5)
+  else if(key->keysym.sym == SDLK_5 || key->keysym.sym == SDLK_KP5)
     {
       zeichen = '5';
     }
-  else if(key->keysym.sym == SDLK_6)
+  else if(key->keysym.sym == SDLK_6 || key->keysym.sym == SDLK_KP6)
     {
       zeichen = '6';
     }
-  else if(key->keysym.sym == SDLK_7)
+  else if(key->keysym.sym == SDLK_7 || key->keysym.sym == SDLK_KP7)
     {
       zeichen = '7';
     }
-  else if(key->keysym.sym == SDLK_8)
+  else if(key->keysym.sym == SDLK_8 || key->keysym.sym == SDLK_KP8)
     {
       zeichen = '8';
     }
-  else if(key->keysym.sym == SDLK_9)
+  else if(key->keysym.sym == SDLK_9 || key->keysym.sym == SDLK_KP9)
     {
 	zeichen = '9';
     }
@@ -826,47 +826,47 @@ char Tool::getStdASCII_Char(SDL_KeyboardEvent * key)
   {
     //SDLMod mod = key->keysym.mod;
     char zeichen = 0;
-    if(key->keysym.sym == SDLK_0)
+    if(key->keysym.sym == SDLK_0 || key->keysym.sym == SDLK_KP0)
       {
 	zeichen = '0';
     }
-  else if(key->keysym.sym == SDLK_1)
+  else if(key->keysym.sym == SDLK_1 || key->keysym.sym == SDLK_KP1)
     {
       zeichen = '1';
     }
-  else if(key->keysym.sym == SDLK_2)
+  else if(key->keysym.sym == SDLK_2 || key->keysym.sym == SDLK_KP2)
     {
       zeichen = '2';
     }
-  else if(key->keysym.sym == SDLK_3)
+  else if(key->keysym.sym == SDLK_3 || key->keysym.sym == SDLK_KP3)
     {
       zeichen = '3';
     }
-  else if(key->keysym.sym == SDLK_4)
+  else if(key->keysym.sym == SDLK_4 || key->keysym.sym == SDLK_KP4)
     {
       zeichen = '4';
     }
-  else if(key->keysym.sym == SDLK_5)
+  else if(key->keysym.sym == SDLK_5 || key->keysym.sym == SDLK_KP5)
     {
       zeichen = '5';
     }
-  else if(key->keysym.sym == SDLK_6)
+  else if(key->keysym.sym == SDLK_6 || key->keysym.sym == SDLK_KP6)
     {
       zeichen = '6';
     }
-  else if(key->keysym.sym == SDLK_7)
+  else if(key->keysym.sym == SDLK_7 || key->keysym.sym == SDLK_KP7)
     {
       zeichen = '7';
     }
-  else if(key->keysym.sym == SDLK_8)
+  else if(key->keysym.sym == SDLK_8 || key->keysym.sym == SDLK_KP8)
     {
       zeichen = '8';
     }
-  else if(key->keysym.sym == SDLK_9)
+  else if(key->keysym.sym == SDLK_9 || key->keysym.sym == SDLK_KP9)
     {
 	zeichen = '9';
     }
-  else if(key->keysym.sym == SDLK_MINUS)
+  else if(key->keysym.sym == SDLK_MINUS||key->keysym.sym == SDLK_KP_MINUS)
     {
 	zeichen = '-';
     }
