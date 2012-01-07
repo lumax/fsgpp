@@ -296,4 +296,9 @@ namespace EuMax01
   {
     return pm_ts->addSource(p_pr);
   }
+
+  int GUI::addPollSource(PollSource * psrc,bool custom)
+  {
+    return pm_ts->addSource(psrc,custom);
+  }
 }//end namespace

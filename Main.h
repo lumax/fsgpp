@@ -35,6 +35,7 @@ namespace EuMax01
     virtual void pollTimerExpired(long us);
     void addPollTimer(PollTimer * p_pt);
     int addPollReader(PollReader * p_pr);
+    int addPollSource(PollSource * psrc,bool custom);
   private:
     void setActiveScreen(Screen * s);
     static GUI * pGUI;
