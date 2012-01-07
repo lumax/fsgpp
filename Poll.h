@@ -35,6 +35,9 @@ namespace EuMax01
     struct pollfd thePollfd;
     IPollReadListener * lis;
     void setPollSourceID(char * id);
+    //void setFD(int fd);
+    void setFD(struct pollfd fd);
+    bool CustomEventHandler;
   private:
     char * PollSourceID;
   };
@@ -58,7 +61,17 @@ namespace EuMax01
   {   
   public:
     PollManager();
+
+    /*! \brief Ohne CustomEventHandler (CustmEventHandler = false):
+     *         Es werden die Flags fdinfo[i].revents & (POLLIN | POLLPRI)
+     *         ausgewertet.
+     */
     int addSource(PollSource * ps);
+
+    /*! \brief Mit dem CustomEventHandler muss sich selber um die
+     *         Auswertung der revents Flags gekümmert werden.
+     */
+    int addSource(PollSource * ps,bool customEvtHandler);
     void addTimer(PollTimer * pt);
     
     void stopPolling();

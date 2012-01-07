@@ -43,11 +43,22 @@ namespace EuMax01
       }
     this->lis = lis;
     this->PollSourceID = 0;
+    this->CustomEventHandler = false;
   }
 
   void PollSource::setPollSourceID(char* id)
   {
     this->PollSourceID = id;
+  }
+
+  /*  void PollSource::setFD(int fd)
+  {
+    this->thePollfd.fd = fd;
+    }*/
+
+  void PollSource::setFD(struct pollfd fd)
+  {
+    this->thePollfd = fd;
   }
 
   PollReader::PollReader(IPollReadListener * lis):PollSource(lis)
@@ -95,14 +106,20 @@ namespace EuMax01
 
   int PollManager::addSource(PollSource * ps)
   {
-    if(AmountSources < this->MaxPollSources)
+    return this->addSource(ps,false);
+  }
+
+  int PollManager::addSource(PollSource * ps,bool customEvtHandler)
+  {
+     if(AmountSources < this->MaxPollSources)
       {
 	pollSources.addLL(ps);
 	AmountSources++;
 	newPrecondition = true;
+	ps->CustomEventHandler = customEvtHandler;
 	return 0;
       }
-    return -1;
+     return -1;
   }
 
   void PollManager::addTimer(PollTimer * pt)
@@ -209,9 +226,13 @@ namespace EuMax01
 	  {
 	    for(unsigned int i=0;i<AmountSources;i++)
 	      { 
+		if(sources[i]->CustomEventHandler)
+		  {
+		    sources[i]->lis->pollReadEvent(sources[i]);
+		  }
 		//TODO POLLERR POLLHUB POLLNVAL
 		//reading
-		if(fdinfo[i].revents & (POLLIN | POLLPRI) )
+		else if(fdinfo[i].revents & (POLLIN | POLLPRI) )
 		  {
 		    sources[i]->lis->pollReadEvent(sources[i]);
 		  }
