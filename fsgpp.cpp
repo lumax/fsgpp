@@ -17,12 +17,26 @@
 #include "Gesture.h"
 #include "Label.h"
 #include "Tools.h"
+#include "Scrollbar.h"
+#include "DataDisplay.h"
 
 using namespace std;
 using namespace EuMax01;
 
+Scrollbar * sb;
+
 Label* label1;
 TextField* label2;
+
+DataDisplay * testDataDisplay;
+short tmpData[100];
+
+static void evtBtn3(void * src,SDL_Event * evt){
+  printf("333\n");//cout << "evtBtn"<< endl;
+  testDataDisplay->paintSignedData(tmpData,100);
+  //testDataDisplay->paintData(tmpData,100);
+}
+
 
 static void evtBtn2(void * src,SDL_Event * evt){
   static int counter = 0;
@@ -122,6 +136,8 @@ int main(int argc,char* args[] )
       printf("error loading Images\n");//cout << "error loading Images"<< endl;
     }
 
+  Btn2->setLMButtonUpEvtHandler(evtBtn3);
+
   int ret = 0;  
   ImagePool StdBtn = ImagePool();
   ret=StdBtn.setStdButton("Images/resources/elements/barrelButtonLeft.png", \
@@ -164,8 +180,20 @@ int main(int argc,char* args[] )
   label2=new TextField("1234567890",5,200,200,100,20);
   label2->setActive(true);
 
+  sb = new Scrollbar(60,350,100,60,150,300,20);
+
   //PollTimer pt = PollTimer(500,this);
   //pm_ts->addTimer(&pt);
+
+  testDataDisplay = new DataDisplay(400,10, 100,100);
+  for(int i = 0;i<100;i++)
+    {
+      tmpData[i]=i;
+      if(0!=i%2)
+	{
+	  tmpData[i]=tmpData[i]*-1;
+	}
+    }
 
   SDL_Rect gesturedim={0,0,640,480};
   GestureListener GesLis = GestureListener();
@@ -178,6 +206,14 @@ int main(int argc,char* args[] )
   s1->addEvtTarget(Btn4);
   s1->addEvtTarget(label1);
   s1->addEvtTarget(label2);
+  s1->addEvtTarget(sb);
+  s1->addEvtTarget(testDataDisplay);
+
+  /* s1->addEvtTarget(&sb->scrollRegion);
+  s1->addEvtTarget(&sb->leftBtn);
+  s1->addEvtTarget(&sb->rightBtn);
+  //s1->addEvtTarget(&sb->scrollPosition);  
+  */
 
   theGUI->activateScreen(s1);
 
