@@ -83,9 +83,8 @@ namespace EuMax01
 	return -1;
       }
 
-#ifdef FSGPP_SHOW_IMMEDIATELY 
     SDL_UpdateRect(target,tmpRect.x,tmpRect.y,tmpRect.w,tmpRect.h);
-#endif
+
     // SDL_Flip(target);
     return 0;
   }
@@ -146,6 +145,7 @@ namespace EuMax01
 
     SDL_Rect tmpRect;
     int iterations = 0;
+    int nullpunkt = 0;
 
     this->s16Pnt = data;
     this->s16Len = datalen;
@@ -168,15 +168,30 @@ namespace EuMax01
       iterations = this->s16Len;
     tmpRect.w=1;
 
-    tmpRect.y=this->PosDimRect.h/2;
+    nullpunkt = this->PosDimRect.h/2;
+    tmpRect.y = nullpunkt;
     for(int i =0;i<iterations;i++)
       {
 	tmpRect.x=i;
-	tmpRect.h=this->s16Pnt[i];
-	if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
+	if(0==this->s16Pnt[i]%2)//positiv
 	  {
-	    return -1;
+	    tmpRect.y = nullpunkt-this->s16Pnt[i];
+	    tmpRect.h=this->s16Pnt[i];
+	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
+	      {
+		return -1;
+	      }
 	  }
+	else
+	  {
+	    tmpRect.y = nullpunkt;
+	    tmpRect.h=this->s16Pnt[i]*-1;
+	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
+	      {
+		return -1;
+	      }
+	  }
+
       }
     return 0;
   }
