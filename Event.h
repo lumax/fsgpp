@@ -30,8 +30,12 @@ class EvtTarget:public LL
   virtual int show(SDL_Surface * pSurface);
   void addEvtTarget(EvtTarget * t);
   void removeSingleEvtTarget(EvtTarget * t);
-  static void processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
-  static int paintRequested(EvtTarget * t);
+
+  /*! brief Lässt das event auf alle EventTargets wirken
+   * returns bPaintRequest
+   */
+  static bool processTargets(SDL_Event * pSDL_Event,EvtTarget * t);
+  static bool paintRequested(EvtTarget * t);
   void setMouseOverEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonDownEvtHandler(void (*pfnk)(void * src,SDL_Event *));
   void setLMButtonUpEvtHandler(void (*pfnk)(void * src,SDL_Event *));
@@ -53,7 +57,10 @@ class EvtTarget:public LL
   void (*fnkLeftMouseButtonUp)(void * src,SDL_Event * theEvent);
 
  private:
-  void processEvtTarget(SDL_Event * evt);
+  /*! brief Das EventTarget lässt das eingehende Ereignis (evt) auf sich wirken
+   *  returns bPaintRequest
+   */
+  bool processEvtTarget(SDL_Event * evt);
 
 
 };

@@ -47,7 +47,11 @@ namespace EuMax01
 	  delete(pr_ts);
 	  delete(pm_ts);
 	};
-      int processEvent(SDL_Event * theEvent);
+      /* ! brief Lässt das Event auf alle Targets des ActiveScreen wirken
+       * returns paintRequest, ja oder nein
+       */
+      inline bool processEvent(SDL_Event * theEvent);
+      inline int checkPaintRequests();
       Screen * pActiveScreen;
       void (*fnkSecondaryEvtHandler)(SDL_Event * theEvent);
       SDL_Surface * pMainSurface;

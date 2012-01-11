@@ -171,6 +171,7 @@ namespace EuMax01
 	  }
 	//printf("pressure : %i, relative: %i, dx: %i, dy: %i\n",sample.pressure,0,sample.x,sample.y);
 	processEvent(&this->theSDL_Event);
+	checkPaintRequests();
       }//end if
     else
       {
@@ -181,26 +182,34 @@ namespace EuMax01
     #endif
   }
 
-  int GUI::processEvent(SDL_Event * theEvent)
+  inline bool GUI::processEvent(SDL_Event * theEvent)
   {
+    bool paintRequest = false;
     if(pGUI->pActiveScreen)
       {
 	if(pGUI->pActiveScreen->EvtTargets.Next)
 	  {                            //EvtTargets Ausführen
-	    EvtTarget::processTargets(theEvent,&pGUI->pActiveScreen->EvtTargets);
-	  }
-	if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets))
-	  {     //alle EventTargets auf bPaintRequest untersuchen
-	    pGUI->pActiveScreen->showScreen(pGUI->pMainSurface);
-#ifndef FSGPP_SHOW_IMMEDIATELY
-	    SDL_Flip(pGUI->pMainSurface);                                   //show buffer
-#endif
+	    if(EvtTarget::processTargets(theEvent,&pGUI->pActiveScreen->EvtTargets))
+	      paintRequest = true;
 	  }
       }
     if(pGUI->fnkSecondaryEvtHandler)
       (*pGUI->fnkSecondaryEvtHandler)(theEvent);
+    return paintRequest;
+  }
+
+  inline int GUI::checkPaintRequests()
+  {
+    if(EvtTarget::paintRequested(&pGUI->pActiveScreen->EvtTargets))
+      {     //alle EventTargets auf bPaintRequest untersuchen
+	pGUI->pActiveScreen->showScreen(pGUI->pMainSurface);
+#ifndef FSGPP_SHOW_IMMEDIATELY
+	SDL_Flip(pGUI->pMainSurface);                                   //show buffer
+#endif
+      }
     return 0;
   }
+
 #ifdef TARGET_ARM 
   void GUI::pollTimerExpired(long us)
   {
@@ -210,14 +219,21 @@ namespace EuMax01
   void GUI::pollTimerExpired(long us)
   {
     SDL_Event * theEvent = &this->theSDL_Event;
+    bool paintRequest = false;
     while(SDL_PollEvent(theEvent))
       {
 	if(theEvent->type==SDL_QUIT)
 	  {
 	    pm_ts->stopPolling();
 	  }
-	processEvent(theEvent);
+	if(processEvent(theEvent))
+	  {
+	    paintRequest = true;
+	    checkPaintRequests();
+	  }
       }
+    if(!paintRequest)
+      checkPaintRequests();
   }
 #endif
     
@@ -250,22 +266,7 @@ namespace EuMax01
      if(pm_ts->call_poll())
       {
 	printf("pollManager returned witch error\n");//std::cout << "pollManager returned witch error"<<std::endl;
-      }  
-    
-    /*     SDL_Event * theEvent = &this->theSDL_Event;
-    for(;;)
-      {
-	if(SDL_WaitEvent(theEvent)==0)
-	  {
-	    return -1; 
-	  }
-	processEvent(theEvent);
-	
-	if(theEvent->type==SDL_QUIT)
-	  {
-	    return 0;
-	  }
-	  }*/
+      }
 #endif
     return 0;
   }

@@ -102,25 +102,28 @@ namespace EuMax01
     this->removeSingleLL(t);
     }*/
 
-  void EvtTarget::processTargets(SDL_Event * pSDL_Event,EvtTarget * t)
-{
-  EvtTarget* pTmp = (EvtTarget*)t->Next;
-  while(pTmp)
-    {
-      pTmp->processEvtTarget(pSDL_Event);
-      pTmp = (EvtTarget*)pTmp->Next;
-    }
-}
+  bool EvtTarget::processTargets(SDL_Event * pSDL_Event,EvtTarget * t)
+  {
+    EvtTarget* pTmp = (EvtTarget*)t->Next;
+    bool paintRequest = false;
+    while(pTmp)
+      {
+	if(pTmp->processEvtTarget(pSDL_Event))
+	  paintRequest = true;
+	pTmp = (EvtTarget*)pTmp->Next;
+      }
+    return paintRequest;
+  }
 
-int EvtTarget::paintRequested(EvtTarget * t)
+bool EvtTarget::paintRequested(EvtTarget * t)
 {
-  int ret = 0;
+  bool ret = false;
   EvtTarget * pTmp = (EvtTarget*)t->Next;
   while(pTmp)
     {
-      if(pTmp->bPaintRequest==1){
-	ret = 1;
-	pTmp->bPaintRequest=0;
+      if(pTmp->bPaintRequest){
+	ret = true;
+	pTmp->bPaintRequest=false;
       }
       pTmp = (EvtTarget*)pTmp->Next;
     }
@@ -132,7 +135,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
     this->bPaintRequest = true;
   }
 
-  void EvtTarget::processEvtTarget(SDL_Event * evt)
+  bool EvtTarget::processEvtTarget(SDL_Event * evt)
   {
     int tmpx,tmpy;
     SDL_Rect pRect;
@@ -161,7 +164,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	      
 	      if(this->fnkMouseOver!=0){//there is a funktion to call
 		(*this->fnkMouseOver)(this->pTSource,evt);//execFnk 
-		return;
+		goto function_out;
 	      }
 	    }
 	  }
@@ -191,7 +194,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 		  {
 		  (*this->fnkLeftMouseButtonDown)(this->pTSource,evt);
 		  }
-		return;
+		goto function_out;
 	      }
 	  }
       }
@@ -241,7 +244,7 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	if(this->fnkKeyboardDown)
 	  {
 	    (*this->fnkKeyboardDown)(this->pTSource,evt);//execFnk
-	    return;
+	    goto function_out;
 	  }
       }
     else if(evt->type == SDL_KEYUP)
@@ -249,8 +252,10 @@ int EvtTarget::paintRequested(EvtTarget * t)
 	if(this->fnkKeyboardUp)
 	  {
 	    (*this->fnkKeyboardUp)(this->pTSource,evt);//execFnk
-	    return;
+	    goto function_out;
 	  }
       }
+  function_out:
+    return this->bPaintRequest;
   }
 }//namespace
