@@ -146,6 +146,7 @@ namespace EuMax01
     SDL_Rect tmpRect;
     int iterations = 0;
     int nullpunkt = 0;
+    int divisor = 64;
 
     this->s16Pnt = data;
     this->s16Len = datalen;
@@ -173,10 +174,10 @@ namespace EuMax01
     for(int i =0;i<iterations;i++)
       {
 	tmpRect.x=i;
-	if(0==this->s16Pnt[i]%2)//positiv
+	if(this->s16Pnt[i]>=0)//0==this->s16Pnt[i]%2)//positiv
 	  {
-	    tmpRect.y = nullpunkt-this->s16Pnt[i];
-	    tmpRect.h=this->s16Pnt[i];
+	    tmpRect.y = nullpunkt-this->s16Pnt[i]/divisor;
+	    tmpRect.h=this->s16Pnt[i]/divisor;
 	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
 	      {
 		return -1;
@@ -185,7 +186,64 @@ namespace EuMax01
 	else
 	  {
 	    tmpRect.y = nullpunkt;
-	    tmpRect.h=this->s16Pnt[i]*-1;
+	    tmpRect.h=this->s16Pnt[i]/divisor*-1;
+	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
+	      {
+		return -1;
+	      }
+	  }
+
+      }
+    return 0;
+  }
+
+  int DataDisplay::paintDoubleMagData(double * data,unsigned int datalen,unsigned int Divisor)
+  {
+
+    SDL_Rect tmpRect;
+    int iterations = 0;
+    int nullpunkt = 0;
+    unsigned int divisor = Divisor;
+
+    this->f64Pnt = data;
+    this->s16Len = datalen;
+    this->bPaintRequest = true;
+
+    tmpRect.x = 0;//this->PosDimRect.x;
+    tmpRect.y = 0;//this->PosDimRect.y;
+    tmpRect.w = this->PosDimRect.w;
+    tmpRect.h = this->PosDimRect.h;
+
+    //Background
+    if(SDL_FillRect(this->Surface,&tmpRect,this->BackgroundColor))
+      {
+	return -1;
+      }
+
+    if(this->PosDimRect.w<=this->s16Len)
+      iterations = this->PosDimRect.w;
+    else
+      iterations = this->s16Len;
+    tmpRect.w=1;
+
+    nullpunkt = this->PosDimRect.h;///2;
+    tmpRect.y = nullpunkt;
+    for(int i =0;i<iterations;i++)
+      {
+	tmpRect.x=i;
+	if(this->f64Pnt[i]>=0)//0==this->s16Pnt[i]%2)//positiv
+	  {
+	    tmpRect.y = nullpunkt-(unsigned short)(this->f64Pnt[i]/divisor);
+	    tmpRect.h=(unsigned short)(this->f64Pnt[i]/divisor);
+	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
+	      {
+		return -1;
+	      }
+	  }
+	else
+	  {
+	    tmpRect.y = nullpunkt;
+	    tmpRect.h=(unsigned short)(this->f64Pnt[i]/divisor*-1);
 	    if(SDL_FillRect(this->Surface,&tmpRect,this->DataColor))
 	      {
 		return -1;

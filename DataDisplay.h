@@ -27,10 +27,12 @@ namespace EuMax01
 
     int paintData(signed short *data,unsigned int datalen);
     int paintSignedData(signed short *data,unsigned int datalen);
+    int paintDoubleMagData(double * data,unsigned int datalen,unsigned int Divisor);
   private:
     SDL_Surface * Surface;
     unsigned int WhatToShow;
     signed short * s16Pnt;
+    double * f64Pnt;
     unsigned int s16Len;
     unsigned int DataColor;
     unsigned int BackgroundColor;
