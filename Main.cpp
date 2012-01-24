@@ -232,7 +232,7 @@ namespace EuMax01
 	    checkPaintRequests();
 	  }
       }
-    if(!paintRequest)
+    if(!paintRequest)//für EventTargets, die nicht durch SDL getriggert werden
       checkPaintRequests();
   }
 #endif
