@@ -24,6 +24,7 @@ namespace EuMax01
 
   public:
 
+    static GUI* getInstance(GUI_Properties * p_properties,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent),bool useCurWandH);
     static GUI* getInstance(GUI_Properties * p_properties,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent));
     LL * getActiveEvtTargets(void);
     void activateScreen(Screen * s);

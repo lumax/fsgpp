@@ -45,6 +45,12 @@ namespace EuMax01
 
   GUI* GUI::getInstance(GUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent))
   {
+    return GUI::getInstance(pProps,fnkSecondaryEvtHandling,false);
+  }
+
+  GUI* GUI::getInstance(GUI_Properties * pProps,void (*fnkSecondaryEvtHandling)(SDL_Event * theEvent),bool useCurWandH)
+  {
+    const SDL_VideoInfo *info;
     if(pGUI)
       return pGUI;
 
@@ -66,13 +72,39 @@ namespace EuMax01
 	atexit(TTF_Quit);
       }
       else{
+	printf("Couldn't initialize TTF_Init\n");
 	return NULL;
       }
-      
-      pGUI->pMainSurface = SDL_SetVideoMode(pProps->width,	\
-					    pProps->height,	\
-					    pProps->bpp,	\
-					    pProps->flags);
+
+      if(useCurWandH)
+	{
+	  info = SDL_GetVideoInfo();
+	  if(info)
+	    {
+	      printf("SDL_SetVideoMode Width:%i Height:%i\n",info->current_w,info->current_h);
+	      pGUI->pMainSurface = SDL_SetVideoMode(info->current_w ,	\
+						    info->current_h,	\
+						    pProps->bpp,	\
+						    pProps->flags);
+	    }
+	  else
+	    {
+	      printf("SDL_SetVideoMode Width:%i Height:%i\n",pProps->width,pProps->height);
+	      pGUI->pMainSurface = SDL_SetVideoMode(pProps->width,	\
+						    pProps->height,	\
+						    pProps->bpp,	\
+						    pProps->flags);
+	    }
+	}
+      else
+	{
+	  printf("SDL_SetVideoMode Width:%i Height:%i\n",pProps->width,pProps->height);
+	  pGUI->pMainSurface = SDL_SetVideoMode(pProps->width,	\
+						pProps->height,	\
+						pProps->bpp,	\
+						pProps->flags);
+	}
+
       if(!pGUI->pMainSurface)
 	return NULL;
 
@@ -80,6 +112,7 @@ namespace EuMax01
       if(!pGlobals)
 	{
 	  SDL_FreeSurface(pGUI->pMainSurface);
+	  printf("Globals::getInstance failed\n");
 	  return NULL;
 	}
 
