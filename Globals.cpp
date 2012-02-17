@@ -4,6 +4,7 @@ Bastian Ruppert 08.05.2009
  */
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <stdio.h>
 #include "Globals.h"
 namespace EuMax01
 {
@@ -98,21 +99,25 @@ namespace EuMax01
 	FontMono18 = TTF_OpenFont(DEFAULTFONTMONO,18);
 	if(!FontMono18)
 	  {
+	    printf("Globals::getInstance FontMono18 failed\n");
 	    return 0;
 	  }
 	FontMono12 = TTF_OpenFont(DEFAULTFONTMONO,12);
 	if(!FontMono12)
 	  {
+	    printf("Globals::getInstance FontMono12 failed\n");
 	    return 0;
 	  }
 	FontButton10 = TTF_OpenFont(DEFAULTFONT,10);
 	if(!FontButton10)
 	  {
+	    printf("Globals::getInstance FontButton10 failed\n");
 	    return 0;
 	  }
 	FontButtonBig = TTF_OpenFont(DEFAULTFONT,FONTBUTTONBIGSIZE);
 	if(!FontButtonBig)
 	  {
+	    printf("Globals::getInstance FontButtonBig failed\n");
 	    return 0;
 	  }
 	FontButtonDefault = TTF_OpenFont(DEFAULTFONT,FONTBUTTONDEFAULTSIZE);
@@ -121,6 +126,7 @@ namespace EuMax01
 	    global = new Globals();
 	    return global;
 	  }
+	printf("Globals::getInstance FontButtonDefault failed\n");
 	return NULL;
       }
   }
