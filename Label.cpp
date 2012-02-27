@@ -48,7 +48,7 @@ namespace EuMax01
 	  {
 	    //printf("escape\n");
 	  }
-	else if(key->keysym.sym == SDLK_RETURN)
+	else if(key->keysym.sym == SDLK_RETURN || key->keysym.sym == SDLK_KP_ENTER)
 	  {
 	    //printf("enter\n");
 	  }
