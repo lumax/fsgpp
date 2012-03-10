@@ -89,7 +89,7 @@ namespace EuMax01
 	    }
 	  else
 	    {
-	      printf("SDL_SetVideoMode Width:%i Height:%i\n",pProps->width,pProps->height);
+	      printf("SDL_SetVideoMode GetVideoInfo failed: Width:%i Height:%i\n",pProps->width,pProps->height);
 	      pGUI->pMainSurface = SDL_SetVideoMode(pProps->width,	\
 						    pProps->height,	\
 						    pProps->bpp,	\
