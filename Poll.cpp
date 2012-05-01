@@ -32,18 +32,14 @@ namespace EuMax01
     this->lis = lis;
   }
 
-  PollSource::PollSource(IPollReadListener * lis)
+  PollSource::PollSource(IPollReadListener * lis):LL()
   {
-    //clear memory
-    char * pv = (char*)this;
-    for(unsigned int i=0; i<sizeof(PollSource);i++)
-      {
-	*pv = 0;
-	pv++;
-      }
+    this->thePollfd.fd = -1;
+    this->thePollfd.events = 0;
+    this->thePollfd.revents = 0;
     this->lis = lis;
-    this->PollSourceID = 0;
     this->CustomEventHandler = false;
+    this->PollSourceID = 0;
   }
 
   void PollSource::setPollSourceID(char* id)
@@ -51,42 +47,30 @@ namespace EuMax01
     this->PollSourceID = id;
   }
 
-  /*  void PollSource::setFD(int fd)
-  {
-    this->thePollfd.fd = fd;
-    }*/
-
-  void PollSource::setFD(struct pollfd fd)
-  {
-    this->thePollfd = fd;
-  }
-
   PollReader::PollReader(IPollReadListener * lis):PollSource(lis)
   {
 
   }
 
-  /*
-   *Sets errno
-   */
-  /*  int PollReader::setReadSource(const char* path,void (*readFnk)(PollSource * s))
-  {
-    int fd = open(path, O_RDONLY);
-    if(-1==fd)
-      return -1;
-    return setReadSource(fd,readFnk);
-    }*/
-
-  /*
-   *Sets errno
-   */
   int PollReader::setReadSource(int fd)
   {
-    if(this->thePollfd.fd)
+    if(-1!=this->thePollfd.fd)
       return -2;
 
     this->thePollfd.fd = fd;
     this->thePollfd.events = POLLIN | POLLPRI;
+    return 0;
+  }
+
+  int PollReader::setReadSource(int fd,char * id)
+  {
+    int ret;
+    ret = this->setReadSource(fd);
+
+    if(0!=ret)
+      return ret;
+
+    this->setPollSourceID(id);
     return 0;
   }
 
@@ -117,6 +101,7 @@ namespace EuMax01
 	AmountSources++;
 	newPrecondition = true;
 	ps->CustomEventHandler = customEvtHandler;
+	printf("PollManager->addSource thePollfs.fd:%i, ID :%s\n",ps->thePollfd.fd,ps->PollSourceID);
 	return 0;
       }
      return -1;
@@ -178,7 +163,7 @@ namespace EuMax01
     PollSource* pTmp = 0;
     PollTimer* tmpTimer = (PollTimer*)this->timerTargets.Next;  
     int ret = 0;
-    int tmpi = 0;
+    unsigned int tmpi = 0;
 
     timerStart.tv_sec = 0;
     timerStart.tv_usec = 0;
@@ -193,6 +178,7 @@ namespace EuMax01
 	//std::cout<<"---poll---"<<std::endl;
 	if(newPrecondition)//new fdinfos only when necessary
 	  {
+	    printf("call_poll newPrecondition\n");
 	    //pTmp = 0;
 	    pTmp = (PollSource*)this->pollSources.Next;
 	    tmpi = 0;
@@ -209,13 +195,11 @@ namespace EuMax01
 	    newPrecondition = false;
 	  }
 
-	ret = poll(fdinfo,AmountSources,/*timeout*/30);
+	ret = poll(fdinfo,/*AmountSources*/tmpi,/*timeout*/30);
 	if(ret<0)
 	  {
 	    return ret;
 	  }
-
-	//std::cout << "mtime: " << mtime << std::endl;
 
 	if(tmpTimer)
 	  {
@@ -224,7 +208,8 @@ namespace EuMax01
 	  }
 	if(0<ret)
 	  {
-	    for(unsigned int i=0;i<AmountSources;i++)
+	    //printf("poll ret = %i\n",ret);
+	    for(unsigned int i=0;i</*AmountSources*/tmpi;i++)
 	      { 
 		if(sources[i]->CustomEventHandler)
 		  {

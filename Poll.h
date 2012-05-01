@@ -34,12 +34,11 @@ namespace EuMax01
     PollSource(IPollReadListener * lis);
     struct pollfd thePollfd;
     IPollReadListener * lis;
-    void setPollSourceID(char * id);
-    //void setFD(int fd);
-    void setFD(struct pollfd fd);
     bool CustomEventHandler;
-  private:
     char * PollSourceID;
+
+    void setPollSourceID(char * id);
+    void setFD(struct pollfd fd);
   };
   
   class IPollReadListener
@@ -55,6 +54,7 @@ namespace EuMax01
   public:
     PollReader(IPollReadListener * lis);
     int setReadSource(int fd);
+    int setReadSource(int fd,char * id);
   };
 
   class PollManager
