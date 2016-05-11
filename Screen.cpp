@@ -41,10 +41,9 @@ namespace EuMax01
   
   int Screen::showScreen(SDL_Surface * pSurface)
   {
-    int i;
     EvtTarget * pTmpEvtTarget;
     //Globals * pGlobals = Globals::getInstance();
-    i = Tool::blankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
+    Tool::blankSurface(pSurface,FSG_BACKGROUND);//TODO Rückgabewert
     pTmpEvtTarget = (EvtTarget*)this->EvtTargets.Next;
     
     while(pTmpEvtTarget)
