@@ -52,6 +52,10 @@ namespace EuMax01
 	  {
 	    //printf("enter\n");
 	  }
+	else if(key->keysym.sym == SDLK_SPACE)
+	  {
+	    zeichen = 0x20;
+	  }
 	else
 	  {
 	    zeichen = tf->keyLis(key);
