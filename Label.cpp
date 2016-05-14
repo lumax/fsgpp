@@ -56,6 +56,26 @@ namespace EuMax01
 	  {
 	    zeichen = 0x20;
 	  }
+	else if(key->keysym.sym == SDLK_COMMA)
+	  {
+	    zeichen = ',';
+	  }
+	else if(key->keysym.sym == SDLK_COLON)
+	  {
+	    zeichen = ':';
+	  }
+	else if(key->keysym.sym == SDLK_SEMICOLON)
+	  {
+	    zeichen = ';';
+	  }
+	else if(key->keysym.sym == SDLK_PERIOD)
+	  {
+	    zeichen = '.';
+	  }
+	else if(key->keysym.sym == SDLK_MINUS)
+	  {
+	    zeichen = '-';
+	  }
 	else
 	  {
 	    zeichen = tf->keyLis(key);
