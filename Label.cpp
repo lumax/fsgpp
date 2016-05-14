@@ -82,7 +82,8 @@ namespace EuMax01
 	  }
 	if(zeichen)
 	  {
-	    if('-'==zeichen)
+	    tf->addChar(zeichen);
+	    /*	    if('-'==zeichen)
 	      {
 		if(0==tf->getTextLen())
 		  tf->addChar(zeichen);
@@ -91,6 +92,7 @@ namespace EuMax01
 	      {
 		tf->addChar(zeichen);
 	      }
+	    */
 	    //printf("%c",zeichen);
 	    //fflush(0);
 	  }
