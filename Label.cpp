@@ -24,7 +24,7 @@ namespace EuMax01
     TextField* tf = (TextField*)src;
     SDL_KeyboardEvent * key = (SDL_KeyboardEvent *)&evt->key;
     char zeichen = 0;
-    //SDLMod mod = key->keysym.mod;
+    SDLMod mod = key->keysym.mod;
     //Tool::PrintKeyInfo( key );
     //return;
 
@@ -71,6 +71,14 @@ namespace EuMax01
 	else if(key->keysym.sym == SDLK_PERIOD)
 	  {
 	    zeichen = '.';
+	  }
+	else if((key->keysym.sym == SDLK_7) && (mod & KMOD_LALT))
+	  {//Geschwiefte Klammer erscheint mit drücken von ALT und ALT GR gleichzeitig
+	    zeichen = '{';
+	  }
+	else if((key->keysym.sym == SDLK_0) && (mod & KMOD_LALT))
+	  {//Geschwiefte Klammer erscheint mit drücken von ALT und ALT GR gleichzeitig
+	    zeichen = '}';
 	  }
 	else if(key->keysym.sym == SDLK_MINUS)
 	  {
