@@ -45,6 +45,10 @@ class EvtTarget:public LL
   void hide(bool hide);
   void setPrivateMouseOver(void (*fnk)(void * b,bool selected));
   void repaint();
+  void setPosX(short posx);
+  void setPosY(short posy);
+  void setWidth(unsigned short w);
+  void setHeight(unsigned short h);
  protected:
   void (*fnkMouseOverEvt)(void * source);
   void (*fnkMouseNotOverEvt)(void * source);

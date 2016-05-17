@@ -53,7 +53,26 @@ namespace EuMax01
   {
     return 0;
   }
-  
+
+  void EvtTarget::setPosX(short posx)
+  {
+    this->PosDimRect.x = posx;
+  }
+
+  void EvtTarget::setPosY(short posy)
+  {
+    this->PosDimRect.y = posy;
+  }
+
+  void EvtTarget::setWidth(unsigned short w)
+  {
+    this->PosDimRect.w = w;
+  }
+
+  void EvtTarget::setHeight(unsigned short h)
+  {
+    this->PosDimRect.h = h;
+  }
 
   void EvtTarget::setPrivateMouseOver(void (*fnk)(void * b,bool selected))
   {
