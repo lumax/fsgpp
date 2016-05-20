@@ -84,6 +84,10 @@ namespace EuMax01
 	  {//Geschwiefte Klammer erscheint mit drücken von ALT und ALT GR gleichzeitig
 	    zeichen = '}';
 	  }
+	else if((key->keysym.sym == SDLK_4) && ((mod & KMOD_LSHIFT)||(mod & KMOD_RSHIFT)))
+	  {
+	    zeichen = '$';
+	  }
 	else if((key->keysym.sym == SDLK_2) && ((mod & KMOD_LSHIFT)||(mod & KMOD_RSHIFT)))
 	  {
 	    zeichen = '"';
